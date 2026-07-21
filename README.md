@@ -9,7 +9,7 @@ A modern, lightweight, and minimalist Roblox UI library. Designed for developers
 To load the UI library into your script, use the `raw.githubusercontent` link to ensure you are always fetching the latest version.
 
 ```lua
-local Library = loadstring(game:HttpGet("[https://raw.githubusercontent.com/ranarth/Ranarth-GUI/main/main.lua](https://raw.githubusercontent.com/ranarth/Ranarth-GUI/main/main.lua)"))()
+local Library = loadstring(game:HttpGet("[https://raw.githubusercontent.com/ranarth/Ranarth-GUI/main/main.lua)"))()
 ```
 
 ---
