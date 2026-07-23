@@ -88,7 +88,7 @@ local btn = MainTab:CreateButton({
 })
 
 -- Locking the button (optional)
-btn:Lock("Waiting for Tegar's review")
+btn:Lock("Waiting for Ranarth's review")
 -- btn:Unlock() -- To unlock it later
 ```
 
