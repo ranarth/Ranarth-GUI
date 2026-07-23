@@ -1,154 +1,167 @@
-# 🌌 Ranarth GUI
+# Ranarth GUI Library
 
-A modern, lightweight, and minimalist Roblox UI library. Designed for developers who want a clean aesthetic, blazing fast execution, and a simple Rayfield-style dictionary syntax.
+Ranarth GUI is a custom interface library for Roblox designed to be clean, modern, and highly flexible. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, dynamic Layouting (Group & HStack), Modals, and optimized animations.
 
----
+## 🚀 Installation & Loading
 
-## 📥 Loading the Library
-
-To load the UI library into your script, use the `raw.githubusercontent` link to ensure you are always fetching the latest version.
+You can load this library directly from GitHub using `loadstring`.
 
 ```lua
-local Library = loadstring(game:HttpGet("[https://github.com/ranarth/Ranarth-GUI/releases/latest/download/main.lua"))()
+local RanarthLib = loadstring(game:HttpGet("https://github.com/ranarth/Ranarth-GUI/releases/latest/download/main.lua"))()
 ```
 
 ---
 
-## 🚀 Creating a Window
+## 🪟 1. Creating the Main Window
 
-Initialize the main UI window. You can choose between top navigation or left side navigation.
+The first step is to create the main window. You can adjust the size, tab position, toggle keybind, and enable the configuration saving system.
 
 ```lua
-local Window = Library:CreateWindow({
-    Title = "Ranarth GUI Demo", 
-    DefaultWidth = 500,
-    DefaultHeight = 320,
-    MinWidth = 400,
-    MinHeight = 250,
-    TabPosition = "Top" -- Choose "Top" or "Left"
+local Window = RanarthLib:CreateWindow({
+    Title = "Ranarth GUI | Developer Build",
+    DefaultWidth = 580,
+    DefaultHeight = 380,
+    MinWidth = 450,
+    MinHeight = 300,
+    TabPosition = "Left", -- Options: "Left" or "Top"
+    ToggleKey = Enum.KeyCode.RightControl, -- Key to hide/show the GUI
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = "Ranarth_Plugin_Data",
+        FileName = "DefaultConfig"
+    }
 })
 ```
 
 ---
 
-## 📑 Creating Tabs & Sections
+## 📑 2. Creating Tabs
+
+Tabs are used to separate features within the GUI. You can use the built-in icons from *Lucide Icons* (such as `home`, `settings`, `user`, `folder`, `zap`, etc.) or use Roblox asset IDs (`rbxassetid://...`).
 
 ```lua
-local MainTab = Window:CreateTab("Main Features")
-local SettingsTab = Window:CreateTab("Settings")
+local MainTab = Window:CreateTab({
+    Name = "Dashboard", 
+    Icon = "home"
+})
 
-MainTab:CreateSection({ Name = "Combat Settings" })
+local SettingsTab = Window:CreateTab({
+    Name = "Settings", 
+    Icon = "settings"
+})
+```
+
+---
+
+## 🛠️ 3. Adding Standard Elements
+
+Use the Tab variable (e.g., `MainTab`) to start building UI elements.
+
+### Section & Divider
+Used to provide separators and titles between categories.
+```lua
+MainTab:CreateSection("Main Category")
 MainTab:CreateDivider()
 ```
 
----
-
-## 🔘 Basic Elements
-
-Ranarth GUI uses a clean dictionary table `{}` syntax for all elements.
-
-### Label
-Labels return an object with a `.Set()` function so you can update them dynamically (e.g., for player counts).
+### Label & Tooltip
+Labels for static text, which can be enhanced with a description (desc) and a tooltip when hovered.
 ```lua
-local StatusLabel = MainTab:CreateLabel({
-    Name = "Status: Idle"
+local InfoLabel = MainTab:CreateLabel({
+    Name = "Environment Status",
+    Desc = "All modules are running normally",
+    Icon = "check"
 })
 
--- Update the label later:
--- StatusLabel.Set("Status: Farming")
+-- Attaching a Tooltip to the label
+RanarthLib:CreateTooltip(InfoLabel.Frame, "Connected to the server with low latency.")
 ```
 
-### Button
+### Button (With Lock Feature)
 ```lua
-MainTab:CreateButton({
-    Name = "Execute Script",
+local btn = MainTab:CreateButton({
+    Name = "Upload Advanced Composition",
+    Icon = "file",
     Callback = function()
-        print("Button Clicked!")
+        print("Executing code...")
     end
 })
+
+-- Locking the button (optional)
+btn:Lock("Waiting for Tegar's review")
+-- btn:Unlock() -- To unlock it later
 ```
 
-### Toggle
+### Toggle (Switch)
 ```lua
-local MyToggle = MainTab:CreateToggle({
-    Name = "Auto Farm",
-    CurrentValue = false, -- Default state
+MainTab:CreateToggle({
+    Name = "Performance Mode",
+    Desc = "Disables heavy background animations",
+    Default = true,
+    Flag = "t_perf_mode", -- Used for the Save/Load Config system
     Callback = function(state)
-        print("Auto Farm is now:", state)
+        print("Toggle status:", state)
     end
 })
-
--- Update toggle state via script:
--- MyToggle.Set(true)
 ```
 
-### Slider
+### Slider (Supports Decimals & Increments)
+This slider now supports high precision through the `Increment` parameter.
 ```lua
 MainTab:CreateSlider({
-    Name = "WalkSpeed",
-    Min = 16,
-    Max = 100,
-    CurrentValue = 16,
-    Callback = function(value)
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+    Name = "UI Render Scale",
+    Min = 0.5,
+    Max = 2.0,
+    Increment = 0.1, -- Decimals are supported!
+    CurrentValue = 1.0,
+    Flag = "s_ui_scale",
+    Callback = function(Value)
+        print("Scale:", Value)
     end
 })
 ```
 
----
-
-## 📋 Advanced Elements
-
-### Dropdown
+### Dropdown & Multi-Dropdown
 ```lua
-local Dropdown = MainTab:CreateDropdown({
-    Name = "Select Weapon",
-    Options = {"Sword", "Bow", "Magic"},
-    CurrentValue = "Sword",
-    Callback = function(value)
-        print("Equipped:", value)
+MainTab:CreateDropdown({
+    Name = "Target Beta Game",
+    Options = {"Arknights: Endfield", "Ananta", "Toram", "Tower of Fantasy"},
+    CurrentValue = "Toram",
+    Flag = "d_beta",
+    Callback = function(Value)
+        print("Selected:", Value)
     end
 })
 
--- Refresh options dynamically:
--- Dropdown:Refresh({"Axe", "Spear", "Dagger"})
-```
-
-### Multi-Dropdown
-Allows multiple selections at once.
-```lua
-local MultiDrop = MainTab:CreateMultiDropdown({
-    Name = "Select Fruits",
-    Options = {"Apple", "Banana", "Orange"},
-    CurrentValue = {"Apple"},
-    Callback = function(selected)
-        -- 'selected' is a table of checked items
-        print("Selected fruits:", table.concat(selected, ", "))
-    end
-})
-
--- Fetch selected items manually:
--- local currentFruits = MultiDrop.GetSelected()
-```
-
-### Keybind
-```lua
-MainTab:CreateKeybind({
-    Name = "Dash Ability",
-    CurrentKey = Enum.KeyCode.Q,
-    Callback = function(key)
-        print("Key pressed:", key)
+MainTab:CreateMultiDropdown({
+    Name = "Optimization Plugins",
+    Options = {"Mesh Reducer", "Texture Streamer", "Lighting Bake"},
+    CurrentValue = {"Mesh Reducer"},
+    Flag = "md_plugins",
+    Callback = function(SelectedList)
+        print("Total selected:", #SelectedList)
     end
 })
 ```
 
-### Input Box
+### Input (TextBox) & Keybind
 ```lua
 MainTab:CreateInput({
-    Name = "Target Player",
-    Placeholder = "Enter username...",
-    Callback = function(text, enterPressed)
-        print("Target set to:", text)
+    Name = "Specifications",
+    Placeholder = "Type here...",
+    Callback = function(Text, EnterPressed)
+        if EnterPressed then
+            print("Input finished:", Text)
+        end
+    end
+})
+
+MainTab:CreateKeybind({
+    Name = "Quick Action Key",
+    Default = Enum.KeyCode.F,
+    Flag = "k_action",
+    Callback = function(Key)
+        print("Keybind changed to:", Key.Name)
     end
 })
 ```
@@ -156,104 +169,115 @@ MainTab:CreateInput({
 ### Color Picker
 ```lua
 MainTab:CreateColorPicker({
-    Name = "ESP Color",
-    Color = Color3.fromRGB(255, 0, 0),
-    Callback = function(color)
-        print("New Color:", color)
+    Name = "Dominant Accent Color",
+    Default = Color3.fromRGB(100, 150, 255),
+    Flag = "c_accent",
+    Callback = function(Color)
+        print("RGB:", Color.R, Color.G, Color.B)
     end
 })
 ```
 
 ---
 
-## 🔍 Display & Layout Utilities
-
-### Search Bar
-Automatically searches and filters elements within the tab!
-```lua
-MainTab:CreateSearchBar({ Placeholder = "Search features..." })
-```
+## 🎨 4. Extra & Visual Elements
 
 ### Progress Bar
 ```lua
-local ProgressBar = MainTab:CreateProgressBar({
-    Name = "Loading",
+local progress = MainTab:CreateProgressBar({
+    Name = "Chamber Folk Track (100 BPM)",
     Max = 100,
-    CurrentValue = 0
+    CurrentValue = 45
 })
 
--- Update visually:
--- ProgressBar:SetValue(50)
+-- Updating the progress bar value
+-- progress:SetValue(80)
 ```
 
 ### Paragraph & Code Block
 ```lua
 MainTab:CreateParagraph({
-    Title = "Warning",
-    Content = "Use this feature at your own risk."
+    Title = "Particle Notes",
+    Content = "은/는 is used as a topic marker in a sentence."
 })
 
 MainTab:CreateCodeBlock({
-    Title = "Example Lua",
-    Code = "print('Hello Ranarth!')"
+    Title = "Event Example (Lua)",
+    Code = "print('Hello World!')
+-- Second line"
 })
 ```
 
-### Grouping (Nesting)
-You can visually group elements inside boxes.
+### Built-in Search Bar
+Instantly adds a feature to search for elements within the current tab.
 ```lua
-local FarmGroup = MainTab:CreateGroup({ Name = "Farming Automation" })
-FarmGroup:CreateToggle({ Name = "Auto Mob", Callback = function() end })
-FarmGroup:CreateToggle({ Name = "Auto Boss", Callback = function() end })
+MainTab:CreateSearchBar({Placeholder = "Search features in this tab..."})
 ```
 
 ---
 
-## 💬 Global Functions
+## 📦 5. Layouting (HStack & Group)
 
-These functions are called directly from the `Library` or `Window` and float above the UI.
+You can nest elements horizontally or within a bordered group so the UI layout doesn't just linearly stack downwards.
+
+```lua
+-- Creating a Group (Box)
+local MainGroup = MainTab:CreateGroup("Project Control")
+
+-- Creating a Horizontal Layout (HStack) inside the Group
+local ButtonRow = MainGroup:CreateHStack()
+
+ButtonRow:CreateButton({Name = "Button 1", Callback = function() end})
+ButtonRow:CreateButton({Name = "Button 2", Callback = function() end})
+```
+*Note: Elements inside an HStack will automatically distribute their widths evenly (flex).*
+
+---
+
+## 🔔 6. Global Utilities (Notifications & Dialogs)
 
 ### Notification
+Appears floating at the corner of the screen. Can be called anywhere as long as `RanarthLib` is loaded.
 ```lua
--- Format: Library:CreateNotification(Title, Description, Duration)
-Library:CreateNotification("Success", "Script injected successfully!", 3)
+RanarthLib:CreateNotification("Warning", "Data synchronization complete.", 4) -- Appears for 4 seconds
 ```
 
-### Dialog Modal (Popup Confirmation)
+### Dialog Box (Modal)
+Pops up in the center of the screen and temporarily freezes the UI activity behind it.
 ```lua
-Window:CreateDialog("Confirmation", "Are you sure you want to execute?", {
-    { Title = "Yes", Callback = function() print("Executing...") end },
-    { Title = "No", Callback = function() print("Cancelled") end }
+Window:CreateDialog("Start Practice", "Are you ready to test N4 Kanji?", {
+    {
+        Title = "Start", 
+        Callback = function() print("Practice started") end
+    },
+    {
+        Title = "Cancel", 
+        Callback = function() end
+    }
 })
+```
+
+### SubPanel
+Opens a small floating window attached next to the main GUI. This is highly useful for containing standard Roblox elements (*Raw Instances*) of your own creation.
+```lua
+local sub = Window:CreateSubPanel("Additional Notes", 240, 200)
+-- 'sub' is a ScrollingFrame. You can Parent regular Roblox UI elements here.
 ```
 
 ---
 
-## ⚙️ Configuration System
+## 💾 7. Configuration System (Save/Load)
 
-Ranarth GUI has a built-in UI for saving and loading user configs seamlessly!
+Instead of creating save and load buttons manually, simply call this function. The library will automatically generate a section with a UI Input, a Dropdown containing the file list, and execution buttons to save/load settings based on the `Flag` of your elements.
 
 ```lua
-local ConfigTab = Window:CreateTab("Config")
-
-ConfigTab:CreateConfigSystem({
-    -- What data should be saved?
-    GetDataCallback = function()
-        return {
-            WalkSpeed = 50,
-            AutoKill = true
-        }
-    end,
-    -- What to do when a config is loaded?
-    ApplyDataCallback = function(data)
-        print("Loaded Walkspeed:", data.WalkSpeed)
-        print("Loaded AutoKill:", data.AutoKill)
-    end
-})
+SettingsTab:CreateConfigSystem()
 ```
 
 ---
 
-# ❤️ Credits
-
-Designed and maintained with ❤️ by **Ranarth**
+## 🛑 8. Cleanup (Unload)
+If you need to completely close and clear the GUI from memory:
+```lua
+RanarthLib:Unload()
+```
