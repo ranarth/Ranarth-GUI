@@ -101,7 +101,7 @@ RanarthLib:TrackConnection(runs.RenderStepped:Connect(function()
 end))
 
 -- ==========================================
--- 3. ICON & ASSET HELPER (Built-in Database)
+-- 3. ICON & ASSET HELPER
 -- ==========================================
 local LucideIcons = {
     ["settings"] = "rbxassetid://106205298246017",
@@ -294,12 +294,18 @@ local LucideIcons = {
     ["x-circle"] = "rbxassetid://111132030834422",
     ["x-octagon"] = "rbxassetid://105062643930018",
     ["chevron-left"] = "rbxassetid://102314312897830",
-["chevrons-left"] = "rbxassetid://87881912126351",
-["chevron-right"] = "rbxassetid://101007429951147",
-["chevrons-right"] = "rbxassetid://134353805354361",
-["crosshair"] = "rbxassetid://83752373575368",
-["cross"] = "rbxassetid://93673591064028",
-["bot"] = "rbxassetid://70979486241131",
+    ["chevrons-left"] = "rbxassetid://87881912126351",
+    ["chevron-right"] = "rbxassetid://101007429951147",
+    ["chevrons-right"] = "rbxassetid://134353805354361",
+    ["crosshair"] = "rbxassetid://83752373575368",
+    ["cross"] = "rbxassetid://93673591064028",
+    ["bot"] = "rbxassetid://70979486241131",
+    ["teleport"] = "rbxassetid://6723742959",
+    ["speed"] = "rbxassetid://13492318257",
+    ["fly"] = "rbxassetid://7062265702",
+    ["layout-dashboard"] = "rbxassetid://70433574792490",
+    ["plane"] = "rbxassetid://123931033451986",
+    ["plane-landing"] = "rbxassetid://123931033451986",
 }
 
 local function applyIcon(parent, iconData)
