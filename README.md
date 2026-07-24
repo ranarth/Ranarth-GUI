@@ -1,4 +1,4 @@
-# Ranarth GUI Library
+# Ranarth GUI
 
 Ranarth GUI is a custom interface library for Roblox designed to be clean, modern, and highly flexible. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, dynamic Layouting (Group & HStack), Modals, and optimized animations.
 
