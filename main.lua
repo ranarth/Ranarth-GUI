@@ -105,10 +105,8 @@ end))
 -- ==========================================
 local LucideIcons = {}
 
--- Load the icon database from GitHub dynamically and safely
 local success, result = pcall(function()
-    -- Ensure this URL points to the "Raw" link of your LucideIcons.lua file in your repository
-    return loadstring(game:HttpGet("https://raw.githubusercontent.com/ranarth/Ranarth-GUI/refs/heads/Icons/LucideIcons.lua"))()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/ranarth/Ranarth-GUI/main/LucideIcons.lua"))()
 end)
 
 if success and type(result) == "table" then
@@ -119,11 +117,7 @@ end
 
 local function applyIcon(parent, iconData)
     if not iconData or iconData == "" then return nil end
-    
     local strData = tostring(iconData):lower()
-    
-    -- Smart Logic: Check the external table FIRST. 
-    -- If not found, assume the user inputted an ID number directly from icons.rest
     local assetUrl = LucideIcons[strData] or (strData:find("rbxassetid://") and iconData or ("rbxassetid://" .. strData))
     
     local img = Instance.new("ImageLabel")
@@ -133,7 +127,6 @@ local function applyIcon(parent, iconData)
     img.Image = assetUrl
     img.ImageColor3 = Color3.fromRGB(200, 210, 255)
     img.Parent = parent
-    
     return img
 end
 
@@ -248,7 +241,7 @@ function RanarthLib:CreateTooltip(target, text)
 end
 
 -- ==========================================
--- 5. WINDOW CONSTRUCTOR & KEYBIND TOGGLE
+-- 5. WINDOW CONSTRUCTOR
 -- ==========================================
 function RanarthLib:CreateWindow(HubConfig)
     HubConfig = HubConfig or {}
@@ -288,7 +281,6 @@ function RanarthLib:CreateWindow(HubConfig)
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
     animStroke(frame, 1.5)
 
-    -- Handle Global Toggle Keybind
     if ToggleKey then
         RanarthLib:TrackConnection(uis.InputBegan:Connect(function(input, gpe)
             if not gpe and input.KeyCode == ToggleKey then
@@ -370,7 +362,6 @@ function RanarthLib:CreateWindow(HubConfig)
         RanarthLib:Unload()
     end)
 
-    -- Safe UI Dragging Logic
     local drag, drag_in, start_drag, start_pos
     top_bar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -388,7 +379,6 @@ function RanarthLib:CreateWindow(HubConfig)
         end
     end)
 
-    -- Floating "TAP" button: drag it around + tap to reopen the main panel
     local dragToggle, dragInputToggle, dragStartPos, startBtnPos, hasDragged = false, nil, nil, nil, false
     RanarthLib:TrackConnection(t_btn.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -713,6 +703,89 @@ function RanarthLib:CreateWindow(HubConfig)
         end))
 
         return subScroll
+    end
+
+    -- ==========================================
+    -- FLOATING BUTTON FEATURE
+    -- ==========================================
+    function Window:CreateFloatingButton(args)
+        args = args or {}
+        local text = args.Name or args.Title or args.Text or "Floating Button"
+        local iconData = args.Icon or nil
+        local callback = args.Callback or function() end
+
+        local fBtn = Instance.new("TextButton")
+        fBtn.Size = UDim2.new(0, 140, 0, 35)
+        fBtn.Position = UDim2.new(0.5, -70, 0.1, 0)
+        fBtn.BackgroundColor3 = Color3.fromRGB(15, 18, 28)
+        fBtn.Text = ""
+        fBtn.AutoButtonColor = false
+        fBtn.AutomaticSize = Enum.AutomaticSize.X
+        fBtn.Parent = gui
+
+        Instance.new("UICorner", fBtn).CornerRadius = UDim.new(0, 6)
+        local pad = Instance.new("UIPadding", fBtn)
+        pad.PaddingLeft = UDim.new(0, 15)
+        pad.PaddingRight = UDim.new(0, 15)
+
+        -- Connect to the same gradient animation system
+        animStroke(fBtn, 1.5)
+
+        local contentFrame = Instance.new("Frame", fBtn)
+        contentFrame.Size = UDim2.new(1, 0, 1, 0)
+        contentFrame.BackgroundTransparency = 1
+
+        local layout = Instance.new("UIListLayout", contentFrame)
+        layout.FillDirection = Enum.FillDirection.Horizontal
+        layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+        layout.VerticalAlignment = Enum.VerticalAlignment.Center
+        layout.Padding = UDim.new(0, 8)
+
+        local img = nil
+        if iconData then
+            img = applyIcon(contentFrame, iconData)
+            if img then img.Size = UDim2.new(0, 16, 0, 16) end
+        end
+
+        local txtLbl = Instance.new("TextLabel", contentFrame)
+        txtLbl.AutomaticSize = Enum.AutomaticSize.X
+        txtLbl.Size = UDim2.new(0, 0, 1, 0)
+        txtLbl.BackgroundTransparency = 1
+        txtLbl.Text = text
+        txtLbl.TextColor3 = Color3.fromRGB(200, 210, 255)
+        txtLbl.Font = Enum.Font.GothamBold
+        txtLbl.TextSize = 12
+
+        fBtn.MouseEnter:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35, 40, 70)}):Play() end)
+        fBtn.MouseLeave:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(15, 18, 28)}):Play() end)
+
+        local dragToggle, dragInputToggle, dragStartPos, startBtnPos, hasDragged = false, nil, nil, nil, false
+        RanarthLib:TrackConnection(fBtn.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragToggle = true; hasDragged = false; dragStartPos = input.Position; startBtnPos = fBtn.Position
+                input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragToggle = false end end)
+            end
+        end))
+        RanarthLib:TrackConnection(fBtn.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInputToggle = input end
+        end))
+        RanarthLib:SafeUIS(uis.InputChanged, fBtn, function(input)
+            if input == dragInputToggle and dragToggle then
+                local delta = input.Position - dragStartPos
+                if delta.Magnitude > 5 then hasDragged = true end
+                fBtn.Position = UDim2.new(startBtnPos.X.Scale, startBtnPos.X.Offset + delta.X, startBtnPos.Y.Scale, startBtnPos.Y.Offset + delta.Y)
+            end
+        end)
+        
+        RanarthLib:TrackConnection(fBtn.MouseButton1Click:Connect(function()
+            if not hasDragged then callback() end
+        end))
+
+        return {
+            Set = function(self, newText) txtLbl.Text = tostring(newText) end,
+            SetVisible = function(self, isVisible) fBtn.Visible = isVisible end,
+            Destroy = function(self) fBtn:Destroy() end
+        }
     end
 
     function Window:CreateTab(args)
@@ -1832,7 +1905,7 @@ function RanarthLib:LoadConfiguration(configName)
 end
 
 -- ==========================================
--- 7. BACKWARD-COMPATIBLE CONFIG ALIASES (dari main.lua lama)
+-- 7. BACKWARD-COMPATIBLE CONFIG ALIASES
 -- ==========================================
 function RanarthLib.SaveConfig(configName, dataTable)
     if not writefile then warn("Ranarth GUI: unsupported executor.") return false end
