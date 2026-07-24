@@ -101,26 +101,204 @@ RanarthLib:TrackConnection(runs.RenderStepped:Connect(function()
 end))
 
 -- ==========================================
--- 3. ICON & ASSET HELPER
+-- 3. ICON & ASSET HELPER (Built-in Database)
 -- ==========================================
 local LucideIcons = {
-    ["home"] = "rbxassetid://10723405649",
-    ["settings"] = "rbxassetid://10734950309",
-    ["user"] = "rbxassetid://10747373176",
-    ["shield"] = "rbxassetid://10734951847",
-    ["sword"] = "rbxassetid://10734975692",
-    ["zap"] = "rbxassetid://10747384394",
-    ["star"] = "rbxassetid://10734954201",
-    ["folder"] = "rbxassetid://10723345330",
-    ["file"] = "rbxassetid://10723343321",
-    ["search"] = "rbxassetid://10734943902",
-    ["lock"] = "rbxassetid://10723380295",
-    ["check"] = "rbxassetid://10709790202"
+    ["settings"] = "rbxassetid://106205298246017",
+    ["settings-2"] = "rbxassetid://109485777305919",
+    ["gamepad"] = "rbxassetid://99293705721130",
+    ["home"] = "rbxassetid://109841253338329",
+    ["skull"] = "rbxassetid://101060850237115",
+    ["monitor"] = "rbxassetid://70520152532392",
+    ["user"] = "rbxassetid://114567720540659",
+    ["user-2"] = "rbxassetid://92481398073007",
+    ["user-circle"] = "rbxassetid://96888447186214",
+    ["user-cog"] = "rbxassetid://115462370853742",
+    ["user-plus"] = "rbxassetid://101184880550364",
+    ["user-minus"] = "rbxassetid://94865546608687",
+    ["user-round-x"] = "rbxassetid://89227016198055",
+    ["users"] = "rbxassetid://85332511060401",
+    ["user-search"] = "rbxassetid://110388873642450",
+    ["shield"] = "rbxassetid://106509993556171",
+    ["shield-x"] = "rbxassetid://75826463279777",
+    ["shield-off"] = "rbxassetid://98525250043109",
+    ["shield-check"] = "rbxassetid://71867984579031",
+    ["shield-alert"] = "rbxassetid://91754324662625",
+    ["accessibility"] = "rbxassetid://109960743825561",
+    ["alert-circle"] = "rbxassetid://74115333842618",
+    ["alert-octagon"] = "rbxassetid://138910404523272",
+    ["alert-triangle"] = "rbxassetid://112102474509324",
+    ["align-text"] = "rbxassetid://120408521883501",
+    ["swords"] = "rbxassetid://99199363807265",
+    ["sword"] = "rbxassetid://121406454377051",
+    ["zap"] = "rbxassetid://109718589733073",
+    ["zap-off"] = "rbxassetid://115642996489807",
+    ["star"] = "rbxassetid://72669221096319",
+    ["star-off"] = "rbxassetid://120003686620511",
+    ["folder"] = "rbxassetid://77937190465422",
+    ["folder-check"] = "rbxassetid://95477621394824",
+    ["folder-clock"] = "rbxassetid://137926892639070",
+    ["folder-closed"] = "rbxassetid://86427718056887",
+    ["folder-down"] = "rbxassetid://82793534945672",
+    ["folder-edit"] = "rbxassetid://102495189191583",
+    ["folder-input"] = "rbxassetid://132837435930621",
+    ["folder-lock"] = "rbxassetid://111493727654155",
+    ["folder-open"] = "rbxassetid://112237915867403",
+    ["file-text"] = "rbxassetid://92774566080911",
+    ["file-type"] = "rbxassetid://139551268989315",
+    ["file-up"] = "rbxassetid://99191463679083",
+    ["file-x"] = "rbxassetid://117124390222574",
+    ["file-warning"] = "rbxassetid://89824347717079",
+    ["file-xml"] = "rbxassetid://106124864132557",
+    ["search"] = "rbxassetid://72296609649861",
+    ["search-check"] = "rbxassetid://135876289053244",
+    ["search-code"] = "rbxassetid://96217854889522",
+    ["search-x"] = "rbxassetid://107116182495739",
+    ["lock"] = "rbxassetid://119765975153029",
+    ["lock-keyhole"] = "rbxassetid://135504457058301",
+    ["lock-keyhole-open"] = "rbxassetid://132192657766903",
+    ["check"] = "rbxassetid://86817768619372",
+    ["double-check"] = "rbxassetid://101885204738917",
+    ["check-circle"] = "rbxassetid://105979545056636",
+    ["check-circle-2"] = "rbxassetid://76928915955542",
+    ["check-square"] = "rbxassetid://135686334400788",
+    ["check-square-2"] = "rbxassetid://84113739446686",
+    ["bookmark-check"] = "rbxassetid://103743627936816",
+    ["badge-check"] = "rbxassetid://76305757263548",
+    ["copy-check"] = "rbxassetid://92397569046734",
+    ["clipboard-check"] = "rbxassetid://90432969741774",
+    ["camera"] = "rbxassetid://114084146151777",
+    ["camera-off"] = "rbxassetid://101456706369049",
+    ["bell"] = "rbxassetid://84691420588185",
+    ["bell-ring"] = "rbxassetid://71006419366158",
+    ["bell-off"] = "rbxassetid://115540031372596",
+    ["bookmark"] = "rbxassetid://137439152875860",
+    ["bookmark-plus"] = "rbxassetid://108572239011289",
+    ["bookmark-x"] = "rbxassetid://115354177404954",
+    ["bookmark-minus"] = "rbxassetid://106761186502279",
+    ["calendar"] = "rbxassetid://126460151885084",
+    ["calendar-day"] = "rbxassetid://83005303274935",
+    ["calendar-check"] = "rbxassetid://116665691227418",
+    ["calendar-clock"] = "rbxassetid://91678408267921",
+    ["calendar-x"] = "rbxassetid://117555084312063",
+    ["clipboard"] = "rbxassetid://105021692319787",
+    ["clipboard-copy"] = "rbxassetid://85387882337161",
+    ["clipboard-edit"] = "rbxassetid://131193135046966",
+    ["clipboard-paste"] = "rbxassetid://79192963603923",
+    ["clipboard-x"] = "rbxassetid://132658738057667",
+    ["clock"] = "rbxassetid://136533241128438",
+    ["cloud"] = "rbxassetid://136524873450824",
+    ["cloud-cog"] = "rbxassetid://108438517119798",
+    ["cloud-off"] = "rbxassetid://111796785870393",
+    ["upload-cloud"] = "rbxassetid://121807815408739",
+    ["download-cloud"] = "rbxassetid://122841052352556",
+    ["compass"] = "rbxassetid://73836660434977",
+    ["cpu"] = "rbxassetid://105237370909681",
+    ["credit-card"] = "rbxassetid://124946887228472",
+    ["database"] = "rbxassetid://99154172590159",
+    ["download"] = "rbxassetid://109698732019071",
+    ["file-edit"] = "rbxassetid://82156880342025",
+    ["eye"] = "rbxassetid://127234874352422",
+    ["eye-off"] = "rbxassetid://85207295981701",
+    ["scan-eye"] = "rbxassetid://109514269737059",
+    ["globe"] = "rbxassetid://125685532120024",
+    ["globe-lock"] = "rbxassetid://96469366281710",
+    ["hash"] = "rbxassetid://128945191245705",
+    ["heart"] = "rbxassetid://88525382655929",
+    ["heart-off"] = "rbxassetid://121500734414824",
+    ["heart-pulse"] = "rbxassetid://101116623654468",
+    ["heart-crack"] = "rbxassetid://78532998725036",
+    ["image"] = "rbxassetid://114022611279795",
+    ["image-down"] = "rbxassetid://91697762317652",
+    ["image-off"] = "rbxassetid://113890586559666",
+    ["image-up"] = "rbxassetid://95362531246536",
+    ["image-plus"] = "rbxassetid://131640557457656",
+    ["image-minus"] = "rbxassetid://111691180013117",
+    ["images"] = "rbxassetid://87539822715105",
+    ["file-image"] = "rbxassetid://83675710276234",
+    ["info"] = "rbxassetid://120620848266512",
+    ["badge-info"] = "rbxassetid://109792483526167",
+    ["key"] = "rbxassetid://83474888140571",
+    ["key-round"] = "rbxassetid://116918931002434",
+    ["link"] = "rbxassetid://86131768436965",
+    ["link-2"] = "rbxassetid://107339085791087",
+    ["link-2-off"] = "rbxassetid://74994782779018",
+    ["unlink"] = "rbxassetid://108239607794680",
+    ["mail"] = "rbxassetid://77537514051485",
+    ["mail-check"] = "rbxassetid://90824179551389",
+    ["mail-plus"] = "rbxassetid://130540869833539",
+    ["mail-question"] = "rbxassetid://128924135790205",
+    ["mail-search"] = "rbxassetid://108269769085404",
+    ["mail-warning"] = "rbxassetid://126275145590627",
+    ["mail-minus"] = "rbxassetid://104189493909738",
+    ["mail-x"] = "rbxassetid://97229750262408",
+    ["map"] = "rbxassetid://131325044235094",
+    ["map-pin"] = "rbxassetid://137091405832737",
+    ["map-pin-off"] = "rbxassetid://130126969919710",
+    ["map-pinned"] = "rbxassetid://78894827751778",
+    ["menu"] = "rbxassetid://83047518441184",
+    ["menu-square"] = "rbxassetid://84168857053009",
+    ["square-menu"] = "rbxassetid://135438142591878",
+    ["message-square"] = "rbxassetid://86432989388834",
+    ["message-square-off"] = "rbxassetid://97376166485199",
+    ["monitor-check"] = "rbxassetid://112341875921743",
+    ["monitor-off"] = "rbxassetid://95048101284680",
+    ["monitor-x"] = "rbxassetid://102604336229610",
+    ["moon"] = "rbxassetid://98353636264918",
+    ["music"] = "rbxassetid://132132095360900",
+    ["music-2"] = "rbxassetid://121112248614371",
+    ["music-3"] = "rbxassetid://122935411241955",
+    ["pen"] = "rbxassetid://101486948449510",
+    ["pen-square"] = "rbxassetid://124290018373176",
+    ["pen-tool"] = "rbxassetid://126917951709518",
+    ["clipboard-pen"] = "rbxassetid://99195778697194",
+    ["phone"] = "rbxassetid://110402416146068",
+    ["phone-call"] = "rbxassetid://83844308787978",
+    ["phone-off"] = "rbxassetid://124218610436691",
+    ["phone-missed"] = "rbxassetid://79555645036339",
+    ["phone-incoming"] = "rbxassetid://80024725665109",
+    ["phone-forwarded"] = "rbxassetid://121647613341736",
+    ["phone-outgoing"] = "rbxassetid://107942094735434",
+    ["smartphone"] = "rbxassetid://74962751233767",
+    ["tablet-smartphone"] = "rbxassetid://78186066591210",
+    ["headphones"] = "rbxassetid://89990513082092",
+    ["megaphone"] = "rbxassetid://139746713205639",
+    ["play"] = "rbxassetid://76386816441302",
+    ["play-circle"] = "rbxassetid://94679908148591",
+    ["play-square"] = "rbxassetid://88949301532557",
+    ["power"] = "rbxassetid://89331085993646",
+    ["power-off"] = "rbxassetid://71082730746769",
+    ["refresh-cw"] = "rbxassetid://106497040962250",
+    ["refresh-ccw"] = "rbxassetid://112330254035751",
+    ["refresh-cw-off"] = "rbxassetid://70915551154203",
+    ["save"] = "rbxassetid://122894934359450",
+    ["save-all"] = "rbxassetid://130108174247404",
+    ["send"] = "rbxassetid://94849431195865",
+    ["send-horizontal"] = "rbxassetid://71350661970492",
+    ["share"] = "rbxassetid://78225483239202",
+    ["share-2"] = "rbxassetid://139712792470775",
+    ["shopping-cart"] = "rbxassetid://79435149356304",
+    ["speaker"] = "rbxassetid://117894179084666",
+    ["sun"] = "rbxassetid://139232691165198",
+    ["target"] = "rbxassetid://121091323240554",
+    ["trash"] = "rbxassetid://126010725826757",
+    ["video"] = "rbxassetid://99411215690870",
+    ["video-off"] = "rbxassetid://81634790888002",
+    ["volume"] = "rbxassetid://127607149758269",
+    ["volume-x"] = "rbxassetid://106700331106145",
+    ["volume-1"] = "rbxassetid://115207748957226",
+    ["volume-2"] = "rbxassetid://129861259578431",
+    ["wifi"] = "rbxassetid://104941258142372",
+    ["wifi-off"] = "rbxassetid://120795495190257",
+    ["x"] = "rbxassetid://116396312853810",
+    ["x-circle"] = "rbxassetid://111132030834422",
+    ["x-octagon"] = "rbxassetid://105062643930018",
 }
 
 local function applyIcon(parent, iconData)
     if not iconData or iconData == "" then return nil end
-    local assetUrl = LucideIcons[tostring(iconData):lower()] or (tostring(iconData):find("rbxassetid://") and iconData or ("rbxassetid://" .. tostring(iconData)))
+    local strData = tostring(iconData):lower()
+    local assetUrl = LucideIcons[strData] or (strData:find("rbxassetid://") and iconData or ("rbxassetid://" .. strData))
     
     local img = Instance.new("ImageLabel")
     img.Name = "Icon"
@@ -243,7 +421,7 @@ function RanarthLib:CreateTooltip(target, text)
 end
 
 -- ==========================================
--- 5. WINDOW CONSTRUCTOR & KEYBIND TOGGLE
+-- 5. WINDOW CONSTRUCTOR
 -- ==========================================
 function RanarthLib:CreateWindow(HubConfig)
     HubConfig = HubConfig or {}
@@ -283,7 +461,6 @@ function RanarthLib:CreateWindow(HubConfig)
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
     animStroke(frame, 1.5)
 
-    -- Handle Global Toggle Keybind
     if ToggleKey then
         RanarthLib:TrackConnection(uis.InputBegan:Connect(function(input, gpe)
             if not gpe and input.KeyCode == ToggleKey then
@@ -365,7 +542,6 @@ function RanarthLib:CreateWindow(HubConfig)
         RanarthLib:Unload()
     end)
 
-    -- Safe UI Dragging Logic
     local drag, drag_in, start_drag, start_pos
     top_bar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -383,7 +559,6 @@ function RanarthLib:CreateWindow(HubConfig)
         end
     end)
 
-    -- Floating "TAP" button: drag it around + tap to reopen the main panel
     local dragToggle, dragInputToggle, dragStartPos, startBtnPos, hasDragged = false, nil, nil, nil, false
     RanarthLib:TrackConnection(t_btn.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -708,6 +883,89 @@ function RanarthLib:CreateWindow(HubConfig)
         end))
 
         return subScroll
+    end
+
+    -- ==========================================
+    -- FLOATING BUTTON FEATURE
+    -- ==========================================
+    function Window:CreateFloatingButton(args)
+        args = args or {}
+        local text = args.Name or args.Title or args.Text or "Floating Button"
+        local iconData = args.Icon or nil
+        local callback = args.Callback or function() end
+
+        local fBtn = Instance.new("TextButton")
+        fBtn.Size = UDim2.new(0, 140, 0, 35)
+        fBtn.Position = UDim2.new(0.5, -70, 0.1, 0)
+        fBtn.BackgroundColor3 = Color3.fromRGB(15, 18, 28)
+        fBtn.Text = ""
+        fBtn.AutoButtonColor = false
+        fBtn.AutomaticSize = Enum.AutomaticSize.X
+        fBtn.Parent = gui
+
+        Instance.new("UICorner", fBtn).CornerRadius = UDim.new(0, 6)
+        local pad = Instance.new("UIPadding", fBtn)
+        pad.PaddingLeft = UDim.new(0, 15)
+        pad.PaddingRight = UDim.new(0, 15)
+
+        -- Connect to the same gradient animation system
+        animStroke(fBtn, 1.5)
+
+        local contentFrame = Instance.new("Frame", fBtn)
+        contentFrame.Size = UDim2.new(1, 0, 1, 0)
+        contentFrame.BackgroundTransparency = 1
+
+        local layout = Instance.new("UIListLayout", contentFrame)
+        layout.FillDirection = Enum.FillDirection.Horizontal
+        layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+        layout.VerticalAlignment = Enum.VerticalAlignment.Center
+        layout.Padding = UDim.new(0, 8)
+
+        local img = nil
+        if iconData then
+            img = applyIcon(contentFrame, iconData)
+            if img then img.Size = UDim2.new(0, 16, 0, 16) end
+        end
+
+        local txtLbl = Instance.new("TextLabel", contentFrame)
+        txtLbl.AutomaticSize = Enum.AutomaticSize.X
+        txtLbl.Size = UDim2.new(0, 0, 1, 0)
+        txtLbl.BackgroundTransparency = 1
+        txtLbl.Text = text
+        txtLbl.TextColor3 = Color3.fromRGB(200, 210, 255)
+        txtLbl.Font = Enum.Font.GothamBold
+        txtLbl.TextSize = 12
+
+        fBtn.MouseEnter:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35, 40, 70)}):Play() end)
+        fBtn.MouseLeave:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(15, 18, 28)}):Play() end)
+
+        local dragToggle, dragInputToggle, dragStartPos, startBtnPos, hasDragged = false, nil, nil, nil, false
+        RanarthLib:TrackConnection(fBtn.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragToggle = true; hasDragged = false; dragStartPos = input.Position; startBtnPos = fBtn.Position
+                input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragToggle = false end end)
+            end
+        end))
+        RanarthLib:TrackConnection(fBtn.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInputToggle = input end
+        end))
+        RanarthLib:SafeUIS(uis.InputChanged, fBtn, function(input)
+            if input == dragInputToggle and dragToggle then
+                local delta = input.Position - dragStartPos
+                if delta.Magnitude > 5 then hasDragged = true end
+                fBtn.Position = UDim2.new(startBtnPos.X.Scale, startBtnPos.X.Offset + delta.X, startBtnPos.Y.Scale, startBtnPos.Y.Offset + delta.Y)
+            end
+        end)
+        
+        RanarthLib:TrackConnection(fBtn.MouseButton1Click:Connect(function()
+            if not hasDragged then callback() end
+        end))
+
+        return {
+            Set = function(self, newText) txtLbl.Text = tostring(newText) end,
+            SetVisible = function(self, isVisible) fBtn.Visible = isVisible end,
+            Destroy = function(self) fBtn:Destroy() end
+        }
     end
 
     function Window:CreateTab(args)
@@ -1720,7 +1978,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 return BuildElements(contentFrame)
             end
 
-            -- CONFIG SYSTEM
+            -- CONFIG SYSTEM (TERINTEGRASI DI DALAM UI BUILDER)
             function Elements:CreateConfigSystem(args)
                 args = args or {}
                 local currentSaveName = "default"
