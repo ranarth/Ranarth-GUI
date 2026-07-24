@@ -7,7 +7,7 @@ Ranarth GUI is a custom interface library for Roblox designed to be clean, moder
 You can load this library directly from GitHub using `loadstring`.
 
 ```lua
-local RanarthLib = loadstring(game:HttpGet("https://github.com/ranarth/Ranarth-GUI/releases/latest/download/main.lua"))()
+local RanarthLib = loadstring(game:HttpGet("[https://github.com/ranarth/Ranarth-GUI/releases/latest/download/main.lua](https://github.com/ranarth/Ranarth-GUI/releases/latest/download/main.lua)"))()
 ```
 
 ---
@@ -40,8 +40,8 @@ local Window = RanarthLib:CreateWindow({
 Tabs are used to separate features within the GUI. Ranarth GUI supports **thousands of icons from Lucide Icons**!
 
 **How to Use Icons:**
-1. **Basic Icon Names:** You can simply type common icon names like `"home"`, `"settings"`, `"user"`, `"folder"`, etc.
-2. **Full Collection (1,500+ Icons):** Visit the website [icons.rest](https://icons.rest/), find the icon you want, click to copy its **Asset ID** (the numbers), and paste it directly into the script!
+*   **Basic Icon Names:** You can simply type common icon names like `"home"`, `"settings"`, `"user"`, `"folder"`, etc.
+*   **Full Collection (1,500+ Icons):** Visit the website [icons.rest](https://icons.rest/), find the icon you want, click to copy its **Asset ID** (the numbers), and paste it directly into the script!
 
 ```lua
 local MainTab = Window:CreateTab({
@@ -79,6 +79,40 @@ local InfoLabel = MainTab:CreateLabel({
 
 -- Attaching a Tooltip to the label
 RanarthLib:CreateTooltip(InfoLabel.Frame, "Connected to the server with low latency.")
+```
+
+#### 🔄 Live Tracking / Updating the Label Dynamically
+To make the label dynamic (e.g., tracking the number of enemies, player health, or stats in real-time), you can use the `:Set()` method inside a loop. 
+
+> **⚠️ IMPORTANT:** When updating the label using `:Set()`, you must pass a **string** directly, not a table. Use a colon (`:`) to call the method.
+
+```lua
+-- Example: Live Tracking Enemies / Monsters in the map
+task.spawn(function()
+    while task.wait(0.5) do
+        local enemyCount = 0
+        
+        -- Example of finding enemies in the workspace
+        local enemiesFolder = workspace:FindFirstChild("Enemies") 
+        if enemiesFolder then
+            for _, enemy in ipairs(enemiesFolder:GetChildren()) do
+                local humanoid = enemy:FindFirstChildWhichIsA("Humanoid")
+                if humanoid and humanoid.Health > 0 then
+                    enemyCount = enemyCount + 1
+                end
+            end
+        end
+        
+        -- Update the label text dynamically
+        if InfoLabel then
+            pcall(function()
+                -- CORRECT: InfoLabel:Set("String")
+                -- WRONG: InfoLabel.Set({ Name = "String" })
+                InfoLabel:Set("Monsters Alive: " .. tostring(enemyCount))
+            end)
+        end
+    end
+end)
 ```
 
 ### Button (With Lock Feature)
@@ -207,8 +241,7 @@ MainTab:CreateParagraph({
 
 MainTab:CreateCodeBlock({
     Title = "Event Example (Lua)",
-    Code = "print('Hello World!')
--- Second line"
+    Code = "print('Hello World!')\n-- Second line"
 })
 ```
 
