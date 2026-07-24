@@ -1,4 +1,4 @@
-# Ranarth GUI
+# Ranarth GUI Library
 
 Ranarth GUI is a custom interface library for Roblox designed to be clean, modern, and highly flexible. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, dynamic Layouting (Group & HStack), Modals, and optimized animations.
 
@@ -35,19 +35,23 @@ local Window = RanarthLib:CreateWindow({
 
 ---
 
-## 📑 2. Creating Tabs
+## 📑 2. Creating Tabs & Icon System (Lucide Icons)
 
-Tabs are used to separate features within the GUI. You can use the built-in icons from *Lucide Icons* (such as `home`, `settings`, `user`, `folder`, `zap`, etc.) or use Roblox asset IDs (`rbxassetid://...`).
+Tabs are used to separate features within the GUI. Ranarth GUI supports **thousands of icons from Lucide Icons**!
+
+**How to Use Icons:**
+1. **Basic Icon Names:** You can simply type common icon names like `"home"`, `"settings"`, `"user"`, `"folder"`, etc.
+2. **Full Collection (1,500+ Icons):** Visit the website [icons.rest](https://icons.rest/), find the icon you want, click to copy its **Asset ID** (the numbers), and paste it directly into the script!
 
 ```lua
 local MainTab = Window:CreateTab({
     Name = "Dashboard", 
-    Icon = "home"
+    Icon = "home" -- Using basic pre-mapped name
 })
 
 local SettingsTab = Window:CreateTab({
-    Name = "Settings", 
-    Icon = "settings"
+    Name = "Advanced Settings", 
+    Icon = 106532774300164 -- Using a numerical Asset ID from icons.rest (e.g., panel-left-close)
 })
 ```
 
@@ -55,7 +59,7 @@ local SettingsTab = Window:CreateTab({
 
 ## 🛠️ 3. Adding Standard Elements
 
-Use the Tab variable (e.g., `MainTab`) to start building UI elements.
+Use the Tab variable (e.g., `MainTab`) to start building UI elements. (Note: Almost all elements support the `Icon` property using the methods above!)
 
 ### Section & Divider
 Used to provide separators and titles between categories.
@@ -88,7 +92,7 @@ local btn = MainTab:CreateButton({
 })
 
 -- Locking the button (optional)
-btn:Lock("Waiting for Ranarth's review")
+btn:Lock("Requires admin access")
 -- btn:Unlock() -- To unlock it later
 ```
 
@@ -106,7 +110,7 @@ MainTab:CreateToggle({
 ```
 
 ### Slider (Supports Decimals & Increments)
-This slider now supports high precision through the `Increment` parameter.
+This slider supports high precision through the `Increment` parameter.
 ```lua
 MainTab:CreateSlider({
     Name = "UI Render Scale",
@@ -197,8 +201,8 @@ local progress = MainTab:CreateProgressBar({
 ### Paragraph & Code Block
 ```lua
 MainTab:CreateParagraph({
-    Title = "Particle Notes",
-    Content = "은/는 is used as a topic marker in a sentence."
+    Title = "Important Notes",
+    Content = "Ensure all assets are loaded properly before running."
 })
 
 MainTab:CreateCodeBlock({
@@ -245,10 +249,10 @@ RanarthLib:CreateNotification("Warning", "Data synchronization complete.", 4) --
 ### Dialog Box (Modal)
 Pops up in the center of the screen and temporarily freezes the UI activity behind it.
 ```lua
-Window:CreateDialog("Start Practice", "Are you ready to test N4 Kanji?", {
+Window:CreateDialog("Start Configuration", "Are you ready to load this script?", {
     {
         Title = "Start", 
-        Callback = function() print("Practice started") end
+        Callback = function() print("Process started") end
     },
     {
         Title = "Cancel", 
