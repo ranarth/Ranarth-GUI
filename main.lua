@@ -303,6 +303,7 @@ local LucideIcons = {
     ["teleport"] = "rbxassetid://6723742959",
     ["speed"] = "rbxassetid://13492318257",
     ["fly"] = "rbxassetid://7062265702",
+    ["layout-grid"] = "rbxassetid://89644754139307",
     ["layout-dashboard"] = "rbxassetid://70433574792490",
     ["plane"] = "rbxassetid://123931033451986",
     ["plane-landing"] = "rbxassetid://123931033451986",
