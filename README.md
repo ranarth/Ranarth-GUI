@@ -1,4 +1,4 @@
-# Ranarth GUI
+# Ranarth GUI Library
 
 Ranarth GUI is a custom interface library for Roblox designed to be clean, modern, and highly flexible. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, dynamic Layouting (Group & HStack), Modals, and optimized animations.
 
@@ -32,22 +32,22 @@ local Window = RanarthLib:CreateWindow({
     }
 })
 ```
+*💡 **Note:** Click the `-` button on the top right header to minimize the main panel into a draggable floating button.*
 
 ---
 
-## 📑 2. Creating Tabs
+## 📑 2. Creating Tabs & Icon System (Lucide Icons)
 
-Tabs are used to separate features within the GUI. You can use the built-in icons from *Lucide Icons* (such as `home`, `settings`, `user`, `folder`, `zap`, etc.) or use Roblox asset IDs (`rbxassetid://...`).
+Tabs are used to separate features within the GUI. Ranarth GUI supports **thousands of icons from Lucide Icons**!
+
+**How to Use Icons:**
+1. **Basic Icon Names:** You can simply type common icon names like `"home"`, `"settings"`, `"user"`, `"folder"`, etc.
+2. **Full Collection (1,500+ Icons):** Visit the website [icons.rest](https://icons.rest/), find the icon you want, click to copy its **Asset ID** (the numbers), and paste it directly into the script!
 
 ```lua
 local MainTab = Window:CreateTab({
     Name = "Dashboard", 
-    Icon = "home"
-})
-
-local SettingsTab = Window:CreateTab({
-    Name = "Settings", 
-    Icon = "settings"
+    Icon = "home" -- Using basic pre-mapped name
 })
 ```
 
@@ -58,7 +58,6 @@ local SettingsTab = Window:CreateTab({
 Use the Tab variable (e.g., `MainTab`) to start building UI elements.
 
 ### Section & Divider
-Used to provide separators and titles between categories.
 ```lua
 MainTab:CreateSection("Main Category")
 MainTab:CreateDivider()
@@ -77,18 +76,44 @@ local InfoLabel = MainTab:CreateLabel({
 RanarthLib:CreateTooltip(InfoLabel.Frame, "Connected to the server with low latency.")
 ```
 
+**🔥 Advanced Example: Live Label Monitor**
+You can update the text on a Label dynamically in *real-time* (e.g., for tracking enemies or FPS) by using the `:Set()` function.
+
+```lua
+-- Example: Live Tracking Enemies / Monsters in the map
+task.spawn(function()
+    while task.wait(0.5) do
+        local enemyCount = 0
+        local enemiesFolder = workspace:FindFirstChild("Enemies") 
+        if enemiesFolder then
+            for _, enemy in ipairs(enemiesFolder:GetChildren()) do
+                local humanoid = enemy:FindFirstChildWhichIsA("Humanoid")
+                if humanoid and humanoid.Health > 0 then
+                    enemyCount = enemyCount + 1
+                end
+            end
+        end
+        
+        -- Update the label text dynamically
+        if InfoLabel then
+            pcall(function()
+                InfoLabel:Set("Monsters Alive: " .. tostring(enemyCount))
+            end)
+        end
+    end
+end)
+```
+
 ### Button (With Lock Feature)
 ```lua
 local btn = MainTab:CreateButton({
     Name = "Upload Advanced Composition",
     Icon = "file",
-    Callback = function()
-        print("Executing code...")
-    end
+    Callback = function() end
 })
 
 -- Locking the button (optional)
-btn:Lock("Waiting for Ranarth's review")
+btn:Lock("Requires admin access")
 -- btn:Unlock() -- To unlock it later
 ```
 
@@ -98,15 +123,12 @@ MainTab:CreateToggle({
     Name = "Performance Mode",
     Desc = "Disables heavy background animations",
     Default = true,
-    Flag = "t_perf_mode", -- Used for the Save/Load Config system
-    Callback = function(state)
-        print("Toggle status:", state)
-    end
+    Flag = "t_perf_mode",
+    Callback = function(state) end
 })
 ```
 
 ### Slider (Supports Decimals & Increments)
-This slider now supports high precision through the `Increment` parameter.
 ```lua
 MainTab:CreateSlider({
     Name = "UI Render Scale",
@@ -115,9 +137,7 @@ MainTab:CreateSlider({
     Increment = 0.1, -- Decimals are supported!
     CurrentValue = 1.0,
     Flag = "s_ui_scale",
-    Callback = function(Value)
-        print("Scale:", Value)
-    end
+    Callback = function(Value) end
 })
 ```
 
@@ -128,19 +148,7 @@ MainTab:CreateDropdown({
     Options = {"Arknights: Endfield", "Ananta", "Toram", "Tower of Fantasy"},
     CurrentValue = "Toram",
     Flag = "d_beta",
-    Callback = function(Value)
-        print("Selected:", Value)
-    end
-})
-
-MainTab:CreateMultiDropdown({
-    Name = "Optimization Plugins",
-    Options = {"Mesh Reducer", "Texture Streamer", "Lighting Bake"},
-    CurrentValue = {"Mesh Reducer"},
-    Flag = "md_plugins",
-    Callback = function(SelectedList)
-        print("Total selected:", #SelectedList)
-    end
+    Callback = function(Value) end
 })
 ```
 
@@ -149,20 +157,7 @@ MainTab:CreateMultiDropdown({
 MainTab:CreateInput({
     Name = "Specifications",
     Placeholder = "Type here...",
-    Callback = function(Text, EnterPressed)
-        if EnterPressed then
-            print("Input finished:", Text)
-        end
-    end
-})
-
-MainTab:CreateKeybind({
-    Name = "Quick Action Key",
-    Default = Enum.KeyCode.F,
-    Flag = "k_action",
-    Callback = function(Key)
-        print("Keybind changed to:", Key.Name)
-    end
+    Callback = function(Text, EnterPressed) end
 })
 ```
 
@@ -172,9 +167,7 @@ MainTab:CreateColorPicker({
     Name = "Dominant Accent Color",
     Default = Color3.fromRGB(100, 150, 255),
     Flag = "c_accent",
-    Callback = function(Color)
-        print("RGB:", Color.R, Color.G, Color.B)
-    end
+    Callback = function(Color) end
 })
 ```
 
@@ -189,27 +182,18 @@ local progress = MainTab:CreateProgressBar({
     Max = 100,
     CurrentValue = 45
 })
-
--- Updating the progress bar value
 -- progress:SetValue(80)
 ```
 
 ### Paragraph & Code Block
 ```lua
 MainTab:CreateParagraph({
-    Title = "Particle Notes",
-    Content = "은/는 is used as a topic marker in a sentence."
-})
-
-MainTab:CreateCodeBlock({
-    Title = "Event Example (Lua)",
-    Code = "print('Hello World!')
--- Second line"
+    Title = "Important Notes",
+    Content = "Ensure all assets are loaded properly before running."
 })
 ```
 
 ### Built-in Search Bar
-Instantly adds a feature to search for elements within the current tab.
 ```lua
 MainTab:CreateSearchBar({Placeholder = "Search features in this tab..."})
 ```
@@ -218,58 +202,59 @@ MainTab:CreateSearchBar({Placeholder = "Search features in this tab..."})
 
 ## 📦 5. Layouting (HStack & Group)
 
-You can nest elements horizontally or within a bordered group so the UI layout doesn't just linearly stack downwards.
-
 ```lua
--- Creating a Group (Box)
 local MainGroup = MainTab:CreateGroup("Project Control")
-
--- Creating a Horizontal Layout (HStack) inside the Group
 local ButtonRow = MainGroup:CreateHStack()
 
 ButtonRow:CreateButton({Name = "Button 1", Callback = function() end})
 ButtonRow:CreateButton({Name = "Button 2", Callback = function() end})
 ```
-*Note: Elements inside an HStack will automatically distribute their widths evenly (flex).*
 
 ---
 
-## 🔔 6. Global Utilities (Notifications & Dialogs)
+## 🔔 6. Global Utilities (Notifications, Dialogs & Floating Buttons)
 
 ### Notification
-Appears floating at the corner of the screen. Can be called anywhere as long as `RanarthLib` is loaded.
 ```lua
-RanarthLib:CreateNotification("Warning", "Data synchronization complete.", 4) -- Appears for 4 seconds
+RanarthLib:CreateNotification("Warning", "Data synchronization complete.", 4)
 ```
 
 ### Dialog Box (Modal)
 Pops up in the center of the screen and temporarily freezes the UI activity behind it.
 ```lua
-Window:CreateDialog("Start Practice", "Are you ready to test N4 Kanji?", {
-    {
-        Title = "Start", 
-        Callback = function() print("Practice started") end
-    },
-    {
-        Title = "Cancel", 
-        Callback = function() end
-    }
+Window:CreateDialog("Start Configuration", "Are you ready to load this script?", {
+    { Title = "Start", Callback = function() end },
+    { Title = "Cancel", Callback = function() end }
 })
 ```
 
 ### SubPanel
-Opens a small floating window attached next to the main GUI. This is highly useful for containing standard Roblox elements (*Raw Instances*) of your own creation.
+Opens a small floating window attached next to the main GUI.
 ```lua
 local sub = Window:CreateSubPanel("Additional Notes", 240, 200)
--- 'sub' is a ScrollingFrame. You can Parent regular Roblox UI elements here.
+```
+
+### Custom Floating Button (New!)
+A neat feature to create an independent, freely draggable button that stays on the screen even when your main GUI is minimized. It comes fully equipped with Ranarth's signature glowing stroke theme!
+```lua
+local myFloat = Window:CreateFloatingButton({
+    Name = "Refresh: 0",
+    Icon = "refresh-cw", -- Lucide icons are supported
+    Callback = function()
+        print("Floating button pressed!")
+    end
+})
+
+-- You can also update the text dynamically in real-time:
+-- myFloat:Set("Refresh: 5")
+-- myFloat:SetVisible(false) 
+-- myFloat:Destroy()
 ```
 
 ---
 
 ## 💾 7. Configuration System (Save/Load)
-
-Instead of creating save and load buttons manually, simply call this function. The library will automatically generate a section with a UI Input, a Dropdown containing the file list, and execution buttons to save/load settings based on the `Flag` of your elements.
-
+Automatically generates a UI section to save and load the `Flag` you set for elements.
 ```lua
 SettingsTab:CreateConfigSystem()
 ```
@@ -277,7 +262,6 @@ SettingsTab:CreateConfigSystem()
 ---
 
 ## 🛑 8. Cleanup (Unload)
-If you need to completely close and clear the GUI from memory:
 ```lua
 RanarthLib:Unload()
 ```
