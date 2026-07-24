@@ -977,11 +977,13 @@ function RanarthLib:CreateWindow(HubConfig)
         local tabBtn = Instance.new("TextButton")
         if TabPosition == "Left" then
             tabBtn.Size = UDim2.new(1, 0, 0, 32)
+            tabBtn.TextXAlignment = Enum.TextXAlignment.Left
         else
-            tabBtn.Size = UDim2.new(0, 100, 1, 0)
+            tabBtn.Size = UDim2.new(0, 0, 1, 0)
+            tabBtn.AutomaticSize = Enum.AutomaticSize.X
         end
         tabBtn.BackgroundColor3 = Color3.fromRGB(22, 26, 44)
-        tabBtn.Text = (tabIcon and "   " or "") .. tabName
+        tabBtn.Text = tabName
         tabBtn.TextColor3 = Color3.fromRGB(130, 140, 180)
         tabBtn.Font = Enum.Font.GothamBold
         tabBtn.TextSize = 12
@@ -991,10 +993,19 @@ function RanarthLib:CreateWindow(HubConfig)
         Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 6)
         staticStroke(tabBtn, 1.2)
 
+        local pad = Instance.new("UIPadding", tabBtn)
+        if TabPosition == "Left" then
+            pad.PaddingLeft = UDim.new(0, tabIcon and 32 or 12)
+            pad.PaddingRight = UDim.new(0, 12)
+        else
+            pad.PaddingLeft = UDim.new(0, tabIcon and 34 or 16)
+            pad.PaddingRight = UDim.new(0, 16)
+        end
+
         if tabIcon then
             local iconImg = applyIcon(tabBtn, tabIcon)
             if iconImg then
-                iconImg.Position = UDim2.new(0, 8, 0.5, -8)
+                iconImg.Position = UDim2.new(0, -24, 0.5, -8)
             end
         end
 
