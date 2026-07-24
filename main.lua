@@ -293,6 +293,13 @@ local LucideIcons = {
     ["x"] = "rbxassetid://116396312853810",
     ["x-circle"] = "rbxassetid://111132030834422",
     ["x-octagon"] = "rbxassetid://105062643930018",
+    ["chevron-left"] = "rbxassetid://102314312897830",
+["chevrons-left"] = "rbxassetid://87881912126351",
+["chevron-right"] = "rbxassetid://101007429951147",
+["chevrons-right"] = "rbxassetid://134353805354361",
+["crosshair"] = "rbxassetid://83752373575368",
+["cross"] = "rbxassetid://93673591064028",
+["bot"] = "rbxassetid://70979486241131",
 }
 
 local function applyIcon(parent, iconData)
