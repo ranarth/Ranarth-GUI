@@ -101,26 +101,30 @@ RanarthLib:TrackConnection(runs.RenderStepped:Connect(function()
 end))
 
 -- ==========================================
--- 3. ICON & ASSET HELPER
+-- 3. ICON & ASSET HELPER (External Module)
 -- ==========================================
-local LucideIcons = {
-    ["home"] = "rbxassetid://10723405649",
-    ["settings"] = "rbxassetid://10734950309",
-    ["user"] = "rbxassetid://10747373176",
-    ["shield"] = "rbxassetid://10734951847",
-    ["sword"] = "rbxassetid://10734975692",
-    ["zap"] = "rbxassetid://10747384394",
-    ["star"] = "rbxassetid://10734954201",
-    ["folder"] = "rbxassetid://10723345330",
-    ["file"] = "rbxassetid://10723343321",
-    ["search"] = "rbxassetid://10734943902",
-    ["lock"] = "rbxassetid://10723380295",
-    ["check"] = "rbxassetid://10709790202"
-}
+local LucideIcons = {}
+
+-- Load the icon database from GitHub dynamically and safely
+local success, result = pcall(function()
+    -- Ensure this URL points to the "Raw" link of your LucideIcons.lua file in your repository
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/ranarth/Ranarth-GUI/refs/heads/Icons/LucideIcons.lua"))()
+end)
+
+if success and type(result) == "table" then
+    LucideIcons = result
+else
+    warn("Ranarth GUI: Failed to load external icon database. Fallback to manual ID mode (icons.rest) activated.")
+end
 
 local function applyIcon(parent, iconData)
     if not iconData or iconData == "" then return nil end
-    local assetUrl = LucideIcons[tostring(iconData):lower()] or (tostring(iconData):find("rbxassetid://") and iconData or ("rbxassetid://" .. tostring(iconData)))
+    
+    local strData = tostring(iconData):lower()
+    
+    -- Smart Logic: Check the external table FIRST. 
+    -- If not found, assume the user inputted an ID number directly from icons.rest
+    local assetUrl = LucideIcons[strData] or (strData:find("rbxassetid://") and iconData or ("rbxassetid://" .. strData))
     
     local img = Instance.new("ImageLabel")
     img.Name = "Icon"
@@ -129,6 +133,7 @@ local function applyIcon(parent, iconData)
     img.Image = assetUrl
     img.ImageColor3 = Color3.fromRGB(200, 210, 255)
     img.Parent = parent
+    
     return img
 end
 
@@ -1720,7 +1725,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 return BuildElements(contentFrame)
             end
 
-            -- CONFIG SYSTEM
+            -- CONFIG SYSTEM (TERINTEGRASI DI DALAM UI BUILDER)
             function Elements:CreateConfigSystem(args)
                 args = args or {}
                 local currentSaveName = "default"
@@ -1827,7 +1832,7 @@ function RanarthLib:LoadConfiguration(configName)
 end
 
 -- ==========================================
--- 7. BACKWARD-COMPATIBLE CONFIG ALIASES
+-- 7. BACKWARD-COMPATIBLE CONFIG ALIASES (dari main.lua lama)
 -- ==========================================
 function RanarthLib.SaveConfig(configName, dataTable)
     if not writefile then warn("Ranarth GUI: unsupported executor.") return false end
