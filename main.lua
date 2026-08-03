@@ -13,13 +13,10 @@ local RanarthLib = {
     ConfigFolder = "Ranarth GUI",
     ConfigFileName = "default",
     AutoSaveEnabled = false,
-    AntiSpam = true, -- Default keamanan aktif
+    AntiSpam = true,
     ScreenGuis = {}
 }
 
--- ==========================================
--- 1. TRACKING & CLEANUP SYSTEM
--- ==========================================
 function RanarthLib:TrackConnection(conn)
     table.insert(self.Connections, conn)
     return conn
@@ -54,9 +51,6 @@ function RanarthLib:Unload()
     self.Flags = {}
 end
 
--- ==========================================
--- 2. GLOBAL ANIMATIONS & STROKES
--- ==========================================
 local allGrads = {}
 local RANARTH_STROKE_CS = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(38, 44, 75)),
@@ -101,9 +95,6 @@ RanarthLib:TrackConnection(runs.RenderStepped:Connect(function()
     end
 end))
 
--- ==========================================
--- 3. ICON & ASSET HELPER
--- ==========================================
 local LucideIcons = {
     ["settings"] = "rbxassetid://106205298246017",
     ["settings-2"] = "rbxassetid://109485777305919",
@@ -321,11 +312,24 @@ pcall(function()
     end
 end)
 
+-- UPDATE: Support rbxthumb:// while maintaining case-sensitivity
 local function applyIcon(parent, iconData, preserveColor)
     if not iconData or iconData == "" then return nil end
-    local strData = tostring(iconData):lower()
-    local isLucide = LucideIcons[strData] ~= nil
-    local assetUrl = isLucide and LucideIcons[strData] or (strData:find("rbxassetid://") and iconData or ("rbxassetid://" .. strData))
+    
+    local strData = tostring(iconData)
+    local lowerData = strData:lower()
+    
+    local isLucide = LucideIcons[lowerData] ~= nil
+    local assetUrl
+    
+    if isLucide then
+        assetUrl = LucideIcons[lowerData]
+    elseif lowerData:find("rbxassetid://") or lowerData:find("rbxthumb://") or lowerData:find("http://") or lowerData:find("https://") then
+        -- Return the original strData to preserve case (Crucial for rbxthumb://type=Asset)
+        assetUrl = strData
+    else
+        assetUrl = "rbxassetid://" .. lowerData
+    end
     
     local img = Instance.new("ImageLabel")
     img.Name = "Icon"
