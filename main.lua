@@ -13,6 +13,7 @@ local RanarthLib = {
     ConfigFolder = "Ranarth GUI",
     ConfigFileName = "default",
     AutoSaveEnabled = false,
+    AntiSpam = true, -- Default keamanan aktif
     ScreenGuis = {}
 }
 
@@ -101,7 +102,7 @@ RanarthLib:TrackConnection(runs.RenderStepped:Connect(function()
 end))
 
 -- ==========================================
--- 3. ICON & ASSET HELPER (Built-in Database)
+-- 3. ICON & ASSET HELPER
 -- ==========================================
 local LucideIcons = {
     ["settings"] = "rbxassetid://106205298246017",
@@ -293,19 +294,50 @@ local LucideIcons = {
     ["x"] = "rbxassetid://116396312853810",
     ["x-circle"] = "rbxassetid://111132030834422",
     ["x-octagon"] = "rbxassetid://105062643930018",
+    ["chevron-left"] = "rbxassetid://102314312897830",
+    ["chevrons-left"] = "rbxassetid://87881912126351",
+    ["chevron-right"] = "rbxassetid://101007429951147",
+    ["chevrons-right"] = "rbxassetid://134353805354361",
+    ["crosshair"] = "rbxassetid://83752373575368",
+    ["cross"] = "rbxassetid://93673591064028",
+    ["bot"] = "rbxassetid://70979486241131",
+    ["teleport"] = "rbxassetid://6723742959",
+    ["speed"] = "rbxassetid://13492318257",
+    ["fly"] = "rbxassetid://7062265702",
+    ["layout-grid"] = "rbxassetid://89644754139307",
+    ["layout-dashboard"] = "rbxassetid://70433574792490",
+    ["plane"] = "rbxassetid://123931033451986",
+    ["plane-landing"] = "rbxassetid://123931033451986",
+    ["rocket"] = "rbxassetid://109537053598807",
+    ["repeat"] = "rbxassetid://88751041821881",
+    ["repeat-1"] = "rbxassetid://83172378763568",
 }
 
-local function applyIcon(parent, iconData)
+-- HYBRID MODE: Load future icon extensions from GitHub
+pcall(function()
+    local ext = loadstring(game:HttpGet("https://raw.githubusercontent.com/ranarth/Ranarth-GUI/refs/heads/Icons/LucideIcons.lua"))()
+    if type(ext) == "table" then
+        for k, v in pairs(ext) do LucideIcons[k] = v end
+    end
+end)
+
+local function applyIcon(parent, iconData, preserveColor)
     if not iconData or iconData == "" then return nil end
     local strData = tostring(iconData):lower()
-    local assetUrl = LucideIcons[strData] or (strData:find("rbxassetid://") and iconData or ("rbxassetid://" .. strData))
+    local isLucide = LucideIcons[strData] ~= nil
+    local assetUrl = isLucide and LucideIcons[strData] or (strData:find("rbxassetid://") and iconData or ("rbxassetid://" .. strData))
     
     local img = Instance.new("ImageLabel")
     img.Name = "Icon"
     img.Size = UDim2.new(0, 16, 0, 16)
     img.BackgroundTransparency = 1
     img.Image = assetUrl
-    img.ImageColor3 = Color3.fromRGB(200, 210, 255)
+    
+    if preserveColor or not isLucide then
+        img.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    else
+        img.ImageColor3 = Color3.fromRGB(200, 210, 255)
+    end
     img.Parent = parent
     return img
 end
@@ -353,7 +385,24 @@ tooltipLabel.Parent = tooltip_gui
 Instance.new("UICorner", tooltipLabel).CornerRadius = UDim.new(0, 4)
 Instance.new("UIStroke", tooltipLabel).Color = Color3.fromRGB(38, 44, 75)
 
-function RanarthLib:CreateNotification(title, text, duration)
+local lastNotifTick = 0
+function RanarthLib:CreateNotification(title, text, duration, iconData)
+    -- RANARTH ANTI-SPAM SECURITY SYSTEM (Toggleable by Developer)
+    if RanarthLib.AntiSpam then
+        local currentTick = tick()
+        if currentTick - lastNotifTick < 0.15 then return end -- Ignore if fired faster than 0.15 seconds
+        lastNotifTick = currentTick
+
+        local maxNotifs = 5
+        local activeNotifs = {}
+        for _, child in ipairs(notif_container:GetChildren()) do
+            if child:IsA("Frame") then table.insert(activeNotifs, child) end
+        end
+        if #activeNotifs >= maxNotifs then
+            activeNotifs[1]:Destroy() -- Destroy the oldest notification
+        end
+    end
+
     duration = duration or 4
     local card = Instance.new("Frame")
     card.Size = UDim2.new(0, 250, 0, 60)
@@ -364,9 +413,21 @@ function RanarthLib:CreateNotification(title, text, duration)
     Instance.new("UICorner", card).CornerRadius = UDim.new(0, 8)
     staticStroke(card, 1.2)
 
+    local xOffset = 10
+    local imgNode = nil
+    if iconData then
+        imgNode = applyIcon(card, iconData, true)
+        if imgNode then
+            imgNode.Size = UDim2.new(0, 32, 0, 32)
+            imgNode.Position = UDim2.new(0, 10, 0.5, -16)
+            imgNode.ImageTransparency = 1
+            xOffset = 52
+        end
+    end
+
     local titleLbl = Instance.new("TextLabel")
-    titleLbl.Size = UDim2.new(1, -20, 0, 20)
-    titleLbl.Position = UDim2.new(0, 10, 0, 6)
+    titleLbl.Size = UDim2.new(1, -(xOffset + 10), 0, 20)
+    titleLbl.Position = UDim2.new(0, xOffset, 0, 6)
     titleLbl.BackgroundTransparency = 1
     titleLbl.Text = title or "Notification"
     titleLbl.TextColor3 = Color3.fromRGB(220, 225, 255)
@@ -378,8 +439,8 @@ function RanarthLib:CreateNotification(title, text, duration)
     titleLbl.Parent = card
 
     local bodyLbl = Instance.new("TextLabel")
-    bodyLbl.Size = UDim2.new(1, -20, 0, 30)
-    bodyLbl.Position = UDim2.new(0, 10, 0, 26)
+    bodyLbl.Size = UDim2.new(1, -(xOffset + 10), 0, 30)
+    bodyLbl.Position = UDim2.new(0, xOffset, 0, 26)
     bodyLbl.BackgroundTransparency = 1
     bodyLbl.Text = text or ""
     bodyLbl.TextColor3 = Color3.fromRGB(200, 210, 255)
@@ -395,11 +456,15 @@ function RanarthLib:CreateNotification(title, text, duration)
     tweens:Create(card, TweenInfo.new(0.25), {BackgroundTransparency = 0.1}):Play()
     tweens:Create(titleLbl, TweenInfo.new(0.25), {TextTransparency = 0}):Play()
     tweens:Create(bodyLbl, TweenInfo.new(0.25), {TextTransparency = 0}):Play()
+    if imgNode then
+        tweens:Create(imgNode, TweenInfo.new(0.25), {ImageTransparency = 0}):Play()
+    end
 
     task.spawn(function()
         task.wait(duration)
         tweens:Create(card, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
         tweens:Create(titleLbl, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
+        if imgNode then tweens:Create(imgNode, TweenInfo.new(0.3), {ImageTransparency = 1}):Play() end
         local fadeOut = tweens:Create(bodyLbl, TweenInfo.new(0.3), {TextTransparency = 1})
         fadeOut:Play()
         fadeOut.Completed:Wait()
@@ -437,6 +502,10 @@ function RanarthLib:CreateWindow(HubConfig)
         RanarthLib.AutoSaveEnabled = HubConfig.ConfigurationSaving.Enabled or false
         RanarthLib.ConfigFolder = HubConfig.ConfigurationSaving.FolderName or RanarthLib.ConfigFolder
         RanarthLib.ConfigFileName = HubConfig.ConfigurationSaving.FileName or RanarthLib.ConfigFileName
+    end
+    
+    if HubConfig.AntiSpam ~= nil then
+        RanarthLib.AntiSpam = HubConfig.AntiSpam
     end
 
     local Window = { Tabs = {}, ActiveTabBtn = nil }
@@ -977,11 +1046,13 @@ function RanarthLib:CreateWindow(HubConfig)
         local tabBtn = Instance.new("TextButton")
         if TabPosition == "Left" then
             tabBtn.Size = UDim2.new(1, 0, 0, 32)
+            tabBtn.TextXAlignment = Enum.TextXAlignment.Left
         else
-            tabBtn.Size = UDim2.new(0, 100, 1, 0)
+            tabBtn.Size = UDim2.new(0, 0, 1, 0)
+            tabBtn.AutomaticSize = Enum.AutomaticSize.X
         end
         tabBtn.BackgroundColor3 = Color3.fromRGB(22, 26, 44)
-        tabBtn.Text = (tabIcon and "   " or "") .. tabName
+        tabBtn.Text = tabName
         tabBtn.TextColor3 = Color3.fromRGB(130, 140, 180)
         tabBtn.Font = Enum.Font.GothamBold
         tabBtn.TextSize = 12
@@ -991,10 +1062,19 @@ function RanarthLib:CreateWindow(HubConfig)
         Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 6)
         staticStroke(tabBtn, 1.2)
 
+        local pad = Instance.new("UIPadding", tabBtn)
+        if TabPosition == "Left" then
+            pad.PaddingLeft = UDim.new(0, tabIcon and 32 or 12)
+            pad.PaddingRight = UDim.new(0, 12)
+        else
+            pad.PaddingLeft = UDim.new(0, tabIcon and 34 or 16)
+            pad.PaddingRight = UDim.new(0, 16)
+        end
+
         if tabIcon then
             local iconImg = applyIcon(tabBtn, tabIcon)
             if iconImg then
-                iconImg.Position = UDim2.new(0, 8, 0.5, -8)
+                iconImg.Position = UDim2.new(0, -24, 0.5, -8)
             end
         end
 
@@ -1758,7 +1838,91 @@ function RanarthLib:CreateWindow(HubConfig)
                 ApplyFlex(div)
             end
 
-            function Elements:CreateParagraph(args)
+            function Elements:CreateImagePanel(args)
+            args = args or {}
+            local titleText = args.Title or args.Name or "Preview"
+            local descText = args.Content or args.Desc or "Description"
+            local imageUrl = args.Image or ""
+            
+            local pFrame = Instance.new("Frame", targetParent)
+            pFrame.Size = UDim2.new(1, 0, 0, 80)
+            pFrame.BackgroundColor3 = Color3.fromRGB(15, 18, 28)
+            Instance.new("UICorner", pFrame).CornerRadius = UDim.new(0, 6)
+            staticStroke(pFrame, 1.2)
+            ApplyFlex(pFrame)
+
+            local imgPlaceholder = Instance.new("Frame", pFrame)
+            imgPlaceholder.Size = UDim2.new(0, 60, 0, 60)
+            imgPlaceholder.Position = UDim2.new(0, 10, 0, 10)
+            imgPlaceholder.BackgroundColor3 = Color3.fromRGB(22, 26, 44)
+            Instance.new("UICorner", imgPlaceholder).CornerRadius = UDim.new(0, 6)
+
+            local imgNode = nil
+            local hasImage = (imageUrl ~= nil and imageUrl ~= "")
+            
+            imgPlaceholder.Visible = hasImage
+            
+            if hasImage then
+                imgNode = applyIcon(imgPlaceholder, imageUrl, true)
+                if imgNode then
+                    imgNode.Size = UDim2.new(1, 0, 1, 0)
+                    Instance.new("UICorner", imgNode).CornerRadius = UDim.new(0, 6)
+                end
+            end
+
+            local txtContainer = Instance.new("Frame", pFrame)
+            txtContainer.Size = hasImage and UDim2.new(1, -90, 1, -20) or UDim2.new(1, -20, 1, -20)
+            txtContainer.Position = hasImage and UDim2.new(0, 80, 0, 10) or UDim2.new(0, 10, 0, 10)
+            txtContainer.BackgroundTransparency = 1
+            
+            local tLayout = Instance.new("UIListLayout", txtContainer)
+            tLayout.SortOrder = Enum.SortOrder.LayoutOrder
+            tLayout.Padding = UDim.new(0, 4)
+
+            local lblTitle = Instance.new("TextLabel", txtContainer)
+            lblTitle.Size = UDim2.new(1, 0, 0, 16)
+            lblTitle.BackgroundTransparency = 1
+            lblTitle.Text = titleText
+            lblTitle.TextColor3 = Color3.fromRGB(220, 225, 255)
+            lblTitle.Font = Enum.Font.GothamBold
+            lblTitle.TextSize = 13
+            lblTitle.RichText = true
+            lblTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+            local lblDesc = Instance.new("TextLabel", txtContainer)
+            lblDesc.Size = UDim2.new(1, 0, 1, -20)
+            lblDesc.BackgroundTransparency = 1
+            lblDesc.Text = descText
+            lblDesc.TextColor3 = Color3.fromRGB(150, 160, 200)
+            lblDesc.Font = Enum.Font.Gotham
+            lblDesc.TextSize = 11
+            lblDesc.RichText = true
+            lblDesc.TextWrapped = true
+            lblDesc.TextYAlignment = Enum.TextYAlignment.Top
+            lblDesc.TextXAlignment = Enum.TextXAlignment.Left
+
+            return {
+                SetTitle = function(self, text) lblTitle.Text = text end,
+                SetDesc = function(self, text) lblDesc.Text = text end,
+                SetImage = function(self, id)
+                    if imgNode then imgNode:Destroy() end
+                    local _hasImg = (id ~= nil and id ~= "")
+                    imgPlaceholder.Visible = _hasImg
+                    txtContainer.Size = _hasImg and UDim2.new(1, -90, 1, -20) or UDim2.new(1, -20, 1, -20)
+                    txtContainer.Position = _hasImg and UDim2.new(0, 80, 0, 10) or UDim2.new(0, 10, 0, 10)
+                    
+                    if _hasImg then
+                        imgNode = applyIcon(imgPlaceholder, id, true)
+                        if imgNode then
+                            imgNode.Size = UDim2.new(1, 0, 1, 0)
+                            Instance.new("UICorner", imgNode).CornerRadius = UDim.new(0, 6)
+                        end
+                    end
+                end
+            }
+        end
+
+        function Elements:CreateParagraph(args)
                 args = args or {}
                 local titleText = args.Title or args.Name or "Information"
                 local descText = args.Content or args.Text or ""
