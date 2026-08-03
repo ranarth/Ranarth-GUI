@@ -1,20 +1,20 @@
-# Ranarth GUI
+# Ranarth GUI Library
 
-Ranarth GUI is a custom interface library for Roblox designed to be clean, modern, and highly flexible. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, dynamic Layouting (Group & HStack), Modals, and optimized animations.
+Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, dynamic Layouting (Group & HStack), an Image Panel for previews, Smart Anti-Spam Notifications, and optimized animations.
 
 ## 🚀 Installation & Loading
 
-You can load this library directly from GitHub using `loadstring`.
+Load the library directly from your GitHub repository using `loadstring`.
 
 ```lua
-local RanarthLib = loadstring(game:HttpGet("https://github.com/ranarth/Ranarth-GUI/releases/latest/download/main.lua"))()
+local RanarthLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/ranarth/Ranarth-GUI/main/main.lua"))()
 ```
 
 ---
 
 ## 🪟 1. Creating the Main Window
 
-The first step is to create the main window. You can adjust the size, tab position, toggle keybind, and enable the configuration saving system.
+Initialize the main window interface. You can adjust the size, tab position, toggle keybind, configure the saving system, and toggle the anti-spam protection.
 
 ```lua
 local Window = RanarthLib:CreateWindow({
@@ -25,6 +25,7 @@ local Window = RanarthLib:CreateWindow({
     MinHeight = 300,
     TabPosition = "Left", -- Options: "Left" or "Top"
     ToggleKey = Enum.KeyCode.RightControl, -- Key to hide/show the GUI
+    AntiSpam = true, -- Enable/Disable Notification Anti-Spam Protection
     ConfigurationSaving = {
         Enabled = true,
         FolderName = "Ranarth_Plugin_Data",
@@ -32,30 +33,30 @@ local Window = RanarthLib:CreateWindow({
     }
 })
 ```
-*💡 **Note:** Click the `-` button on the top right header to minimize the main panel into a draggable floating button.*
+*💡 **Note:** Click the `-` button on the top right header to minimize the main panel into a freely draggable floating button.*
 
 ---
 
-## 📑 2. Creating Tabs & Icon System (Lucide Icons)
+## 📑 2. Tabs & Hybrid Icon System
 
-Tabs are used to separate features within the GUI. Ranarth GUI supports **thousands of icons from Lucide Icons**!
+Tabs organize your features. Ranarth GUI features a **Hybrid Icon System**: it comes with 110+ built-in icons for instant loading, while seamlessly fetching future icons directly from your external GitHub repository.
 
-**How to Use Icons:**
-1. **Basic Icon Names:** You can simply type common icon names like `"home"`, `"settings"`, `"user"`, `"folder"`, etc.
-2. **Full Collection (1,500+ Icons):** Visit the website [icons.rest](https://icons.rest/), find the icon you want, click to copy its **Asset ID** (the numbers), and paste it directly into the script!
+**How to Use Icons (Supports any element with an `Icon` or `Image` property):**
+1. **Built-in Names:** Type names like `"home"`, `"settings"`, `"rocket"`, `"gamepad"`, `"sword"`, etc.
+2. **Roblox Asset IDs:** Paste a Roblox image ID directly (e.g., `"rbxassetid://123456789"`). The GUI is smart enough to preserve the original colors of standard Roblox images (like UGC items) while properly tinting Lucide icons.
 
 ```lua
 local MainTab = Window:CreateTab({
     Name = "Dashboard", 
-    Icon = "home" -- Using basic pre-mapped name
+    Icon = "home" 
 })
 ```
 
 ---
 
-## 🛠️ 3. Adding Standard Elements
+## 🛠️ 3. Standard Elements
 
-Use the Tab variable (e.g., `MainTab`) to start building UI elements.
+Build your UI using the Tab variable (e.g., `MainTab`).
 
 ### Section & Divider
 ```lua
@@ -64,7 +65,6 @@ MainTab:CreateDivider()
 ```
 
 ### Label & Tooltip
-Labels for static text, which can be enhanced with a description (desc) and a tooltip when hovered.
 ```lua
 local InfoLabel = MainTab:CreateLabel({
     Name = "Environment Status",
@@ -74,47 +74,22 @@ local InfoLabel = MainTab:CreateLabel({
 
 -- Attaching a Tooltip to the label
 RanarthLib:CreateTooltip(InfoLabel.Frame, "Connected to the server with low latency.")
-```
 
-**🔥 Advanced Example: Live Label Monitor**
-You can update the text on a Label dynamically in *real-time* (e.g., for tracking enemies or FPS) by using the `:Set()` function.
-
-```lua
--- Example: Live Tracking Enemies / Monsters in the map
-task.spawn(function()
-    while task.wait(0.5) do
-        local enemyCount = 0
-        local enemiesFolder = workspace:FindFirstChild("Enemies") 
-        if enemiesFolder then
-            for _, enemy in ipairs(enemiesFolder:GetChildren()) do
-                local humanoid = enemy:FindFirstChildWhichIsA("Humanoid")
-                if humanoid and humanoid.Health > 0 then
-                    enemyCount = enemyCount + 1
-                end
-            end
-        end
-        
-        -- Update the label text dynamically
-        if InfoLabel then
-            pcall(function()
-                InfoLabel:Set("Monsters Alive: " .. tostring(enemyCount))
-            end)
-        end
-    end
-end)
+-- Update label dynamically
+-- InfoLabel:Set("New Status Here")
 ```
 
 ### Button (With Lock Feature)
 ```lua
 local btn = MainTab:CreateButton({
-    Name = "Upload Advanced Composition",
-    Icon = "file",
+    Name = "Execute Script",
+    Icon = "rocket",
     Callback = function() end
 })
 
--- Locking the button (optional)
+-- Lock the button (optional)
 btn:Lock("Requires admin access")
--- btn:Unlock() -- To unlock it later
+-- btn:Unlock()
 ```
 
 ### Toggle (Switch)
@@ -134,7 +109,7 @@ MainTab:CreateSlider({
     Name = "UI Render Scale",
     Min = 0.5,
     Max = 2.0,
-    Increment = 0.1, -- Decimals are supported!
+    Increment = 0.1, 
     CurrentValue = 1.0,
     Flag = "s_ui_scale",
     Callback = function(Value) end
@@ -144,10 +119,10 @@ MainTab:CreateSlider({
 ### Dropdown & Multi-Dropdown
 ```lua
 MainTab:CreateDropdown({
-    Name = "Target Beta Game",
-    Options = {"Arknights: Endfield", "Ananta", "Toram", "Tower of Fantasy"},
-    CurrentValue = "Toram",
-    Flag = "d_beta",
+    Name = "Select Game",
+    Options = {"Game A", "Game B", "Game C", "Game D"},
+    CurrentValue = "Game A",
+    Flag = "d_game",
     Callback = function(Value) end
 })
 ```
@@ -155,9 +130,15 @@ MainTab:CreateDropdown({
 ### Input (TextBox) & Keybind
 ```lua
 MainTab:CreateInput({
-    Name = "Specifications",
+    Name = "Item ID",
     Placeholder = "Type here...",
     Callback = function(Text, EnterPressed) end
+})
+
+MainTab:CreateKeybind({
+    Name = "Dash Forward",
+    CurrentKey = Enum.KeyCode.F,
+    Callback = function(Key) end
 })
 ```
 
@@ -173,20 +154,34 @@ MainTab:CreateColorPicker({
 
 ---
 
-## 🎨 4. Extra & Visual Elements
+## 🎨 4. Visual & Extra Elements
 
-### Progress Bar
+### Image Panel (Item Preview) - **NEW**
+A dedicated panel designed to display a thumbnail image alongside a title and description. Perfect for item previews or player info. If no image is provided, the image box disappears and the text stretches automatically!
+
+```lua
+local PreviewPanel = MainTab:CreateImagePanel({
+    Title = "📦 Item Preview",
+    Desc = "Enter an item ID below to view details.",
+    Image = "search" -- You can use built-in icons or rbxassetid://
+})
+
+-- Update dynamically:
+-- PreviewPanel:SetTitle("Dominus")
+-- PreviewPanel:SetDesc("Price: 10,000 Robux")
+-- PreviewPanel:SetImage("rbxassetid://12345678") 
+-- PreviewPanel:SetImage("") -- Will automatically hide the image box!
+```
+
+### Progress Bar & Paragraph
 ```lua
 local progress = MainTab:CreateProgressBar({
-    Name = "Chamber Folk Track (100 BPM)",
+    Name = "Processing",
     Max = 100,
     CurrentValue = 45
 })
 -- progress:SetValue(80)
-```
 
-### Paragraph & Code Block
-```lua
 MainTab:CreateParagraph({
     Title = "Important Notes",
     Content = "Ensure all assets are loaded properly before running."
@@ -194,13 +189,16 @@ MainTab:CreateParagraph({
 ```
 
 ### Built-in Search Bar
+Instantly adds a functional search bar to find elements within the current tab.
 ```lua
-MainTab:CreateSearchBar({Placeholder = "Search features in this tab..."})
+MainTab:CreateSearchBar({Placeholder = "Search features..."})
 ```
 
 ---
 
 ## 📦 5. Layouting (HStack & Group)
+
+Group your elements cleanly or align them horizontally.
 
 ```lua
 local MainGroup = MainTab:CreateGroup("Project Control")
@@ -212,56 +210,55 @@ ButtonRow:CreateButton({Name = "Button 2", Callback = function() end})
 
 ---
 
-## 🔔 6. Global Utilities (Notifications, Dialogs & Floating Buttons)
+## 🔔 6. Global Utilities
 
-### Notification
+### Smart Notification (With Anti-Spam & Image Support)
+Pop up a notification. Protected by Ranarth's Anti-Spam system (max 5 on screen, 0.15s cooldown). You can optionally pass an image/icon as the 4th argument!
+
 ```lua
+-- Standard Text Notification
 RanarthLib:CreateNotification("Warning", "Data synchronization complete.", 4)
+
+-- Notification with an Icon or Image!
+RanarthLib:CreateNotification("Purchase Successful", "Dominus Acquired", 4, "rbxassetid://123456789")
 ```
 
 ### Dialog Box (Modal)
-Pops up in the center of the screen and temporarily freezes the UI activity behind it.
+Freezes background UI and asks for user confirmation.
 ```lua
-Window:CreateDialog("Start Configuration", "Are you ready to load this script?", {
-    { Title = "Start", Callback = function() end },
-    { Title = "Cancel", Callback = function() end }
+Window:CreateDialog("Confirmation", "Are you sure you want to run this?", {
+    { Title = "Yes", Callback = function() end },
+    { Title = "No", Callback = function() end }
 })
 ```
 
 ### SubPanel
-Opens a small floating window attached next to the main GUI.
+Opens a small floating window docked next to the main GUI.
 ```lua
 local sub = Window:CreateSubPanel("Additional Notes", 240, 200)
 ```
 
-### Custom Floating Button (New!)
-A neat feature to create an independent, freely draggable button that stays on the screen even when your main GUI is minimized. It comes fully equipped with Ranarth's signature glowing stroke theme!
+### Custom Floating Button
+Create an independent, freely draggable floating button (retains Ranarth's glowing stroke theme).
 ```lua
 local myFloat = Window:CreateFloatingButton({
     Name = "Refresh: 0",
-    Icon = "refresh-cw", -- Lucide icons are supported
-    Callback = function()
-        print("Floating button pressed!")
-    end
+    Icon = "refresh-cw", 
+    Callback = function() end
 })
-
--- You can also update the text dynamically in real-time:
 -- myFloat:Set("Refresh: 5")
--- myFloat:SetVisible(false) 
--- myFloat:Destroy()
 ```
 
 ---
 
-## 💾 7. Configuration System (Save/Load)
+## 💾 7. Configuration System & Unload
+
 Automatically generates a UI section to save and load the `Flag` you set for elements.
 ```lua
 SettingsTab:CreateConfigSystem()
 ```
 
----
-
-## 🛑 8. Cleanup (Unload)
+Completely remove the UI and all connections.
 ```lua
 RanarthLib:Unload()
 ```
