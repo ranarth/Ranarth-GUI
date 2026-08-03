@@ -43,7 +43,7 @@ Tabs organize your features. Ranarth GUI features a **Hybrid Icon System**: it c
 
 **How to Use Icons (Supports any element with an `Icon` or `Image` property):**
 1. **Built-in Names:** Type names like `"home"`, `"settings"`, `"rocket"`, `"gamepad"`, `"sword"`, etc.
-2. **Roblox Asset IDs:** Paste a Roblox image ID directly (e.g., `"rbxassetid://123456789"`). The GUI is smart enough to preserve the original colors of standard Roblox images (like UGC items) while properly tinting Lucide icons.
+2. **Roblox Asset IDs & Thumbnails:** Paste a Roblox image ID directly (e.g., `"rbxassetid://123456789"`). The GUI also fully supports case-sensitive thumbnail APIs like `"rbxthumb://type=Asset&id=12345678&w=150&h=150"` and external web URLs (`http://`/`https://`). The system is smart enough to preserve the original colors of these standard images while properly tinting Lucide icons.
 
 ```lua
 local MainTab = Window:CreateTab({
@@ -120,8 +120,8 @@ MainTab:CreateSlider({
 ```lua
 MainTab:CreateDropdown({
     Name = "Select Game",
-    Options = {"Game A", "Game B", "Game C", "Game D"},
-    CurrentValue = "Game A",
+    Options = {"Arknights: Endfield", "Ananta", "Toram", "Tower of Fantasy"},
+    CurrentValue = "Toram",
     Flag = "d_game",
     Callback = function(Value) end
 })
@@ -163,13 +163,13 @@ A dedicated panel designed to display a thumbnail image alongside a title and de
 local PreviewPanel = MainTab:CreateImagePanel({
     Title = "📦 Item Preview",
     Desc = "Enter an item ID below to view details.",
-    Image = "search" -- You can use built-in icons or rbxassetid://
+    Image = "search" -- You can use built-in icons, rbxassetid://, or rbxthumb://
 })
 
 -- Update dynamically:
 -- PreviewPanel:SetTitle("Dominus")
 -- PreviewPanel:SetDesc("Price: 10,000 Robux")
--- PreviewPanel:SetImage("rbxassetid://12345678") 
+-- PreviewPanel:SetImage("rbxthumb://type=Asset&id=12345678&w=150&h=150") 
 -- PreviewPanel:SetImage("") -- Will automatically hide the image box!
 ```
 
@@ -220,7 +220,7 @@ Pop up a notification. Protected by Ranarth's Anti-Spam system (max 5 on screen,
 RanarthLib:CreateNotification("Warning", "Data synchronization complete.", 4)
 
 -- Notification with an Icon or Image!
-RanarthLib:CreateNotification("Purchase Successful", "Dominus Acquired", 4, "rbxassetid://123456789")
+RanarthLib:CreateNotification("Purchase Successful", "Dominus Acquired", 4, "rbxthumb://type=Asset&id=12345678&w=150&h=150")
 ```
 
 ### Dialog Box (Modal)
