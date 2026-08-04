@@ -302,7 +302,7 @@ local LucideIcons = {
     ["rocket"] = "rbxassetid://109537053598807",
     ["repeat"] = "rbxassetid://88751041821881",
     ["repeat-1"] = "rbxassetid://83172378763568",
-        ["scan"] = "rbxassetid://125367266780285",
+    ["scan"] = "rbxassetid://125367266780285",
     ["scan-barcode"] = "rbxassetid://97414347978098",
     ["scan-face"] = "rbxassetid://98379048258175",
     ["scan-line"] = "rbxassetid://74491678843147",
@@ -2182,6 +2182,112 @@ function RanarthLib:CreateWindow(HubConfig)
                 layout.SortOrder = Enum.SortOrder.LayoutOrder
                 local pad = Instance.new("UIPadding", cbFrame)
                 pad.PaddingBottom = UDim.new(0, 5)
+            end
+
+            function Elements:CreateConsole(args)
+                args = args or {}
+                local height = args.Height or 150
+                local showTimestamp = args.ShowTimestamp ~= false
+                local maxLines = args.MaxLines or 200
+                
+                local consoleFrame = Instance.new("Frame", targetParent)
+                consoleFrame.Size = UDim2.new(1, 0, 0, height)
+                consoleFrame.BackgroundColor3 = Color3.fromRGB(10, 11, 15)
+                Instance.new("UICorner", consoleFrame).CornerRadius = UDim.new(0, 6)
+                staticStroke(consoleFrame, 1.2)
+                ApplyFlex(consoleFrame)
+
+                local topBar = Instance.new("Frame", consoleFrame)
+                topBar.Size = UDim2.new(1, 0, 0, 20)
+                topBar.BackgroundColor3 = Color3.fromRGB(20, 24, 35)
+                Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 6)
+
+                local titleLbl = Instance.new("TextLabel", topBar)
+                titleLbl.Size = UDim2.new(1, -60, 1, 0)
+                titleLbl.Position = UDim2.new(0, 10, 0, 0)
+                titleLbl.BackgroundTransparency = 1
+                titleLbl.Text = args.Title or args.Name or "TERMINAL LOG"
+                titleLbl.TextColor3 = Color3.fromRGB(150, 160, 200)
+                titleLbl.Font = Enum.Font.GothamBold
+                titleLbl.TextSize = 10
+                titleLbl.TextXAlignment = Enum.TextXAlignment.Left
+
+                local clearBtn = Instance.new("TextButton", topBar)
+                clearBtn.Size = UDim2.new(0, 45, 0, 14)
+                clearBtn.Position = UDim2.new(1, -50, 0.5, -7)
+                clearBtn.BackgroundColor3 = Color3.fromRGB(35, 40, 70)
+                clearBtn.Text = "CLEAR"
+                clearBtn.TextColor3 = Color3.fromRGB(200, 210, 255)
+                clearBtn.Font = Enum.Font.GothamBold
+                clearBtn.TextSize = 9
+                Instance.new("UICorner", clearBtn).CornerRadius = UDim.new(0, 4)
+
+                local logScroll = Instance.new("ScrollingFrame", consoleFrame)
+                logScroll.Size = UDim2.new(1, -10, 1, -25)
+                logScroll.Position = UDim2.new(0, 5, 0, 25)
+                logScroll.BackgroundTransparency = 1
+                logScroll.ScrollBarThickness = 3
+                logScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+                
+                local logLayout = Instance.new("UIListLayout", logScroll)
+                logLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                logLayout.Padding = UDim.new(0, 2)
+
+                local pad = Instance.new("UIPadding", consoleFrame)
+                pad.PaddingBottom = UDim.new(0, 5)
+                
+                RanarthLib:TrackConnection(logLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+                    logScroll.CanvasSize = UDim2.new(0, 0, 0, logLayout.AbsoluteContentSize.Y + 5)
+                    logScroll.CanvasPosition = Vector2.new(0, logLayout.AbsoluteContentSize.Y)
+                end))
+
+                local function ClearLogs()
+                    for _, child in ipairs(logScroll:GetChildren()) do
+                        if child:IsA("TextLabel") then child:Destroy() end
+                    end
+                    logScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+                end
+
+                RanarthLib:TrackConnection(clearBtn.MouseButton1Click:Connect(ClearLogs))
+                
+                local currentLogIndex = 0
+
+                local function LogMessage(text, color)
+                    currentLogIndex = currentLogIndex + 1
+                    
+                    local txt = Instance.new("TextLabel")
+                    txt.Size = UDim2.new(1, -5, 0, 14)
+                    txt.BackgroundTransparency = 1
+                    
+                    local prefix = showTimestamp and string.format("[%s] ", os.date("%X")) or "> "
+                    txt.Text = prefix .. tostring(text)
+                    txt.TextColor3 = color or Color3.fromRGB(200, 210, 255)
+                    txt.Font = Enum.Font.Code
+                    txt.TextSize = 11
+                    txt.TextXAlignment = Enum.TextXAlignment.Left
+                    txt.TextWrapped = true
+                    txt.AutomaticSize = Enum.AutomaticSize.Y
+                    txt.LayoutOrder = currentLogIndex
+                    txt.Parent = logScroll
+                    
+                    local activeLogs = {}
+                    for _, child in ipairs(logScroll:GetChildren()) do
+                        if child:IsA("TextLabel") then table.insert(activeLogs, child) end
+                    end
+                    
+                    if #activeLogs > maxLines then
+                        table.sort(activeLogs, function(a, b) return a.LayoutOrder < b.LayoutOrder end)
+                        activeLogs[1]:Destroy()
+                    end
+                end
+
+                return {
+                    Print = function(self, text, color) LogMessage(text, color) end,
+                    Warn = function(self, text) LogMessage("[WARN] " .. text, Color3.fromRGB(255, 200, 0)) end,
+                    Error = function(self, text) LogMessage("[ERROR] " .. text, Color3.fromRGB(255, 80, 80)) end,
+                    Success = function(self, text) LogMessage(text, Color3.fromRGB(100, 255, 100)) end,
+                    Clear = function(self) ClearLogs() end
+                }
             end
 
             -- INFINITE NESTING CONTAINERS

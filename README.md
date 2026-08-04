@@ -1,6 +1,6 @@
 # Ranarth GUI Library
 
-Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, dynamic Layouting (Group & HStack), an Image Panel for previews, Smart Anti-Spam Notifications, Interactive Color Buttons, and highly optimized, memory-leak-free animations.
+Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, dynamic Layouting (Group & HStack), an Image Panel for previews, Smart Anti-Spam Notifications, Interactive Color Buttons, a Built-in Log Terminal, and highly optimized, memory-leak-free animations.
 
 ## 🚀 Installation & Loading
 
@@ -81,7 +81,7 @@ RanarthLib:CreateTooltip(InfoLabel.Frame, "Connected to the server with low late
 -- InfoLabel:Set("New Status Here")
 ```
 
-### Button (With Lock & Dynamic Color Feature) - **UPDATED**
+### Button (With Lock & Dynamic Color Feature)
 Create a standard button, lock it if needed, or dynamically change its background color for togglable modes (like a Builder Mode) without making it a standard UI Toggle switch. Supports `Color3.fromRGB` and `Color3.fromHex`.
 
 ```lua
@@ -169,6 +169,26 @@ MainTab:CreateColorPicker({
 ---
 
 ## 🎨 4. Visual & Extra Elements
+
+### Log Terminal (Console)
+A scrollable terminal interface directly inside your UI for displaying script logs, debugging info, or visual feedback. Supports auto-scrolling, timestamps, and memory-leak protection via line limiting.
+
+```lua
+local Terminal = MainTab:CreateConsole({
+    Name = "SYSTEM LOGS",
+    Height = 200,
+    ShowTimestamp = true, -- Automatically prefixes logs with [HH:MM:SS]
+    MaxLines = 200        -- Limits the maximum log entries to prevent memory leaks
+})
+
+Terminal:Print("Initializing system...")
+Terminal:Print("Connected to server.", Color3.fromRGB(150, 150, 255)) -- Custom Color
+Terminal:Warn("High latency detected.")
+Terminal:Error("Failed to fetch asset ID: 12345678")
+Terminal:Success("Payload injected successfully!")
+
+-- Terminal:Clear() -- Clears the console history programmatically
+```
 
 ### Image Panel (Item Preview)
 A dedicated panel designed to display a thumbnail image alongside a title and description. Perfect for item previews or player info. If no image is provided, the image box disappears and the text stretches automatically!
