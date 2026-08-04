@@ -1,6 +1,6 @@
 # Ranarth GUI Library
 
-Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, dynamic Layouting (Group & HStack), an Image Panel for previews, Smart Anti-Spam Notifications, and optimized animations.
+Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, dynamic Layouting (Group & HStack), an Image Panel for previews, Smart Anti-Spam Notifications, Interactive Color Buttons, and highly optimized, memory-leak-free animations.
 
 ## 🚀 Installation & Loading
 
@@ -37,13 +37,15 @@ local Window = RanarthLib:CreateWindow({
 
 ---
 
-## 📑 2. Tabs & Hybrid Icon System
+## 📑 2. Tabs, Namespace & Hybrid Icon System
 
-Tabs organize your features. Ranarth GUI features a **Hybrid Icon System**: it comes with 110+ built-in icons for instant loading, while seamlessly fetching future icons directly from your external GitHub repository.
+Tabs organize your features. Our unique **Tab Namespace System** ensures that `Flag` names won't conflict even if you use the same name in different tabs.
+
+Ranarth GUI features a **Hybrid Icon System**: it comes with 150+ built-in icons for instant loading, while seamlessly fetching future extensions directly from your external GitHub repository.
 
 **How to Use Icons (Supports any element with an `Icon` or `Image` property):**
-1. **Built-in Names:** Type names like `"home"`, `"settings"`, `"rocket"`, `"gamepad"`, `"sword"`, etc.
-2. **Roblox Asset IDs & Thumbnails:** Paste a Roblox image ID directly (e.g., `"rbxassetid://123456789"`). The GUI also fully supports case-sensitive thumbnail APIs like `"rbxthumb://type=Asset&id=12345678&w=150&h=150"` and external web URLs (`http://`/`https://`). The system is smart enough to preserve the original colors of these standard images while properly tinting Lucide icons.
+1. **Built-in Names:** Type names like `"home"`, `"settings"`, `"scan-face"`, `"gamepad"`, `"sword"`, etc.
+2. **Roblox Asset IDs & Thumbnails:** Paste a Roblox image ID directly (e.g., `"rbxassetid://123456789"`). The GUI fully supports case-sensitive thumbnail APIs like `"rbxthumb://type=Asset&id=12345678&w=150&h=150"` and external web URLs.
 
 ```lua
 local MainTab = Window:CreateTab({
@@ -79,17 +81,29 @@ RanarthLib:CreateTooltip(InfoLabel.Frame, "Connected to the server with low late
 -- InfoLabel:Set("New Status Here")
 ```
 
-### Button (With Lock Feature)
+### Button (With Lock & Dynamic Color Feature) - **UPDATED**
+Create a standard button, lock it if needed, or dynamically change its background color for togglable modes (like a Builder Mode) without making it a standard UI Toggle switch. Supports `Color3.fromRGB` and `Color3.fromHex`.
+
 ```lua
 local btn = MainTab:CreateButton({
     Name = "Execute Script",
     Icon = "rocket",
-    Callback = function() end
+    Callback = function() 
+        print("Clicked!")
+    end
 })
 
 -- Lock the button (optional)
 btn:Lock("Requires admin access")
 -- btn:Unlock()
+
+-- Dynamically Change Colors (e.g., inside the Callback function)
+-- arg 1: Idle Color, arg 2: Hover Color
+btn:SetColor(Color3.fromRGB(40, 200, 40), Color3.fromRGB(60, 220, 60))
+-- Or use Hex: btn:SetColor(Color3.fromHex("#28C828"), Color3.fromHex("#3CDC3C"))
+
+-- Revert to the default Ranarth Navy theme
+-- btn:ResetColor()
 ```
 
 ### Toggle (Switch)
@@ -156,14 +170,14 @@ MainTab:CreateColorPicker({
 
 ## 🎨 4. Visual & Extra Elements
 
-### Image Panel (Item Preview) - **NEW**
+### Image Panel (Item Preview)
 A dedicated panel designed to display a thumbnail image alongside a title and description. Perfect for item previews or player info. If no image is provided, the image box disappears and the text stretches automatically!
 
 ```lua
 local PreviewPanel = MainTab:CreateImagePanel({
     Title = "📦 Item Preview",
     Desc = "Enter an item ID below to view details.",
-    Image = "search" -- You can use built-in icons, rbxassetid://, or rbxthumb://
+    Image = "search"
 })
 
 -- Update dynamically:
@@ -239,7 +253,7 @@ local sub = Window:CreateSubPanel("Additional Notes", 240, 200)
 ```
 
 ### Custom Floating Button
-Create an independent, freely draggable floating button (retains Ranarth's glowing stroke theme).
+Create an independent, freely draggable floating button (retains Ranarth's glowing stroke theme) with memory-leak-safe dragging logic.
 ```lua
 local myFloat = Window:CreateFloatingButton({
     Name = "Refresh: 0",
@@ -253,12 +267,12 @@ local myFloat = Window:CreateFloatingButton({
 
 ## 💾 7. Configuration System & Unload
 
-Automatically generates a UI section to save and load the `Flag` you set for elements.
+Automatically generates a UI section to save and load the `Flag` you set for elements. Fixed syntax compilation errors for smoother JSON loading.
 ```lua
 SettingsTab:CreateConfigSystem()
 ```
 
-Completely remove the UI and all connections.
+Completely remove the UI and clean up all connections safely.
 ```lua
 RanarthLib:Unload()
 ```

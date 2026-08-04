@@ -298,10 +298,64 @@ local LucideIcons = {
     ["layout-grid"] = "rbxassetid://89644754139307",
     ["layout-dashboard"] = "rbxassetid://70433574792490",
     ["plane"] = "rbxassetid://123931033451986",
-    ["plane-landing"] = "rbxassetid://123931033451986",
+    ["plane-landing"] = "rbxassetid://127564654216931",
     ["rocket"] = "rbxassetid://109537053598807",
     ["repeat"] = "rbxassetid://88751041821881",
     ["repeat-1"] = "rbxassetid://83172378763568",
+        ["scan"] = "rbxassetid://125367266780285",
+    ["scan-barcode"] = "rbxassetid://97414347978098",
+    ["scan-face"] = "rbxassetid://98379048258175",
+    ["scan-line"] = "rbxassetid://74491678843147",
+    ["scan-search"] = "rbxassetid://133304136560518",
+    ["scan-text"] = "rbxassetid://135056446730766",
+    ["file-scan"] = "rbxassetid://132590981389921",
+    ["timer"] = "rbxassetid://120164083411828",
+    ["timer-off"] = "rbxassetid://116991705734594",
+    ["timer-reset"] = "rbxassetid://79948324123231",
+    ["hourglass"] = "rbxassetid://135654740495171",
+    ["glass-water"] = "rbxassetid://125170765146614",
+    ["glasses"] = "rbxassetid://77027406085123",
+    ["dices"] = "rbxassetid://116678154854810",
+    ["dice-1"] = "rbxassetid://133629376866649",
+    ["dice-2"] = "rbxassetid://137517882571271",
+    ["dice-3"] = "rbxassetid://128612626459042",
+    ["dice-4"] = "rbxassetid://73117400593570",
+    ["dice-5"] = "rbxassetid://107643287892749",
+    ["dice-6"] = "rbxassetid://112067139297943",
+    ["loader"] = "rbxassetid://132295854994374",
+    ["loader-2"] = "rbxassetid://128780061297692",
+    ["loader-circle"] = "rbxassetid://71250150569964",
+    ["sparkle"] = "rbxassetid://83114431765537",
+    ["sparkles"] = "rbxassetid://105634041692696",
+    ["wand-sparkles"] = "rbxassetid://115623066336607",
+    ["car"] = "rbxassetid://91451724283877",
+    ["car-front"] = "rbxassetid://79993076477613",
+    ["leaf"] = "rbxassetid://70846801126940",
+    ["leafy-green"] = "rbxassetid://94770162749325",
+    ["maximize"] = "rbxassetid://116546384863431",
+    ["minimize"] = "rbxassetid://95555494586098",
+    ["maximize-2"] = "rbxassetid://130049637400171",
+    ["minimize-2"] = "rbxassetid://96294437144715",
+    ["proportions"] = "rbxassetid://78144579158638",
+    ["store"] = "rbxassetid://121962391563311",
+    ["dollar-sign"] = "rbxassetid://74567340201672",
+    ["circle-dollar-sign"] = "rbxassetid://102720278203768",
+    ["badge-dollar-sign"] = "rbxassetid://123225256208806",
+    ["package"] = "rbxassetid://106101842173393",
+    ["thumbs-up"] = "rbxassetid://96046658888813",
+    ["thumbs-down"] = "rbxassetid://73778874448741",
+    ["wrench"] = "rbxassetid://85345725497834",
+    ["trophy"] = "rbxassetid://113055182645565",
+    ["crown"] = "rbxassetid://92253403464658",
+    ["pointer"] = "rbxassetid://98931495397575",
+    ["pointer-off"] = "rbxassetid://121208450103912",
+    ["mouse-pointer"] = "rbxassetid://113428527051320",
+    ["mouse-pointer-click"] = "rbxassetid://81854854241463",
+    ["waypoints"] = "rbxassetid://101997233404191",
+    ["cat"] = "rbxassetid://118339348494810",
+    ["angry"] = "rbxassetid://79345553086407",
+    ["laugh"] = "rbxassetid://115974660887808",
+    ["ban"] = "rbxassetid://109685306480139",
 }
 
 -- HYBRID MODE: Load future icon extensions from GitHub
@@ -477,16 +531,16 @@ function RanarthLib:CreateNotification(title, text, duration, iconData)
 end
 
 function RanarthLib:CreateTooltip(target, text)
-    target.MouseEnter:Connect(function()
+    RanarthLib:TrackConnection(target.MouseEnter:Connect(function()
         tooltipLabel.Text = "  " .. text
         tooltipLabel.Visible = true
-    end)
-    target.MouseMoved:Connect(function(x, y)
+    end))
+    RanarthLib:TrackConnection(target.MouseMoved:Connect(function(x, y)
         tooltipLabel.Position = UDim2.new(0, x + 15, 0, y + 15)
-    end)
-    target.MouseLeave:Connect(function()
+    end))
+    RanarthLib:TrackConnection(target.MouseLeave:Connect(function()
         tooltipLabel.Visible = false
-    end)
+    end))
 end
 
 -- ==========================================
@@ -600,9 +654,9 @@ function RanarthLib:CreateWindow(HubConfig)
         btn.TextSize = 12
         btn.Parent = control_buttons
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
-        btn.MouseEnter:Connect(function() tweens:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(35, 40, 55)}):Play() end)
-        btn.MouseLeave:Connect(function() tweens:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(25, 28, 40)}):Play() end)
-        btn.MouseButton1Click:Connect(callback)
+        RanarthLib:TrackConnection(btn.MouseEnter:Connect(function() tweens:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(35, 40, 55)}):Play() end))
+        RanarthLib:TrackConnection(btn.MouseLeave:Connect(function() tweens:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(25, 28, 40)}):Play() end))
+        RanarthLib:TrackConnection(btn.MouseButton1Click:Connect(callback))
     end
 
     create_header_btn("-", Color3.fromRGB(200, 200, 200), function()
@@ -616,15 +670,21 @@ function RanarthLib:CreateWindow(HubConfig)
     end)
 
     local drag, drag_in, start_drag, start_pos
-    top_bar.InputBegan:Connect(function(input)
+    RanarthLib:TrackConnection(top_bar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             drag = true; start_drag = input.Position; start_pos = frame.Position
-            input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then drag = false end end)
+            local releaseConn
+            releaseConn = input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    drag = false
+                    if releaseConn then releaseConn:Disconnect() end
+                end
+            end)
         end
-    end)
-    top_bar.InputChanged:Connect(function(input)
+    end))
+    RanarthLib:TrackConnection(top_bar.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then drag_in = input end
-    end)
+    end))
     RanarthLib:SafeUIS(uis.InputChanged, frame, function(input)
         if input == drag_in and drag then
             local offset = input.Position - start_drag
@@ -636,7 +696,13 @@ function RanarthLib:CreateWindow(HubConfig)
     RanarthLib:TrackConnection(t_btn.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragToggle = true; hasDragged = false; dragStartPos = input.Position; startBtnPos = t_btn.Position
-            input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragToggle = false end end)
+            local releaseConn
+            releaseConn = input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragToggle = false
+                    if releaseConn then releaseConn:Disconnect() end
+                end
+            end)
         end
     end))
     RanarthLib:TrackConnection(t_btn.InputChanged:Connect(function(input)
@@ -832,18 +898,18 @@ function RanarthLib:CreateWindow(HubConfig)
             btn.AutoButtonColor = false
             Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
             
-            btn.MouseEnter:Connect(function() tweens:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(50, 60, 90)}):Play() end)
-            btn.MouseLeave:Connect(function() tweens:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35, 40, 70)}):Play() end)
+            RanarthLib:TrackConnection(btn.MouseEnter:Connect(function() tweens:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(50, 60, 90)}):Play() end))
+            RanarthLib:TrackConnection(btn.MouseLeave:Connect(function() tweens:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35, 40, 70)}):Play() end))
 
-            btn.MouseButton1Click:Connect(function()
+            RanarthLib:TrackConnection(btn.MouseButton1Click:Connect(function()
                 closeDialog()
                 if opt.Callback then opt.Callback() end
-            end)
+            end))
         end
 
-        dLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        RanarthLib:TrackConnection(dLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
             dialogBox.Size = UDim2.new(0, 320, 0, dLayout.AbsoluteContentSize.Y + 30)
-        end)
+        end))
 
         tweens:Create(dialogBox, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {BackgroundTransparency = 0, Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
         lblTitle.TextTransparency = 0; lblText.TextTransparency = 0
@@ -1009,14 +1075,20 @@ function RanarthLib:CreateWindow(HubConfig)
         txtLbl.Font = Enum.Font.GothamBold
         txtLbl.TextSize = 12
 
-        fBtn.MouseEnter:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35, 40, 70)}):Play() end)
-        fBtn.MouseLeave:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(15, 18, 28)}):Play() end)
+        RanarthLib:TrackConnection(fBtn.MouseEnter:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35, 40, 70)}):Play() end))
+        RanarthLib:TrackConnection(fBtn.MouseLeave:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(15, 18, 28)}):Play() end))
 
         local dragToggle, dragInputToggle, dragStartPos, startBtnPos, hasDragged = false, nil, nil, nil, false
         RanarthLib:TrackConnection(fBtn.InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragToggle = true; hasDragged = false; dragStartPos = input.Position; startBtnPos = fBtn.Position
-                input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragToggle = false end end)
+                local releaseConn
+                releaseConn = input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragToggle = false
+                        if releaseConn then releaseConn:Disconnect() end
+                    end
+                end)
             end
         end))
         RanarthLib:TrackConnection(fBtn.InputChanged:Connect(function(input)
@@ -1046,6 +1118,11 @@ function RanarthLib:CreateWindow(HubConfig)
         local tabIcon = type(args) == "table" and args.Icon or nil
         
         local Tab = { Container = nil }
+
+        -- Namespace unik per-tab (dipakai sebagai upvalue oleh semua Elements:CreateX
+        -- di bawah) supaya Flag dengan nama sama di tab berbeda tidak saling menimpa.
+        Window.TabCount = (Window.TabCount or 0) + 1
+        local tabNamespace = tostring(tabName) .. "#" .. tostring(Window.TabCount)
         
         local tabBtn = Instance.new("TextButton")
         if TabPosition == "Left" then
@@ -1103,11 +1180,11 @@ function RanarthLib:CreateWindow(HubConfig)
         scrollLayout.SortOrder = Enum.SortOrder.LayoutOrder
         scrollLayout.Padding = UDim.new(0, 8)
         
-        scrollLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        RanarthLib:TrackConnection(scrollLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
             scrollFrame.CanvasSize = UDim2.new(0, 0, 0, scrollLayout.AbsoluteContentSize.Y + 10)
-        end)
+        end))
 
-        tabBtn.MouseButton1Click:Connect(function()
+        RanarthLib:TrackConnection(tabBtn.MouseButton1Click:Connect(function()
             if Window.ActiveTabBtn == tabBtn then return end
             for btn, frm in pairs(Window.Tabs) do
                 frm.Visible = false
@@ -1116,7 +1193,7 @@ function RanarthLib:CreateWindow(HubConfig)
             scrollFrame.Visible = true
             tweens:Create(tabBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 40, 70), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
             Window.ActiveTabBtn = tabBtn
-        end)
+        end))
 
         Window.Tabs[tabBtn] = scrollFrame
         
@@ -1282,17 +1359,37 @@ function RanarthLib:CreateWindow(HubConfig)
                 btn.Text = ""
                 btn.AutoButtonColor = false
 
-                btn.MouseEnter:Connect(function() tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35, 40, 70)}):Play() end)
-                btn.MouseLeave:Connect(function() tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(15, 18, 28)}):Play() end)
-                btn.MouseButton1Click:Connect(callback)
+                local currentColor = Color3.fromRGB(15, 18, 28)
+                local currentHoverColor = Color3.fromRGB(35, 40, 70)
 
-                return ctrl
+                RanarthLib:TrackConnection(btn.MouseEnter:Connect(function() 
+                    tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = currentHoverColor}):Play() 
+                end))
+                RanarthLib:TrackConnection(btn.MouseLeave:Connect(function() 
+                    tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = currentColor}):Play() 
+                end))
+                RanarthLib:TrackConnection(btn.MouseButton1Click:Connect(callback))
+
+                local extendedCtrl = setmetatable({
+                    SetColor = function(self, newColor, newHoverColor)
+                        currentColor = newColor or Color3.fromRGB(15, 18, 28)
+                        currentHoverColor = newHoverColor or Color3.fromRGB(35, 40, 70)
+                        tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = currentColor}):Play()
+                    end,
+                    ResetColor = function(self)
+                        currentColor = Color3.fromRGB(15, 18, 28)
+                        currentHoverColor = Color3.fromRGB(35, 40, 70)
+                        tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = currentColor}):Play()
+                    end
+                }, {__index = ctrl})
+
+                return extendedCtrl
             end
 
             function Elements:CreateToggle(args)
                 args = args or {}
                 local callback = args.Callback or function() end
-                local flag = args.Flag or nil
+                local flag = args.Flag and (tabNamespace .. "::" .. args.Flag) or nil
                 local state = args.CurrentValue or args.Default or false
 
                 if flag then
@@ -1333,7 +1430,7 @@ function RanarthLib:CreateWindow(HubConfig)
                     callback(state)
                 end
 
-                btn.MouseButton1Click:Connect(function() updateState(not state) end)
+                RanarthLib:TrackConnection(btn.MouseButton1Click:Connect(function() updateState(not state) end))
 
                 return setmetatable({
                     Set = function(self, newState) updateState(newState) end,
@@ -1348,7 +1445,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 local step = args.Increment or args.Step or 1
                 local default = args.CurrentValue or args.Default or min
                 local callback = args.Callback or function() end
-                local flag = args.Flag or nil
+                local flag = args.Flag and (tabNamespace .. "::" .. args.Flag) or nil
 
                 if flag then
                     if RanarthLib.Flags[flag] ~= nil then
@@ -1406,11 +1503,11 @@ function RanarthLib:CreateWindow(HubConfig)
                     callback(numValue)
                 end
 
-                hitBtn.InputBegan:Connect(function(input)
+                RanarthLib:TrackConnection(hitBtn.InputBegan:Connect(function(input)
                     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                         dragging = true; update(input)
                     end
-                end)
+                end))
                 RanarthLib:SafeUIS(uis.InputChanged, frame, function(input)
                     if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                         update(input)
@@ -1431,7 +1528,10 @@ function RanarthLib:CreateWindow(HubConfig)
                         fill.Size = UDim2.new(pos, 0, 1, 0)
                         titleLbl.Text = sldName .. " : " .. string.format(formatStr, numValue)
                         
-                        if flag then RanarthLib.Flags[flag] = numValue end
+                        if flag then
+                            RanarthLib.Flags[flag] = numValue
+                            if RanarthLib.AutoSaveEnabled then RanarthLib:SaveConfiguration() end
+                        end
                         callback(numValue)
                     end
                 }, {__index = ctrl})
@@ -1443,7 +1543,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 local options = args.Options or {}
                 local currentVal = args.CurrentValue or options[1] or "None"
                 local callback = args.Callback or function() end
-                local flag = args.Flag or nil
+                local flag = args.Flag and (tabNamespace .. "::" .. args.Flag) or nil
 
                 if flag then
                     if RanarthLib.Flags[flag] ~= nil then
@@ -1482,12 +1582,12 @@ function RanarthLib:CreateWindow(HubConfig)
                 layout.Padding = UDim.new(0, 3)
 
                 local isOpen = false
-                topBtn.MouseButton1Click:Connect(function()
+                RanarthLib:TrackConnection(topBtn.MouseButton1Click:Connect(function()
                     isOpen = not isOpen
                     local targetHeight = isOpen and math.min(140, (#options * 28) + 40) or 35
                     tweens:Create(frame, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, targetHeight)}):Play()
                     icon.Text = isOpen and "^" or "v"
-                end)
+                end))
 
                 local function selectOpt(opt)
                     currentVal = opt
@@ -1516,7 +1616,7 @@ function RanarthLib:CreateWindow(HubConfig)
                         optBtn.Font = Enum.Font.Gotham
                         optBtn.TextSize = 11
                         Instance.new("UICorner", optBtn).CornerRadius = UDim.new(0, 4)
-                        optBtn.MouseButton1Click:Connect(function() selectOpt(opt) end)
+                        RanarthLib:TrackConnection(optBtn.MouseButton1Click:Connect(function() selectOpt(opt) end))
                     end
                 end
 
@@ -1534,7 +1634,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 local options = args.Options or {}
                 local currentSelected = args.CurrentValue or {}
                 local callback = args.Callback or function() end
-                local flag = args.Flag or nil
+                local flag = args.Flag and (tabNamespace .. "::" .. args.Flag) or nil
 
                 local selected = {}
                 for _, v in ipairs(currentSelected) do selected[v] = true end
@@ -1574,11 +1674,11 @@ function RanarthLib:CreateWindow(HubConfig)
                 refreshLabel()
 
                 local isOpen = false
-                topBtn.MouseButton1Click:Connect(function()
+                RanarthLib:TrackConnection(topBtn.MouseButton1Click:Connect(function()
                     isOpen = not isOpen
                     tweens:Create(frame, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, isOpen and math.min(140, (#options * 28) + 40) or 35)}):Play()
                     icon.Text = isOpen and "^" or "v"
-                end)
+                end))
 
                 for _, opt in ipairs(options) do
                     if selected[opt] == nil then selected[opt] = false end
@@ -1592,7 +1692,7 @@ function RanarthLib:CreateWindow(HubConfig)
                     optBtn.TextXAlignment = Enum.TextXAlignment.Left
                     Instance.new("UICorner", optBtn).CornerRadius = UDim.new(0, 4)
 
-                    optBtn.MouseButton1Click:Connect(function()
+                    RanarthLib:TrackConnection(optBtn.MouseButton1Click:Connect(function()
                         selected[opt] = not selected[opt]
                         optBtn.Text = (selected[opt] and "[x] " or "[ ] ") .. opt
                         refreshLabel()
@@ -1603,7 +1703,7 @@ function RanarthLib:CreateWindow(HubConfig)
                             if RanarthLib.AutoSaveEnabled then RanarthLib:SaveConfiguration() end
                         end
                         callback(res)
-                    end)
+                    end))
                 end
 
                 return setmetatable({
@@ -1640,7 +1740,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 tBox.TextSize = 11
                 tBox.ClearTextOnFocus = false
 
-                tBox.FocusLost:Connect(function(enterPressed) callback(tBox.Text, enterPressed) end)
+                RanarthLib:TrackConnection(tBox.FocusLost:Connect(function(enterPressed) callback(tBox.Text, enterPressed) end))
 
                 return setmetatable({
                     Set = function(self, txt) tBox.Text = txt end,
@@ -1666,7 +1766,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 local keyStroke = staticStroke(keyBtn, 1.2)
 
                 local listening = false
-                keyBtn.MouseButton1Click:Connect(function()
+                RanarthLib:TrackConnection(keyBtn.MouseButton1Click:Connect(function()
                     if listening then return end
                     listening = true
                     keyBtn.Text = "..."
@@ -1683,7 +1783,7 @@ function RanarthLib:CreateWindow(HubConfig)
                             callback(currentKey)
                         end
                     end)
-                end)
+                end))
 
                 return setmetatable({
                     SetKey = function(self, k) currentKey = k; keyBtn.Text = currentKey.Name end,
@@ -1695,7 +1795,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 args = args or {}
                 local defaultColor = args.Color or args.Default or Color3.fromRGB(100, 150, 255)
                 local callback = args.Callback or function() end
-                local flag = args.Flag or nil
+                local flag = args.Flag and (tabNamespace .. "::" .. args.Flag) or nil
                 
                 if flag and RanarthLib.Flags[flag] then
                     local stored = RanarthLib.Flags[flag]
@@ -1757,14 +1857,14 @@ function RanarthLib:CreateWindow(HubConfig)
                     hitBtn.Text = ""
 
                     local dragging = false
-                    hitBtn.InputBegan:Connect(function(input)
+                    RanarthLib:TrackConnection(hitBtn.InputBegan:Connect(function(input)
                         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                             dragging = true
                             local pos = math.clamp((input.Position.X - bgBar.AbsolutePosition.X) / bgBar.AbsoluteSize.X, 0, 1)
                             fill.Size = UDim2.new(pos, 0, 1, 0)
                             onChange(math.floor(pos * 255))
                         end
-                    end)
+                    end))
                     RanarthLib:SafeUIS(uis.InputChanged, frame, function(input)
                         if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                             local pos = math.clamp((input.Position.X - bgBar.AbsolutePosition.X) / bgBar.AbsoluteSize.X, 0, 1)
@@ -1781,10 +1881,10 @@ function RanarthLib:CreateWindow(HubConfig)
                 makeChannelSlider(65, "G", g, function(v) g = v; pushColor() end)
                 makeChannelSlider(90, "B", b, function(v) b = v; pushColor() end)
 
-                swatch.MouseButton1Click:Connect(function()
+                RanarthLib:TrackConnection(swatch.MouseButton1Click:Connect(function()
                     isOpen = not isOpen
                     tweens:Create(frame, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, isOpen and 120 or 35)}):Play()
-                end)
+                end))
 
                 return setmetatable({ GetColor = function() return currentColor end }, {__index = ctrl})
             end
@@ -1813,7 +1913,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 searchBox.TextXAlignment = Enum.TextXAlignment.Left
                 searchBox.ClearTextOnFocus = false
 
-                searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+                RanarthLib:TrackConnection(searchBox:GetPropertyChangedSignal("Text"):Connect(function()
                     local query = searchBox.Text:lower()
                     for _, child in ipairs(targetParent:GetChildren()) do
                         if child:IsA("GuiObject") and child ~= sFrame then
@@ -1830,7 +1930,7 @@ function RanarthLib:CreateWindow(HubConfig)
                             end
                         end
                     end
-                end)
+                end))
                 return sFrame
             end
 
@@ -2053,11 +2153,11 @@ function RanarthLib:CreateWindow(HubConfig)
                 copyBtn.Font = Enum.Font.GothamBold
                 copyBtn.TextSize = 9
                 Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 4)
-                copyBtn.MouseButton1Click:Connect(function()
+                RanarthLib:TrackConnection(copyBtn.MouseButton1Click:Connect(function()
                     if setclipboard then setclipboard(codeText) end
                     copyBtn.Text = "COPIED"
                     task.wait(1.5); copyBtn.Text = "COPY"
-                end)
+                end))
 
                 local codeScroll = Instance.new("ScrollingFrame", cbFrame)
                 codeScroll.Size = UDim2.new(1, -10, 0, 100)
