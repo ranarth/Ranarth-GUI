@@ -241,6 +241,7 @@ local LucideIcons = {
     ["cat"] = "rbxassetid://118339348494810",
     ["angry"] = "rbxassetid://79345553086407",
     ["laugh"] = "rbxassetid://115974660887808",
+    ["ban"] = "rbxassetid://109685306480139",
 }
 
 return LucideIcons
