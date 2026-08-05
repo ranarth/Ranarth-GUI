@@ -356,6 +356,7 @@ local LucideIcons = {
     ["angry"] = "rbxassetid://79345553086407",
     ["laugh"] = "rbxassetid://115974660887808",
     ["ban"] = "rbxassetid://109685306480139",
+    ["gift"] = "rbxassetid://87706885156127",
 }
 
 -- HYBRID MODE: Load future icon extensions from GitHub
