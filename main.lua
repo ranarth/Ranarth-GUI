@@ -132,9 +132,11 @@ local RanarthLib = {
     function RanarthLib:ApplyTheme(obj, prop, themeKey)
         if not obj then return end
         obj[prop] = self.CurrentTheme[themeKey]
-        table.insert(self.ThemeUpdaters, {Obj = obj, Prop = prop, Key = themeKey})
 
-        if #self.ThemeUpdaters % 100 == 0 then
+        -- Housekeeping dijalankan SEBELUM entry baru didaftarkan, supaya entry yang
+        -- baru saja dibuat (dan mungkin belum sempat di-Parent-kan) tidak ikut
+        -- kesapu oleh pengecekan Obj.Parent di bawah ini.
+        if #self.ThemeUpdaters > 0 and #self.ThemeUpdaters % 100 == 0 then
             for i = #self.ThemeUpdaters, 1, -1 do
                 local d = self.ThemeUpdaters[i]
                 if not (d.Obj and d.Obj.Parent) then
@@ -142,6 +144,8 @@ local RanarthLib = {
                 end
             end
         end
+
+        table.insert(self.ThemeUpdaters, {Obj = obj, Prop = prop, Key = themeKey})
     end
 
     function RanarthLib:GetThemeGradient()
@@ -1409,12 +1413,12 @@ function RanarthLib:CreateWindow(HubConfig)
                     descLbl.Position = UDim2.new(0, xOffset, 0, 22)
                     descLbl.BackgroundTransparency = 1
                     descLbl.Text = descText
-                    descLbl.TextColor3 = Color3.fromRGB(140, 150, 190)
                     descLbl.Font = Enum.Font.Gotham
                     descLbl.TextSize = 10
                     descLbl.RichText = true
                     descLbl.TextXAlignment = Enum.TextXAlignment.Left
                     descLbl.Parent = frame
+                    RanarthLib:ApplyTheme(descLbl, "TextColor3", "TextDark")
                 end
 
                 -- Lock Overlay Frame
