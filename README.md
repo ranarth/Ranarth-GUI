@@ -102,7 +102,7 @@ btn:Lock("Requires admin access")
 btn:SetColor(Color3.fromRGB(40, 200, 40), Color3.fromRGB(60, 220, 60))
 -- Or use Hex: btn:SetColor(Color3.fromHex("#28C828"), Color3.fromHex("#3CDC3C"))
 
--- Revert to the default Ranarth Navy theme
+-- Revert to the default Space theme
 -- btn:ResetColor()
 ```
 
