@@ -17,6 +17,128 @@ local RanarthLib = {
     ScreenGuis = {}
 }
 
+    RanarthLib.Themes = {
+        ["Space"] = {
+            MainBG = Color3.fromRGB(10, 11, 16),
+            ElementBG = Color3.fromRGB(16, 18, 28),
+            SecondaryBG = Color3.fromRGB(25, 28, 40),
+            Hover = Color3.fromRGB(35, 40, 70),
+            Accent = Color3.fromRGB(100, 150, 255),
+            Text = Color3.fromRGB(220, 225, 255),
+            TextDark = Color3.fromRGB(130, 140, 180),
+            Stroke1 = Color3.fromRGB(38, 44, 75),
+            Stroke2 = Color3.fromRGB(100, 150, 255),
+            Stroke3 = Color3.fromRGB(220, 255, 255)
+        },
+        ["Sakura"] = {
+            MainBG = Color3.fromRGB(36, 24, 29),
+            ElementBG = Color3.fromRGB(54, 37, 44),
+            SecondaryBG = Color3.fromRGB(70, 48, 58),
+            Hover = Color3.fromRGB(90, 60, 75),
+            Accent = Color3.fromRGB(255, 158, 187),
+            Text = Color3.fromRGB(255, 240, 245),
+            TextDark = Color3.fromRGB(180, 150, 160),
+            Stroke1 = Color3.fromRGB(79, 53, 64),
+            Stroke2 = Color3.fromRGB(255, 158, 187),
+            Stroke3 = Color3.fromRGB(255, 255, 255)
+        },
+        ["Bloody Mary"] = {
+            MainBG = Color3.fromRGB(12, 2, 2),
+            ElementBG = Color3.fromRGB(23, 5, 5),
+            SecondaryBG = Color3.fromRGB(35, 8, 8),
+            Hover = Color3.fromRGB(55, 12, 12),
+            Accent = Color3.fromRGB(230, 0, 0),
+            Text = Color3.fromRGB(255, 214, 214),
+            TextDark = Color3.fromRGB(150, 80, 80),
+            Stroke1 = Color3.fromRGB(45, 10, 10),
+            Stroke2 = Color3.fromRGB(230, 0, 0),
+            Stroke3 = Color3.fromRGB(255, 94, 94)
+        },
+        ["Cyberpunk"] = {
+            MainBG = Color3.fromRGB(11, 12, 16),
+            ElementBG = Color3.fromRGB(20, 21, 28),
+            SecondaryBG = Color3.fromRGB(28, 30, 40),
+            Hover = Color3.fromRGB(40, 43, 60),
+            Accent = Color3.fromRGB(0, 255, 255),
+            Text = Color3.fromRGB(229, 255, 255),
+            TextDark = Color3.fromRGB(100, 120, 150),
+            Stroke1 = Color3.fromRGB(0, 255, 255),
+            Stroke2 = Color3.fromRGB(255, 0, 124),
+            Stroke3 = Color3.fromRGB(255, 230, 0)
+        },
+        ["Mystic Grimoire"] = {
+            MainBG = Color3.fromRGB(19, 16, 27),
+            ElementBG = Color3.fromRGB(29, 24, 42),
+            SecondaryBG = Color3.fromRGB(39, 32, 58),
+            Hover = Color3.fromRGB(55, 45, 80),
+            Accent = Color3.fromRGB(157, 78, 221),
+            Text = Color3.fromRGB(234, 226, 248),
+            TextDark = Color3.fromRGB(140, 120, 180),
+            Stroke1 = Color3.fromRGB(45, 35, 66),
+            Stroke2 = Color3.fromRGB(157, 78, 221),
+            Stroke3 = Color3.fromRGB(212, 175, 55)
+        },
+        ["Retro Y2K"] = {
+            MainBG = Color3.fromRGB(244, 244, 249),
+            ElementBG = Color3.fromRGB(255, 255, 255),
+            SecondaryBG = Color3.fromRGB(232, 232, 238),
+            Hover = Color3.fromRGB(210, 210, 225),
+            Accent = Color3.fromRGB(136, 146, 240),
+            Text = Color3.fromRGB(43, 43, 54),
+            TextDark = Color3.fromRGB(120, 120, 140),
+            Stroke1 = Color3.fromRGB(200, 200, 220),
+            Stroke2 = Color3.fromRGB(136, 146, 240),
+            Stroke3 = Color3.fromRGB(255, 133, 161)
+        }
+    }
+    RanarthLib.CurrentTheme = RanarthLib.Themes["Space"]
+    RanarthLib.OnThemeChanged = Instance.new("BindableEvent")
+    RanarthLib.ThemeUpdaters = {}
+
+    function RanarthLib:SetTheme(themeName)
+        if self.Themes[themeName] then
+            self.CurrentTheme = self.Themes[themeName]
+            self.OnThemeChanged:Fire()
+            for i = #self.ThemeUpdaters, 1, -1 do
+                local data = self.ThemeUpdaters[i]
+                if data.Obj and data.Obj.Parent then
+                    tweens:Create(data.Obj, TweenInfo.new(0.3), {[data.Prop] = self.CurrentTheme[data.Key]}):Play()
+                else
+                    table.remove(self.ThemeUpdaters, i)
+                end
+            end
+        end
+    end
+
+    function RanarthLib:ApplyTheme(obj, prop, themeKey)
+        if not obj then return end
+        obj[prop] = self.CurrentTheme[themeKey]
+        table.insert(self.ThemeUpdaters, {Obj = obj, Prop = prop, Key = themeKey})
+
+        -- Housekeeping ringan: entry untuk objek yang sudah di-Destroy() menumpuk
+        -- terus kalau cuma dibersihkan saat SetTheme() dipanggil. Sapu tiap 100
+        -- pendaftaran baru supaya tidak nahan referensi Instance mati selamanya.
+        if #self.ThemeUpdaters % 100 == 0 then
+            for i = #self.ThemeUpdaters, 1, -1 do
+                local d = self.ThemeUpdaters[i]
+                if not (d.Obj and d.Obj.Parent) then
+                    table.remove(self.ThemeUpdaters, i)
+                end
+            end
+        end
+    end
+
+    function RanarthLib:GetThemeGradient()
+        return ColorSequence.new({
+            ColorSequenceKeypoint.new(0, self.CurrentTheme.Stroke1),
+            ColorSequenceKeypoint.new(0.3, self.CurrentTheme.Stroke2),
+            ColorSequenceKeypoint.new(0.5, self.CurrentTheme.Stroke3),
+            ColorSequenceKeypoint.new(0.7, self.CurrentTheme.Stroke2),
+            ColorSequenceKeypoint.new(1, self.CurrentTheme.Stroke1),
+        })
+    end
+
+
 function RanarthLib:TrackConnection(conn)
     table.insert(self.Connections, conn)
     return conn
@@ -49,17 +171,10 @@ function RanarthLib:Unload()
     end
     self.ScreenGuis = {}
     self.Flags = {}
+    self.ThemeUpdaters = {}
 end
 
 local allGrads = {}
-local RANARTH_STROKE_CS = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(38, 44, 75)),
-    ColorSequenceKeypoint.new(0.3, Color3.fromRGB(100, 150, 255)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(220, 255, 255)),
-    ColorSequenceKeypoint.new(0.7, Color3.fromRGB(100, 150, 255)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(38, 44, 75)),
-})
-
 local function animStroke(parent, thick)
     local s = Instance.new("UIStroke")
     s.Thickness = thick or 1.5
@@ -67,10 +182,13 @@ local function animStroke(parent, thick)
     s.Color = Color3.new(1, 1, 1)
     s.Parent = parent
     local g = Instance.new("UIGradient")
-    g.Color = RANARTH_STROKE_CS
+    g.Color = RanarthLib:GetThemeGradient()
     g.Rotation = 45
     g.Parent = s
     table.insert(allGrads, g)
+    RanarthLib:TrackConnection(RanarthLib.OnThemeChanged.Event:Connect(function()
+        g.Color = RanarthLib:GetThemeGradient()
+    end))
     return s, g
 end
 
@@ -78,7 +196,7 @@ local function staticStroke(parent, thick)
     local s = Instance.new("UIStroke")
     s.Thickness = thick or 1.2
     s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    s.Color = Color3.fromRGB(38, 44, 75)
+    RanarthLib:ApplyTheme(s, "Color", "Stroke1")
     s.Parent = parent
     return s
 end
@@ -356,7 +474,6 @@ local LucideIcons = {
     ["angry"] = "rbxassetid://79345553086407",
     ["laugh"] = "rbxassetid://115974660887808",
     ["ban"] = "rbxassetid://109685306480139",
-    ["gift"] = "rbxassetid://87706885156127",
 }
 
 -- HYBRID MODE: Load future icon extensions from GitHub
@@ -395,7 +512,7 @@ local function applyIcon(parent, iconData, preserveColor)
     if preserveColor or not isLucide then
         img.ImageColor3 = Color3.fromRGB(255, 255, 255)
     else
-        img.ImageColor3 = Color3.fromRGB(200, 210, 255)
+        RanarthLib:ApplyTheme(img, "ImageColor3", "Text")
     end
     img.Parent = parent
     return img
@@ -432,8 +549,8 @@ table.insert(RanarthLib.ScreenGuis, tooltip_gui)
 
 local tooltipLabel = Instance.new("TextLabel")
 tooltipLabel.Size = UDim2.new(0, 160, 0, 26)
-tooltipLabel.BackgroundColor3 = Color3.fromRGB(10, 11, 16)
-tooltipLabel.TextColor3 = Color3.fromRGB(220, 225, 255)
+RanarthLib:ApplyTheme(tooltipLabel, "BackgroundColor3", "MainBG")
+RanarthLib:ApplyTheme(tooltipLabel, "TextColor3", "Text")
 tooltipLabel.Font = Enum.Font.Gotham
 tooltipLabel.TextSize = 11
 tooltipLabel.RichText = true
@@ -442,7 +559,7 @@ tooltipLabel.Visible = false
 tooltipLabel.ZIndex = 100
 tooltipLabel.Parent = tooltip_gui
 Instance.new("UICorner", tooltipLabel).CornerRadius = UDim.new(0, 4)
-Instance.new("UIStroke", tooltipLabel).Color = Color3.fromRGB(38, 44, 75)
+Instance.new("UIStroke", tooltipLabel).Color = RanarthLib.CurrentTheme.Stroke1
 
 local lastNotifTick = 0
 function RanarthLib:CreateNotification(title, text, duration, iconData)
@@ -465,7 +582,7 @@ function RanarthLib:CreateNotification(title, text, duration, iconData)
     duration = duration or 4
     local card = Instance.new("Frame")
     card.Size = UDim2.new(0, 250, 0, 60)
-    card.BackgroundColor3 = Color3.fromRGB(10, 11, 16)
+    RanarthLib:ApplyTheme(card, "BackgroundColor3", "MainBG")
     card.BackgroundTransparency = 1
     card.ClipsDescendants = true
     card.Parent = notif_container
@@ -489,7 +606,7 @@ function RanarthLib:CreateNotification(title, text, duration, iconData)
     titleLbl.Position = UDim2.new(0, xOffset, 0, 6)
     titleLbl.BackgroundTransparency = 1
     titleLbl.Text = title or "Notification"
-    titleLbl.TextColor3 = Color3.fromRGB(220, 225, 255)
+    RanarthLib:ApplyTheme(titleLbl, "TextColor3", "Text")
     titleLbl.Font = Enum.Font.GothamBold
     titleLbl.TextSize = 13
     titleLbl.RichText = true
@@ -502,7 +619,7 @@ function RanarthLib:CreateNotification(title, text, duration, iconData)
     bodyLbl.Position = UDim2.new(0, xOffset, 0, 26)
     bodyLbl.BackgroundTransparency = 1
     bodyLbl.Text = text or ""
-    bodyLbl.TextColor3 = Color3.fromRGB(200, 210, 255)
+    RanarthLib:ApplyTheme(bodyLbl, "TextColor3", "Text")
     bodyLbl.Font = Enum.Font.Gotham
     bodyLbl.TextSize = 12
     bodyLbl.RichText = true
@@ -566,6 +683,10 @@ function RanarthLib:CreateWindow(HubConfig)
     if HubConfig.AntiSpam ~= nil then
         RanarthLib.AntiSpam = HubConfig.AntiSpam
     end
+    
+    if HubConfig.Theme and RanarthLib.Themes[HubConfig.Theme] then
+        RanarthLib.CurrentTheme = RanarthLib.Themes[HubConfig.Theme]
+    end
 
     local Window = { Tabs = {}, ActiveTabBtn = nil }
 
@@ -581,7 +702,7 @@ function RanarthLib:CreateWindow(HubConfig)
     frame.Name = "Main"
     frame.Size = UDim2.new(0, DefWidth, 0, DefHeight)
     frame.Position = UDim2.new(0.5, -(DefWidth/2), 0.5, -(DefHeight/2))
-    frame.BackgroundColor3 = Color3.fromRGB(10, 11, 16)
+    RanarthLib:ApplyTheme(frame, "BackgroundColor3", "MainBG")
     frame.BorderSizePixel = 0
     frame.Active = true
     frame.ClipsDescendants = true 
@@ -599,7 +720,7 @@ function RanarthLib:CreateWindow(HubConfig)
 
     local top_bar = Instance.new("Frame")
     top_bar.Size = UDim2.new(1, 0, 0, 35)
-    top_bar.BackgroundColor3 = Color3.fromRGB(16, 18, 28)
+    RanarthLib:ApplyTheme(top_bar, "BackgroundColor3", "ElementBG")
     top_bar.BorderSizePixel = 0
     top_bar.Parent = frame
     Instance.new("UICorner", top_bar).CornerRadius = UDim.new(0, 10)
@@ -609,7 +730,7 @@ function RanarthLib:CreateWindow(HubConfig)
     title_txt.Position = UDim2.new(0, 15, 0, 0)
     title_txt.BackgroundTransparency = 1
     title_txt.Text = Title
-    title_txt.TextColor3 = Color3.fromRGB(220, 225, 255)
+    RanarthLib:ApplyTheme(title_txt, "TextColor3", "Text")
     title_txt.Font = Enum.Font.GothamBold
     title_txt.TextSize = 12
     title_txt.RichText = true
@@ -648,7 +769,7 @@ function RanarthLib:CreateWindow(HubConfig)
     local function create_header_btn(text, color, callback)
         local btn = Instance.new("TextButton")
         btn.Size = UDim2.new(0, 24, 0, 24)
-        btn.BackgroundColor3 = Color3.fromRGB(25, 28, 40)
+        RanarthLib:ApplyTheme(btn, "BackgroundColor3", "SecondaryBG")
         btn.Text = text
         btn.TextColor3 = color
         btn.Font = Enum.Font.GothamBold
@@ -656,7 +777,7 @@ function RanarthLib:CreateWindow(HubConfig)
         btn.Parent = control_buttons
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
         RanarthLib:TrackConnection(btn.MouseEnter:Connect(function() tweens:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(35, 40, 55)}):Play() end))
-        RanarthLib:TrackConnection(btn.MouseLeave:Connect(function() tweens:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(25, 28, 40)}):Play() end))
+        RanarthLib:TrackConnection(btn.MouseLeave:Connect(function() tweens:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = RanarthLib.CurrentTheme.SecondaryBG}):Play() end))
         RanarthLib:TrackConnection(btn.MouseButton1Click:Connect(callback))
     end
 
@@ -728,7 +849,7 @@ function RanarthLib:CreateWindow(HubConfig)
     watermark.Position = UDim2.new(0, 10, 1, -20)
     watermark.BackgroundTransparency = 1
     watermark.Text = "Ranarth GUI @2026"
-    watermark.TextColor3 = Color3.fromRGB(130, 140, 180)
+    RanarthLib:ApplyTheme(watermark, "TextColor3", "TextDark")
     watermark.TextTransparency = 0.4
     watermark.Font = Enum.Font.Gotham
     watermark.TextSize = 10
@@ -741,7 +862,7 @@ function RanarthLib:CreateWindow(HubConfig)
     resizer.Position = UDim2.new(1, -20, 1, -20)
     resizer.BackgroundTransparency = 1
     resizer.Text = "◢"
-    resizer.TextColor3 = Color3.fromRGB(130, 140, 180)
+    RanarthLib:ApplyTheme(resizer, "TextColor3", "TextDark")
     resizer.TextSize = 14
     resizer.Font = Enum.Font.Gotham
     resizer.ZIndex = 10
@@ -790,7 +911,7 @@ function RanarthLib:CreateWindow(HubConfig)
         local tab_divider = Instance.new("Frame", frame)
         tab_divider.Size = UDim2.new(0, 1, 1, -55)
         tab_divider.Position = UDim2.new(0, 135, 0, 45)
-        tab_divider.BackgroundColor3 = Color3.fromRGB(38, 44, 75)
+        RanarthLib:ApplyTheme(tab_divider, "BackgroundColor3", "Stroke1")
         tab_divider.BorderSizePixel = 0
 
         content_container.Size = UDim2.new(1, -155, 1, -55)
@@ -803,7 +924,7 @@ function RanarthLib:CreateWindow(HubConfig)
         local tab_divider = Instance.new("Frame", frame)
         tab_divider.Size = UDim2.new(1, -20, 0, 1)
         tab_divider.Position = UDim2.new(0, 10, 0, 82)
-        tab_divider.BackgroundColor3 = Color3.fromRGB(38, 44, 75)
+        RanarthLib:ApplyTheme(tab_divider, "BackgroundColor3", "Stroke1")
         tab_divider.BorderSizePixel = 0
 
         content_container.Size = UDim2.new(1, -20, 1, -95)
@@ -815,6 +936,9 @@ function RanarthLib:CreateWindow(HubConfig)
     -- ==========================================
     function Window:CreateDialog(title, text, options)
         options = options or {}
+        if #options == 0 then
+            options = {{Title = "OK", Callback = function() end}}
+        end
         local overlay = Instance.new("Frame", gui)
         overlay.Size = UDim2.new(1, 0, 1, 0)
         overlay.BackgroundTransparency = 1
@@ -825,7 +949,7 @@ function RanarthLib:CreateWindow(HubConfig)
         dialogBox.Size = UDim2.new(0, 320, 0, 0)
         dialogBox.Position = UDim2.new(0.5, 0, 0.5, 20)
         dialogBox.AnchorPoint = Vector2.new(0.5, 0.5)
-        dialogBox.BackgroundColor3 = Color3.fromRGB(15, 18, 28)
+        RanarthLib:ApplyTheme(dialogBox, "BackgroundColor3", "ElementBG")
         dialogBox.BackgroundTransparency = 1
         dialogBox.ClipsDescendants = true
         dialogBox.Active = true 
@@ -858,7 +982,7 @@ function RanarthLib:CreateWindow(HubConfig)
         lblText.AutomaticSize = Enum.AutomaticSize.Y
         lblText.BackgroundTransparency = 1
         lblText.Text = text
-        lblText.TextColor3 = Color3.fromRGB(200, 210, 255)
+        RanarthLib:ApplyTheme(lblText, "TextColor3", "Text")
         lblText.Font = Enum.Font.Gotham
         lblText.TextSize = 13
         lblText.RichText = true
@@ -888,7 +1012,7 @@ function RanarthLib:CreateWindow(HubConfig)
         for _, opt in ipairs(options) do
             local btn = Instance.new("TextButton", btnContainer)
             btn.Size = UDim2.new(1 / #options, -10, 1, 0)
-            btn.BackgroundColor3 = Color3.fromRGB(35, 40, 70)
+            RanarthLib:ApplyTheme(btn, "BackgroundColor3", "Hover")
             btn.Text = opt.Title
             btn.TextColor3 = Color3.fromRGB(255, 255, 255)
             btn.Font = Enum.Font.GothamBold
@@ -900,7 +1024,7 @@ function RanarthLib:CreateWindow(HubConfig)
             Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
             
             RanarthLib:TrackConnection(btn.MouseEnter:Connect(function() tweens:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(50, 60, 90)}):Play() end))
-            RanarthLib:TrackConnection(btn.MouseLeave:Connect(function() tweens:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35, 40, 70)}):Play() end))
+            RanarthLib:TrackConnection(btn.MouseLeave:Connect(function() tweens:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = RanarthLib.CurrentTheme.Hover}):Play() end))
 
             RanarthLib:TrackConnection(btn.MouseButton1Click:Connect(function()
                 closeDialog()
@@ -926,7 +1050,7 @@ function RanarthLib:CreateWindow(HubConfig)
         local subFrame = Instance.new("Frame", gui)
         subFrame.Size = UDim2.new(0, width, 0, height)
         subFrame.Position = UDim2.new(0.5, (DefWidth/2) + 20, 0.5, -(height/2))
-        subFrame.BackgroundColor3 = Color3.fromRGB(10, 11, 16)
+        RanarthLib:ApplyTheme(subFrame, "BackgroundColor3", "MainBG")
         subFrame.BorderSizePixel = 0
         subFrame.Active = true
         subFrame.ClipsDescendants = true
@@ -935,7 +1059,7 @@ function RanarthLib:CreateWindow(HubConfig)
 
         local sub_top_bar = Instance.new("Frame", subFrame)
         sub_top_bar.Size = UDim2.new(1, 0, 0, 30)
-        sub_top_bar.BackgroundColor3 = Color3.fromRGB(14, 20, 40)
+        RanarthLib:ApplyTheme(sub_top_bar, "BackgroundColor3", "ElementBG")
         sub_top_bar.BorderSizePixel = 0
         Instance.new("UICorner", sub_top_bar).CornerRadius = UDim.new(0, 10)
 
@@ -962,14 +1086,14 @@ function RanarthLib:CreateWindow(HubConfig)
         local isMinimized = false
         local minBtn = Instance.new("TextButton", sub_control_buttons)
         minBtn.Size = UDim2.new(0, 24, 0, 24)
-        minBtn.BackgroundColor3 = Color3.fromRGB(25, 28, 40)
+        RanarthLib:ApplyTheme(minBtn, "BackgroundColor3", "SecondaryBG")
         minBtn.Text = "-"
         minBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
         minBtn.Font = Enum.Font.GothamBold
         minBtn.TextSize = 12
         Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 4)
         RanarthLib:TrackConnection(minBtn.MouseEnter:Connect(function() tweens:Create(minBtn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(35, 40, 55)}):Play() end))
-        RanarthLib:TrackConnection(minBtn.MouseLeave:Connect(function() tweens:Create(minBtn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(25, 28, 40)}):Play() end))
+        RanarthLib:TrackConnection(minBtn.MouseLeave:Connect(function() tweens:Create(minBtn, TweenInfo.new(0.1), {BackgroundColor3 = RanarthLib.CurrentTheme.SecondaryBG}):Play() end))
         RanarthLib:TrackConnection(minBtn.MouseButton1Click:Connect(function()
             isMinimized = not isMinimized
             tweens:Create(subFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Size = UDim2.new(0, width, 0, isMinimized and 30 or height)}):Play()
@@ -977,14 +1101,14 @@ function RanarthLib:CreateWindow(HubConfig)
 
         local clsBtn = Instance.new("TextButton", sub_control_buttons)
         clsBtn.Size = UDim2.new(0, 24, 0, 24)
-        clsBtn.BackgroundColor3 = Color3.fromRGB(25, 28, 40)
+        RanarthLib:ApplyTheme(clsBtn, "BackgroundColor3", "SecondaryBG")
         clsBtn.Text = "X"
         clsBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
         clsBtn.Font = Enum.Font.GothamBold
         clsBtn.TextSize = 12
         Instance.new("UICorner", clsBtn).CornerRadius = UDim.new(0, 4)
         RanarthLib:TrackConnection(clsBtn.MouseEnter:Connect(function() tweens:Create(clsBtn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(45, 30, 40)}):Play() end))
-        RanarthLib:TrackConnection(clsBtn.MouseLeave:Connect(function() tweens:Create(clsBtn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(25, 28, 40)}):Play() end))
+        RanarthLib:TrackConnection(clsBtn.MouseLeave:Connect(function() tweens:Create(clsBtn, TweenInfo.new(0.1), {BackgroundColor3 = RanarthLib.CurrentTheme.SecondaryBG}):Play() end))
         RanarthLib:TrackConnection(clsBtn.MouseButton1Click:Connect(function() subFrame:Destroy() end))
 
         local tDrag, tDragStart, tStartPos, dragInputToggle
@@ -1037,7 +1161,7 @@ function RanarthLib:CreateWindow(HubConfig)
         local fBtn = Instance.new("TextButton")
         fBtn.Size = UDim2.new(0, 140, 0, 35)
         fBtn.Position = UDim2.new(0.5, -70, 0.1, 0)
-        fBtn.BackgroundColor3 = Color3.fromRGB(15, 18, 28)
+        RanarthLib:ApplyTheme(fBtn, "BackgroundColor3", "ElementBG")
         fBtn.Text = ""
         fBtn.AutoButtonColor = false
         fBtn.AutomaticSize = Enum.AutomaticSize.X
@@ -1072,12 +1196,12 @@ function RanarthLib:CreateWindow(HubConfig)
         txtLbl.Size = UDim2.new(0, 0, 1, 0)
         txtLbl.BackgroundTransparency = 1
         txtLbl.Text = text
-        txtLbl.TextColor3 = Color3.fromRGB(200, 210, 255)
+        RanarthLib:ApplyTheme(txtLbl, "TextColor3", "Text")
         txtLbl.Font = Enum.Font.GothamBold
         txtLbl.TextSize = 12
 
-        RanarthLib:TrackConnection(fBtn.MouseEnter:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35, 40, 70)}):Play() end))
-        RanarthLib:TrackConnection(fBtn.MouseLeave:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(15, 18, 28)}):Play() end))
+        RanarthLib:TrackConnection(fBtn.MouseEnter:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = RanarthLib.CurrentTheme.Hover}):Play() end))
+        RanarthLib:TrackConnection(fBtn.MouseLeave:Connect(function() tweens:Create(fBtn, TweenInfo.new(0.15), {BackgroundColor3 = RanarthLib.CurrentTheme.ElementBG}):Play() end))
 
         local dragToggle, dragInputToggle, dragStartPos, startBtnPos, hasDragged = false, nil, nil, nil, false
         RanarthLib:TrackConnection(fBtn.InputBegan:Connect(function(input)
@@ -1133,9 +1257,9 @@ function RanarthLib:CreateWindow(HubConfig)
             tabBtn.Size = UDim2.new(0, 0, 1, 0)
             tabBtn.AutomaticSize = Enum.AutomaticSize.X
         end
-        tabBtn.BackgroundColor3 = Color3.fromRGB(22, 26, 44)
+        RanarthLib:ApplyTheme(tabBtn, "BackgroundColor3", "SecondaryBG")
         tabBtn.Text = tabName
-        tabBtn.TextColor3 = Color3.fromRGB(130, 140, 180)
+        RanarthLib:ApplyTheme(tabBtn, "TextColor3", "TextDark")
         tabBtn.Font = Enum.Font.GothamBold
         tabBtn.TextSize = 12
         tabBtn.RichText = true
@@ -1165,7 +1289,7 @@ function RanarthLib:CreateWindow(HubConfig)
         scrollFrame.BackgroundTransparency = 1
         scrollFrame.BorderSizePixel = 0
         scrollFrame.ScrollBarThickness = 4
-        scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(38, 44, 75)
+        RanarthLib:ApplyTheme(scrollFrame, "ScrollBarImageColor3", "Stroke1")
         scrollFrame.Visible = false
         scrollFrame.Parent = content_container
         
@@ -1189,10 +1313,10 @@ function RanarthLib:CreateWindow(HubConfig)
             if Window.ActiveTabBtn == tabBtn then return end
             for btn, frm in pairs(Window.Tabs) do
                 frm.Visible = false
-                tweens:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(22, 26, 44), TextColor3 = Color3.fromRGB(130, 140, 180)}):Play()
+                tweens:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = RanarthLib.CurrentTheme.SecondaryBG, TextColor3 = RanarthLib.CurrentTheme.TextDark}):Play()
             end
             scrollFrame.Visible = true
-            tweens:Create(tabBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 40, 70), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+            tweens:Create(tabBtn, TweenInfo.new(0.2), {BackgroundColor3 = RanarthLib.CurrentTheme.Hover, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
             Window.ActiveTabBtn = tabBtn
         end))
 
@@ -1200,7 +1324,7 @@ function RanarthLib:CreateWindow(HubConfig)
         
         if not Window.ActiveTabBtn then
             scrollFrame.Visible = true
-            tabBtn.BackgroundColor3 = Color3.fromRGB(35, 40, 70)
+            RanarthLib:ApplyTheme(tabBtn, "BackgroundColor3", "Hover")
             tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
             Window.ActiveTabBtn = tabBtn
         end
@@ -1228,7 +1352,7 @@ function RanarthLib:CreateWindow(HubConfig)
 
                 local frame = Instance.new("Frame")
                 frame.Size = UDim2.new(1, 0, 0, height)
-                frame.BackgroundColor3 = Color3.fromRGB(15, 18, 28)
+                RanarthLib:ApplyTheme(frame, "BackgroundColor3", "ElementBG")
                 frame.Parent = targetParent
                 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
                 staticStroke(frame, 1.2)
@@ -1248,7 +1372,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 titleLbl.Position = UDim2.new(0, xOffset, 0, descText and 4 or (height/2 - 10))
                 titleLbl.BackgroundTransparency = 1
                 titleLbl.Text = titleText
-                titleLbl.TextColor3 = Color3.fromRGB(200, 210, 255)
+                RanarthLib:ApplyTheme(titleLbl, "TextColor3", "Text")
                 titleLbl.Font = Enum.Font.GothamBold
                 titleLbl.TextSize = 12
                 titleLbl.RichText = true
@@ -1273,7 +1397,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 -- Lock Overlay Frame
                 local lockOverlay = Instance.new("Frame", frame)
                 lockOverlay.Size = UDim2.new(1, 0, 1, 0)
-                lockOverlay.BackgroundColor3 = Color3.fromRGB(10, 11, 16)
+                RanarthLib:ApplyTheme(lockOverlay, "BackgroundColor3", "MainBG")
                 lockOverlay.BackgroundTransparency = 0.3
                 lockOverlay.Visible = false
                 lockOverlay.ZIndex = 10
@@ -1329,7 +1453,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 lbl.Position = UDim2.new(0, xOff, 0, 0)
                 lbl.BackgroundTransparency = 1
                 lbl.Text = secName
-                lbl.TextColor3 = Color3.fromRGB(220, 225, 255)
+                RanarthLib:ApplyTheme(lbl, "TextColor3", "Text")
                 lbl.Font = Enum.Font.GothamBold
                 lbl.TextSize = 13
                 lbl.RichText = true
@@ -1360,8 +1484,8 @@ function RanarthLib:CreateWindow(HubConfig)
                 btn.Text = ""
                 btn.AutoButtonColor = false
 
-                local currentColor = Color3.fromRGB(15, 18, 28)
-                local currentHoverColor = Color3.fromRGB(35, 40, 70)
+                local currentColor = RanarthLib.CurrentTheme.ElementBG
+                local currentHoverColor = RanarthLib.CurrentTheme.Hover
 
                 RanarthLib:TrackConnection(btn.MouseEnter:Connect(function() 
                     tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = currentHoverColor}):Play() 
@@ -1373,13 +1497,13 @@ function RanarthLib:CreateWindow(HubConfig)
 
                 local extendedCtrl = setmetatable({
                     SetColor = function(self, newColor, newHoverColor)
-                        currentColor = newColor or Color3.fromRGB(15, 18, 28)
-                        currentHoverColor = newHoverColor or Color3.fromRGB(35, 40, 70)
+                        currentColor = newColor or RanarthLib.CurrentTheme.ElementBG
+                        currentHoverColor = newHoverColor or RanarthLib.CurrentTheme.Hover
                         tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = currentColor}):Play()
                     end,
                     ResetColor = function(self)
-                        currentColor = Color3.fromRGB(15, 18, 28)
-                        currentHoverColor = Color3.fromRGB(35, 40, 70)
+                        currentColor = RanarthLib.CurrentTheme.ElementBG
+                        currentHoverColor = RanarthLib.CurrentTheme.Hover
                         tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = currentColor}):Play()
                     end
                 }, {__index = ctrl})
@@ -1406,7 +1530,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 local btn = Instance.new("TextButton", frame)
                 btn.Size = UDim2.new(0, 40, 0, 20)
                 btn.Position = UDim2.new(1, -50, 0.5, -10)
-                btn.BackgroundColor3 = state and Color3.fromRGB(100, 150, 255) or Color3.fromRGB(25, 28, 40)
+                btn.BackgroundColor3 = state and RanarthLib.CurrentTheme.Accent or RanarthLib.CurrentTheme.SecondaryBG
                 btn.Text = ""
                 Instance.new("UICorner", btn).CornerRadius = UDim.new(1, 0)
                 staticStroke(btn, 1.2)
@@ -1414,7 +1538,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 local circle = Instance.new("Frame", btn)
                 circle.Size = UDim2.new(0, 14, 0, 14)
                 circle.Position = state and UDim2.new(1, -17, 0.5, -7) or UDim2.new(0, 3, 0.5, -7)
-                circle.BackgroundColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(130, 140, 180)
+                circle.BackgroundColor3 = state and Color3.fromRGB(255, 255, 255) or RanarthLib.CurrentTheme.TextDark
                 Instance.new("UICorner", circle).CornerRadius = UDim.new(1, 0)
 
                 local function updateState(newState)
@@ -1423,10 +1547,10 @@ function RanarthLib:CreateWindow(HubConfig)
                         RanarthLib.Flags[flag] = state
                         if RanarthLib.AutoSaveEnabled then RanarthLib:SaveConfiguration() end
                     end
-                    tweens:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = state and Color3.fromRGB(100, 150, 255) or Color3.fromRGB(25, 28, 40)}):Play()
+                    tweens:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = state and RanarthLib.CurrentTheme.Accent or RanarthLib.CurrentTheme.SecondaryBG}):Play()
                     tweens:Create(circle, TweenInfo.new(0.2), {
                         Position = state and UDim2.new(1, -17, 0.5, -7) or UDim2.new(0, 3, 0.5, -7),
-                        BackgroundColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(130, 140, 180)
+                        BackgroundColor3 = state and Color3.fromRGB(255, 255, 255) or RanarthLib.CurrentTheme.TextDark
                     }):Play()
                     callback(state)
                 end
@@ -1471,12 +1595,12 @@ function RanarthLib:CreateWindow(HubConfig)
                 local bgBar = Instance.new("Frame", frame)
                 bgBar.Size = UDim2.new(1, -20, 0, 6)
                 bgBar.Position = UDim2.new(0, 10, 1, -12)
-                bgBar.BackgroundColor3 = Color3.fromRGB(22, 26, 44)
+                RanarthLib:ApplyTheme(bgBar, "BackgroundColor3", "SecondaryBG")
                 Instance.new("UICorner", bgBar).CornerRadius = UDim.new(1, 0)
 
                 local fill = Instance.new("Frame", bgBar)
                 fill.Size = UDim2.new(math.clamp((default - min) / (max - min), 0, 1), 0, 1, 0)
-                fill.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
+                RanarthLib:ApplyTheme(fill, "BackgroundColor3", "Accent")
                 Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
 
                 local hitBtn = Instance.new("TextButton", bgBar)
@@ -1562,7 +1686,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 icon.Position = UDim2.new(1, -25, 0, 7)
                 icon.BackgroundTransparency = 1
                 icon.Text = "v"
-                icon.TextColor3 = Color3.fromRGB(200, 210, 255)
+                RanarthLib:ApplyTheme(icon, "TextColor3", "Text")
                 icon.Font = Enum.Font.GothamBold
 
                 local topBtn = Instance.new("TextButton", frame)
@@ -1611,9 +1735,9 @@ function RanarthLib:CreateWindow(HubConfig)
                     for _, opt in ipairs(options) do
                         local optBtn = Instance.new("TextButton", sFrame)
                         optBtn.Size = UDim2.new(1, -8, 0, 25)
-                        optBtn.BackgroundColor3 = Color3.fromRGB(22, 26, 44)
+                        RanarthLib:ApplyTheme(optBtn, "BackgroundColor3", "SecondaryBG")
                         optBtn.Text = opt
-                        optBtn.TextColor3 = Color3.fromRGB(200, 210, 255)
+                        RanarthLib:ApplyTheme(optBtn, "TextColor3", "Text")
                         optBtn.Font = Enum.Font.Gotham
                         optBtn.TextSize = 11
                         Instance.new("UICorner", optBtn).CornerRadius = UDim.new(0, 4)
@@ -1651,7 +1775,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 icon.Position = UDim2.new(1, -25, 0, 7)
                 icon.BackgroundTransparency = 1
                 icon.Text = "v"
-                icon.TextColor3 = Color3.fromRGB(200, 210, 255)
+                RanarthLib:ApplyTheme(icon, "TextColor3", "Text")
 
                 local topBtn = Instance.new("TextButton", frame)
                 topBtn.Size = UDim2.new(1, 0, 0, 35)
@@ -1685,9 +1809,9 @@ function RanarthLib:CreateWindow(HubConfig)
                     if selected[opt] == nil then selected[opt] = false end
                     local optBtn = Instance.new("TextButton", sFrame)
                     optBtn.Size = UDim2.new(1, -8, 0, 25)
-                    optBtn.BackgroundColor3 = Color3.fromRGB(22, 26, 44)
+                    RanarthLib:ApplyTheme(optBtn, "BackgroundColor3", "SecondaryBG")
                     optBtn.Text = (selected[opt] and "[x] " or "[ ] ") .. opt
-                    optBtn.TextColor3 = Color3.fromRGB(200, 210, 255)
+                    RanarthLib:ApplyTheme(optBtn, "TextColor3", "Text")
                     optBtn.Font = Enum.Font.Gotham
                     optBtn.TextSize = 11
                     optBtn.TextXAlignment = Enum.TextXAlignment.Left
@@ -1725,7 +1849,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 local boxFrame = Instance.new("Frame", frame)
                 boxFrame.Size = UDim2.new(0, 110, 0, 24)
                 boxFrame.Position = UDim2.new(1, -120, 0.5, -12)
-                boxFrame.BackgroundColor3 = Color3.fromRGB(25, 28, 40)
+                RanarthLib:ApplyTheme(boxFrame, "BackgroundColor3", "SecondaryBG")
                 Instance.new("UICorner", boxFrame).CornerRadius = UDim.new(0, 4)
                 staticStroke(boxFrame, 1.2)
 
@@ -1736,7 +1860,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 tBox.Text = ""
                 tBox.PlaceholderText = placeholder
                 tBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-                tBox.PlaceholderColor3 = Color3.fromRGB(130, 140, 180)
+                RanarthLib:ApplyTheme(tBox, "PlaceholderColor3", "TextDark")
                 tBox.Font = Enum.Font.Gotham
                 tBox.TextSize = 11
                 tBox.ClearTextOnFocus = false
@@ -1758,7 +1882,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 local keyBtn = Instance.new("TextButton", frame)
                 keyBtn.Size = UDim2.new(0, 90, 0, 23)
                 keyBtn.Position = UDim2.new(1, -100, 0.5, -11.5)
-                keyBtn.BackgroundColor3 = Color3.fromRGB(25, 28, 40)
+                RanarthLib:ApplyTheme(keyBtn, "BackgroundColor3", "SecondaryBG")
                 keyBtn.Text = currentKey.Name
                 keyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
                 keyBtn.Font = Enum.Font.GothamBold
@@ -1771,14 +1895,14 @@ function RanarthLib:CreateWindow(HubConfig)
                     if listening then return end
                     listening = true
                     keyBtn.Text = "..."
-                    keyStroke.Color = Color3.fromRGB(100, 150, 255)
+                    RanarthLib:ApplyTheme(keyStroke, "Color", "Accent")
                     
                     local conn
                     conn = RanarthLib:SafeUIS(uis.InputBegan, frame, function(input)
                         if input.UserInputType == Enum.UserInputType.Keyboard then
                             currentKey = input.KeyCode
                             keyBtn.Text = currentKey.Name
-                            keyStroke.Color = Color3.fromRGB(38, 44, 75)
+                            RanarthLib:ApplyTheme(keyStroke, "Color", "Stroke1")
                             listening = false
                             conn:Disconnect()
                             callback(currentKey)
@@ -1794,7 +1918,7 @@ function RanarthLib:CreateWindow(HubConfig)
 
             function Elements:CreateColorPicker(args)
                 args = args or {}
-                local defaultColor = args.Color or args.Default or Color3.fromRGB(100, 150, 255)
+                local defaultColor = args.Color or args.Default or RanarthLib.CurrentTheme.Accent
                 local callback = args.Callback or function() end
                 local flag = args.Flag and (tabNamespace .. "::" .. args.Flag) or nil
                 
@@ -1839,17 +1963,17 @@ function RanarthLib:CreateWindow(HubConfig)
                     cLbl.Size = UDim2.new(0, 20, 1, 0)
                     cLbl.BackgroundTransparency = 1
                     cLbl.Text = channelName
-                    cLbl.TextColor3 = Color3.fromRGB(200, 210, 255)
+                    RanarthLib:ApplyTheme(cLbl, "TextColor3", "Text")
 
                     local bgBar = Instance.new("Frame", sFrame)
                     bgBar.Size = UDim2.new(1, -25, 0, 6)
                     bgBar.Position = UDim2.new(0, 25, 0.5, -3)
-                    bgBar.BackgroundColor3 = Color3.fromRGB(22, 26, 44)
+                    RanarthLib:ApplyTheme(bgBar, "BackgroundColor3", "SecondaryBG")
                     Instance.new("UICorner", bgBar).CornerRadius = UDim.new(1, 0)
 
                     local fill = Instance.new("Frame", bgBar)
                     fill.Size = UDim2.new(initial / 255, 0, 1, 0)
-                    fill.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
+                    RanarthLib:ApplyTheme(fill, "BackgroundColor3", "Accent")
                     Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
 
                     local hitBtn = Instance.new("TextButton", bgBar)
@@ -1895,7 +2019,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 local placeholder = args.PlaceholderText or args.Placeholder or "Search features..."
                 local sFrame = Instance.new("Frame", targetParent)
                 sFrame.Size = UDim2.new(1, 0, 0, 32)
-                sFrame.BackgroundColor3 = Color3.fromRGB(15, 18, 28)
+                RanarthLib:ApplyTheme(sFrame, "BackgroundColor3", "ElementBG")
                 sFrame.LayoutOrder = -1000
                 Instance.new("UICorner", sFrame).CornerRadius = UDim.new(0, 6)
                 staticStroke(sFrame, 1.2)
@@ -1908,7 +2032,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 searchBox.Text = ""
                 searchBox.PlaceholderText = placeholder
                 searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-                searchBox.PlaceholderColor3 = Color3.fromRGB(130, 140, 180)
+                RanarthLib:ApplyTheme(searchBox, "PlaceholderColor3", "TextDark")
                 searchBox.Font = Enum.Font.Gotham
                 searchBox.TextSize = 12
                 searchBox.TextXAlignment = Enum.TextXAlignment.Left
@@ -1938,7 +2062,7 @@ function RanarthLib:CreateWindow(HubConfig)
             function Elements:CreateDivider()
                 local div = Instance.new("Frame", targetParent)
                 div.Size = UDim2.new(1, 0, 0, 1)
-                div.BackgroundColor3 = Color3.fromRGB(38, 44, 75)
+                RanarthLib:ApplyTheme(div, "BackgroundColor3", "Stroke1")
                 div.BorderSizePixel = 0
                 ApplyFlex(div)
             end
@@ -1951,7 +2075,7 @@ function RanarthLib:CreateWindow(HubConfig)
             
             local pFrame = Instance.new("Frame", targetParent)
             pFrame.Size = UDim2.new(1, 0, 0, 80)
-            pFrame.BackgroundColor3 = Color3.fromRGB(15, 18, 28)
+            RanarthLib:ApplyTheme(pFrame, "BackgroundColor3", "ElementBG")
             Instance.new("UICorner", pFrame).CornerRadius = UDim.new(0, 6)
             staticStroke(pFrame, 1.2)
             ApplyFlex(pFrame)
@@ -1959,7 +2083,7 @@ function RanarthLib:CreateWindow(HubConfig)
             local imgPlaceholder = Instance.new("Frame", pFrame)
             imgPlaceholder.Size = UDim2.new(0, 60, 0, 60)
             imgPlaceholder.Position = UDim2.new(0, 10, 0, 10)
-            imgPlaceholder.BackgroundColor3 = Color3.fromRGB(22, 26, 44)
+            RanarthLib:ApplyTheme(imgPlaceholder, "BackgroundColor3", "SecondaryBG")
             Instance.new("UICorner", imgPlaceholder).CornerRadius = UDim.new(0, 6)
 
             local imgNode = nil
@@ -1988,7 +2112,7 @@ function RanarthLib:CreateWindow(HubConfig)
             lblTitle.Size = UDim2.new(1, 0, 0, 16)
             lblTitle.BackgroundTransparency = 1
             lblTitle.Text = titleText
-            lblTitle.TextColor3 = Color3.fromRGB(220, 225, 255)
+            RanarthLib:ApplyTheme(lblTitle, "TextColor3", "Text")
             lblTitle.Font = Enum.Font.GothamBold
             lblTitle.TextSize = 13
             lblTitle.RichText = true
@@ -1998,7 +2122,7 @@ function RanarthLib:CreateWindow(HubConfig)
             lblDesc.Size = UDim2.new(1, 0, 1, -20)
             lblDesc.BackgroundTransparency = 1
             lblDesc.Text = descText
-            lblDesc.TextColor3 = Color3.fromRGB(150, 160, 200)
+            RanarthLib:ApplyTheme(lblDesc, "TextColor3", "TextDark")
             lblDesc.Font = Enum.Font.Gotham
             lblDesc.TextSize = 11
             lblDesc.RichText = true
@@ -2046,7 +2170,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 title.Size = UDim2.new(1, 0, 0, 16)
                 title.BackgroundTransparency = 1
                 title.Text = titleText
-                title.TextColor3 = Color3.fromRGB(220, 225, 255)
+                RanarthLib:ApplyTheme(title, "TextColor3", "Text")
                 title.Font = Enum.Font.GothamBold
                 title.TextSize = 13
                 title.RichText = true
@@ -2058,7 +2182,7 @@ function RanarthLib:CreateWindow(HubConfig)
                     desc.AutomaticSize = Enum.AutomaticSize.Y
                     desc.BackgroundTransparency = 1
                     desc.Text = descText
-                    desc.TextColor3 = Color3.fromRGB(150, 160, 200)
+                    RanarthLib:ApplyTheme(desc, "TextColor3", "TextDark")
                     desc.Font = Enum.Font.Gotham
                     desc.TextSize = 11
                     desc.RichText = true
@@ -2075,7 +2199,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 
                 local pbFrame = Instance.new("Frame", targetParent)
                 pbFrame.Size = UDim2.new(1, 0, 0, 45)
-                pbFrame.BackgroundColor3 = Color3.fromRGB(15, 18, 28)
+                RanarthLib:ApplyTheme(pbFrame, "BackgroundColor3", "ElementBG")
                 Instance.new("UICorner", pbFrame).CornerRadius = UDim.new(0, 6)
                 staticStroke(pbFrame, 1.2)
                 ApplyFlex(pbFrame)
@@ -2085,7 +2209,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 lbl.Position = UDim2.new(0, 10, 0, 5)
                 lbl.BackgroundTransparency = 1
                 lbl.Text = title .. " : " .. tostring(defaultVal) .. " / " .. tostring(maxVal)
-                lbl.TextColor3 = Color3.fromRGB(200, 210, 255)
+                RanarthLib:ApplyTheme(lbl, "TextColor3", "Text")
                 lbl.Font = Enum.Font.Gotham
                 lbl.TextSize = 12
                 lbl.RichText = true
@@ -2094,12 +2218,12 @@ function RanarthLib:CreateWindow(HubConfig)
                 local bgBar = Instance.new("Frame", pbFrame)
                 bgBar.Size = UDim2.new(1, -20, 0, 6)
                 bgBar.Position = UDim2.new(0, 10, 0, 30)
-                bgBar.BackgroundColor3 = Color3.fromRGB(22, 26, 44)
+                RanarthLib:ApplyTheme(bgBar, "BackgroundColor3", "SecondaryBG")
                 Instance.new("UICorner", bgBar).CornerRadius = UDim.new(1, 0)
 
                 local fill = Instance.new("Frame", bgBar)
                 fill.Size = UDim2.new(math.clamp(defaultVal/maxVal, 0, 1), 0, 1, 0)
-                fill.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
+                RanarthLib:ApplyTheme(fill, "BackgroundColor3", "Accent")
                 Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
 
                 return {
@@ -2124,14 +2248,14 @@ function RanarthLib:CreateWindow(HubConfig)
                 local cbFrame = Instance.new("Frame", targetParent)
                 cbFrame.Size = UDim2.new(1, 0, 0, 0)
                 cbFrame.AutomaticSize = Enum.AutomaticSize.Y
-                cbFrame.BackgroundColor3 = Color3.fromRGB(10, 11, 16)
+                RanarthLib:ApplyTheme(cbFrame, "BackgroundColor3", "MainBG")
                 Instance.new("UICorner", cbFrame).CornerRadius = UDim.new(0, 6)
                 staticStroke(cbFrame, 1.2)
                 ApplyFlex(cbFrame)
 
                 local topBar = Instance.new("Frame", cbFrame)
                 topBar.Size = UDim2.new(1, 0, 0, 25)
-                topBar.BackgroundColor3 = Color3.fromRGB(20, 24, 35)
+                RanarthLib:ApplyTheme(topBar, "BackgroundColor3", "ElementBG")
                 Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 6)
                 
                 local lbl = Instance.new("TextLabel", topBar)
@@ -2139,7 +2263,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 lbl.Position = UDim2.new(0, 10, 0, 0)
                 lbl.BackgroundTransparency = 1
                 lbl.Text = title
-                lbl.TextColor3 = Color3.fromRGB(150, 160, 200)
+                RanarthLib:ApplyTheme(lbl, "TextColor3", "TextDark")
                 lbl.Font = Enum.Font.GothamBold
                 lbl.TextSize = 10
                 lbl.RichText = true
@@ -2148,16 +2272,24 @@ function RanarthLib:CreateWindow(HubConfig)
                 local copyBtn = Instance.new("TextButton", topBar)
                 copyBtn.Size = UDim2.new(0, 40, 0, 15)
                 copyBtn.Position = UDim2.new(1, -45, 0.5, -7.5)
-                copyBtn.BackgroundColor3 = Color3.fromRGB(35, 40, 70)
+                RanarthLib:ApplyTheme(copyBtn, "BackgroundColor3", "Hover")
                 copyBtn.Text = "COPY"
                 copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
                 copyBtn.Font = Enum.Font.GothamBold
                 copyBtn.TextSize = 9
                 Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 4)
+                
+                local isCopying = false
                 RanarthLib:TrackConnection(copyBtn.MouseButton1Click:Connect(function()
+                    if isCopying then return end
+                    isCopying = true
                     if setclipboard then setclipboard(codeText) end
                     copyBtn.Text = "COPIED"
-                    task.wait(1.5); copyBtn.Text = "COPY"
+                    task.spawn(function()
+                        task.wait(1.5)
+                        copyBtn.Text = "COPY"
+                        isCopying = false
+                    end)
                 end))
 
                 local codeScroll = Instance.new("ScrollingFrame", cbFrame)
@@ -2173,7 +2305,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 txt.AutomaticSize = Enum.AutomaticSize.XY
                 txt.BackgroundTransparency = 1
                 txt.Text = codeText
-                txt.TextColor3 = Color3.fromRGB(220, 225, 255)
+                RanarthLib:ApplyTheme(txt, "TextColor3", "Text")
                 txt.Font = Enum.Font.Code
                 txt.TextSize = 12
                 txt.TextXAlignment = Enum.TextXAlignment.Left
@@ -2193,14 +2325,14 @@ function RanarthLib:CreateWindow(HubConfig)
                 
                 local consoleFrame = Instance.new("Frame", targetParent)
                 consoleFrame.Size = UDim2.new(1, 0, 0, height)
-                consoleFrame.BackgroundColor3 = Color3.fromRGB(10, 11, 15)
+                RanarthLib:ApplyTheme(consoleFrame, "BackgroundColor3", "ElementBG")
                 Instance.new("UICorner", consoleFrame).CornerRadius = UDim.new(0, 6)
                 staticStroke(consoleFrame, 1.2)
                 ApplyFlex(consoleFrame)
 
                 local topBar = Instance.new("Frame", consoleFrame)
                 topBar.Size = UDim2.new(1, 0, 0, 20)
-                topBar.BackgroundColor3 = Color3.fromRGB(20, 24, 35)
+                RanarthLib:ApplyTheme(topBar, "BackgroundColor3", "ElementBG")
                 Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 6)
 
                 local titleLbl = Instance.new("TextLabel", topBar)
@@ -2208,7 +2340,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 titleLbl.Position = UDim2.new(0, 10, 0, 0)
                 titleLbl.BackgroundTransparency = 1
                 titleLbl.Text = args.Title or args.Name or "TERMINAL LOG"
-                titleLbl.TextColor3 = Color3.fromRGB(150, 160, 200)
+                RanarthLib:ApplyTheme(titleLbl, "TextColor3", "TextDark")
                 titleLbl.Font = Enum.Font.GothamBold
                 titleLbl.TextSize = 10
                 titleLbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -2216,9 +2348,9 @@ function RanarthLib:CreateWindow(HubConfig)
                 local clearBtn = Instance.new("TextButton", topBar)
                 clearBtn.Size = UDim2.new(0, 45, 0, 14)
                 clearBtn.Position = UDim2.new(1, -50, 0.5, -7)
-                clearBtn.BackgroundColor3 = Color3.fromRGB(35, 40, 70)
+                RanarthLib:ApplyTheme(clearBtn, "BackgroundColor3", "Hover")
                 clearBtn.Text = "CLEAR"
-                clearBtn.TextColor3 = Color3.fromRGB(200, 210, 255)
+                RanarthLib:ApplyTheme(clearBtn, "TextColor3", "Text")
                 clearBtn.Font = Enum.Font.GothamBold
                 clearBtn.TextSize = 9
                 Instance.new("UICorner", clearBtn).CornerRadius = UDim.new(0, 4)
@@ -2262,7 +2394,7 @@ function RanarthLib:CreateWindow(HubConfig)
                     
                     local prefix = showTimestamp and string.format("[%s] ", os.date("%X")) or "> "
                     txt.Text = prefix .. tostring(text)
-                    txt.TextColor3 = color or Color3.fromRGB(200, 210, 255)
+                    txt.TextColor3 = color or RanarthLib.CurrentTheme.Text
                     txt.Font = Enum.Font.Code
                     txt.TextSize = 11
                     txt.TextXAlignment = Enum.TextXAlignment.Left
@@ -2313,7 +2445,7 @@ function RanarthLib:CreateWindow(HubConfig)
                 local gFrame = Instance.new("Frame", targetParent)
                 gFrame.Size = UDim2.new(1, 0, 0, 0)
                 gFrame.AutomaticSize = Enum.AutomaticSize.Y
-                gFrame.BackgroundColor3 = Color3.fromRGB(14, 16, 24)
+                RanarthLib:ApplyTheme(gFrame, "BackgroundColor3", "ElementBG")
                 Instance.new("UICorner", gFrame).CornerRadius = UDim.new(0, 8)
                 staticStroke(gFrame, 1.2)
                 ApplyFlex(gFrame)
@@ -2333,13 +2465,13 @@ function RanarthLib:CreateWindow(HubConfig)
                     lbl.Size = UDim2.new(1, 0, 0, 15)
                     lbl.BackgroundTransparency = 1
                     lbl.Text = title
-                    lbl.TextColor3 = Color3.fromRGB(150, 160, 200)
+                    RanarthLib:ApplyTheme(lbl, "TextColor3", "TextDark")
                     lbl.Font = Enum.Font.GothamBold
                     lbl.TextSize = 11
                     lbl.RichText = true
                     lbl.TextXAlignment = Enum.TextXAlignment.Left
                     local div = Instance.new("Frame", gFrame)
-                    div.Size = UDim2.new(1, 0, 0, 1); div.BackgroundColor3 = Color3.fromRGB(38, 44, 75); div.BorderSizePixel = 0
+                    div.Size = UDim2.new(1, 0, 0, 1); RanarthLib:ApplyTheme(div, "BackgroundColor3", "Stroke1"); div.BorderSizePixel = 0
                 end
 
                 local contentFrame = Instance.new("Frame", gFrame)
