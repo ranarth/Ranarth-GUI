@@ -21,6 +21,7 @@ local RanarthLib = {
         ["Space"] = {
             MainBG = Color3.fromRGB(10, 11, 16),
             ElementBG = Color3.fromRGB(16, 18, 28),
+            Header = Color3.fromRGB(16, 18, 28),
             SecondaryBG = Color3.fromRGB(25, 28, 40),
             Hover = Color3.fromRGB(35, 40, 70),
             Accent = Color3.fromRGB(100, 150, 255),
@@ -33,6 +34,7 @@ local RanarthLib = {
         ["Sakura"] = {
             MainBG = Color3.fromRGB(255, 235, 240),
             ElementBG = Color3.fromRGB(255, 222, 232),
+            Header = Color3.fromRGB(255, 222, 232),
             SecondaryBG = Color3.fromRGB(255, 205, 220),
             Hover = Color3.fromRGB(255, 190, 210),
             Accent = Color3.fromRGB(255, 105, 150),
@@ -43,11 +45,12 @@ local RanarthLib = {
             Stroke3 = Color3.fromRGB(255, 20, 147)
         },
         ["Bloody Mary"] = {
-            MainBG = Color3.fromRGB(46, 4, 6),
-            ElementBG = Color3.fromRGB(68, 8, 10),
-            SecondaryBG = Color3.fromRGB(92, 12, 14),
-            Hover = Color3.fromRGB(120, 18, 20),
-            Accent = Color3.fromRGB(230, 20, 20),
+            MainBG = Color3.fromRGB(60, 5, 10),
+            ElementBG = Color3.fromRGB(80, 10, 15),
+            Header = Color3.fromRGB(80, 10, 15),
+            SecondaryBG = Color3.fromRGB(100, 15, 20),
+            Hover = Color3.fromRGB(130, 20, 20),
+            Accent = Color3.fromRGB(230, 0, 0),
             Text = Color3.fromRGB(255, 225, 225),
             TextDark = Color3.fromRGB(200, 120, 120),
             Stroke1 = Color3.fromRGB(70, 8, 10),
@@ -57,8 +60,9 @@ local RanarthLib = {
         ["Cyberpunk"] = {
             MainBG = Color3.fromRGB(18, 10, 30),
             ElementBG = Color3.fromRGB(28, 16, 46),
-            SecondaryBG = Color3.fromRGB(38, 22, 60),
-            Hover = Color3.fromRGB(55, 30, 85),
+            Header = Color3.fromRGB(45, 40, 15),
+            SecondaryBG = Color3.fromRGB(45, 40, 15),
+            Hover = Color3.fromRGB(80, 70, 20),
             Accent = Color3.fromRGB(0, 255, 255),
             Text = Color3.fromRGB(229, 255, 255),
             TextDark = Color3.fromRGB(140, 130, 200),
@@ -69,6 +73,7 @@ local RanarthLib = {
         ["Mystic Grimoire"] = {
             MainBG = Color3.fromRGB(24, 16, 34),
             ElementBG = Color3.fromRGB(36, 24, 50),
+            Header = Color3.fromRGB(28, 85, 48),
             SecondaryBG = Color3.fromRGB(48, 32, 66),
             Hover = Color3.fromRGB(64, 44, 88),
             Accent = Color3.fromRGB(80, 200, 120),
@@ -81,6 +86,7 @@ local RanarthLib = {
         ["Retro Y2K"] = {
             MainBG = Color3.fromRGB(235, 240, 255),
             ElementBG = Color3.fromRGB(255, 255, 255),
+            Header = Color3.fromRGB(255, 255, 255),
             SecondaryBG = Color3.fromRGB(210, 220, 255),
             Hover = Color3.fromRGB(190, 205, 255),
             Accent = Color3.fromRGB(120, 140, 255),
@@ -93,6 +99,7 @@ local RanarthLib = {
         ["Cake"] = {
             MainBG = Color3.fromRGB(255, 250, 244),
             ElementBG = Color3.fromRGB(250, 240, 228),
+            Header = Color3.fromRGB(196, 130, 74),
             SecondaryBG = Color3.fromRGB(240, 222, 200),
             Hover = Color3.fromRGB(228, 205, 175),
             Accent = Color3.fromRGB(196, 130, 74),
@@ -127,9 +134,6 @@ local RanarthLib = {
         obj[prop] = self.CurrentTheme[themeKey]
         table.insert(self.ThemeUpdaters, {Obj = obj, Prop = prop, Key = themeKey})
 
-        -- Housekeeping ringan: entry untuk objek yang sudah di-Destroy() menumpuk
-        -- terus kalau cuma dibersihkan saat SetTheme() dipanggil. Sapu tiap 100
-        -- pendaftaran baru supaya tidak nahan referensi Instance mati selamanya.
         if #self.ThemeUpdaters % 100 == 0 then
             for i = #self.ThemeUpdaters, 1, -1 do
                 local d = self.ThemeUpdaters[i]
@@ -149,7 +153,6 @@ local RanarthLib = {
             ColorSequenceKeypoint.new(1, self.CurrentTheme.Stroke1),
         })
     end
-
 
 function RanarthLib:TrackConnection(conn)
     table.insert(self.Connections, conn)
@@ -486,6 +489,7 @@ local LucideIcons = {
     ["angry"] = "rbxassetid://79345553086407",
     ["laugh"] = "rbxassetid://115974660887808",
     ["ban"] = "rbxassetid://109685306480139",
+    ["gift"] = "rbxassetid://87706885156127",
 }
 
 -- HYBRID MODE: Load future icon extensions from GitHub
@@ -732,7 +736,7 @@ function RanarthLib:CreateWindow(HubConfig)
 
     local top_bar = Instance.new("Frame")
     top_bar.Size = UDim2.new(1, 0, 0, 35)
-    RanarthLib:ApplyTheme(top_bar, "BackgroundColor3", "ElementBG")
+    RanarthLib:ApplyTheme(top_bar, "BackgroundColor3", "Header")
     top_bar.BorderSizePixel = 0
     top_bar.Parent = frame
     Instance.new("UICorner", top_bar).CornerRadius = UDim.new(0, 10)
@@ -905,6 +909,12 @@ function RanarthLib:CreateWindow(HubConfig)
     tab_container.ClipsDescendants = true
     tab_container.Parent = frame
     
+    local tab_pad = Instance.new("UIPadding", tab_container)
+    tab_pad.PaddingTop = UDim.new(0, 2)
+    tab_pad.PaddingBottom = UDim.new(0, 2)
+    tab_pad.PaddingLeft = UDim.new(0, 2)
+    tab_pad.PaddingRight = UDim.new(0, 2)
+    
     local tab_layout = Instance.new("UIListLayout", tab_container)
     tab_layout.SortOrder = Enum.SortOrder.LayoutOrder
     tab_layout.Padding = UDim.new(0, 10)
@@ -1072,7 +1082,7 @@ function RanarthLib:CreateWindow(HubConfig)
 
         local sub_top_bar = Instance.new("Frame", subFrame)
         sub_top_bar.Size = UDim2.new(1, 0, 0, 30)
-        RanarthLib:ApplyTheme(sub_top_bar, "BackgroundColor3", "ElementBG")
+        RanarthLib:ApplyTheme(sub_top_bar, "BackgroundColor3", "Header")
         sub_top_bar.BorderSizePixel = 0
         Instance.new("UICorner", sub_top_bar).CornerRadius = UDim.new(0, 10)
 
@@ -2273,7 +2283,7 @@ function RanarthLib:CreateWindow(HubConfig)
 
                 local topBar = Instance.new("Frame", cbFrame)
                 topBar.Size = UDim2.new(1, 0, 0, 25)
-                RanarthLib:ApplyTheme(topBar, "BackgroundColor3", "ElementBG")
+                RanarthLib:ApplyTheme(topBar, "BackgroundColor3", "Header")
                 Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 6)
                 
                 local lbl = Instance.new("TextLabel", topBar)
@@ -2350,7 +2360,7 @@ function RanarthLib:CreateWindow(HubConfig)
 
                 local topBar = Instance.new("Frame", consoleFrame)
                 topBar.Size = UDim2.new(1, 0, 0, 20)
-                RanarthLib:ApplyTheme(topBar, "BackgroundColor3", "ElementBG")
+                RanarthLib:ApplyTheme(topBar, "BackgroundColor3", "Header")
                 Instance.new("UICorner", topBar).CornerRadius = UDim.new(0, 6)
 
                 local titleLbl = Instance.new("TextLabel", topBar)
