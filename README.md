@@ -1,6 +1,6 @@
 # Ranarth GUI Library
 
-Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, a live 6-theme Theming Engine, dynamic Layouting (Group & HStack), an Image Panel for previews, Smart Anti-Spam Notifications, Interactive Color Buttons, a Built-in Log Terminal, and highly optimized, memory-leak-free animations.
+Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, a live 7-theme Theming Engine, dynamic Layouting (Group & HStack), an Image Panel for previews, Smart Anti-Spam Notifications, Interactive Color Buttons, a Built-in Log Terminal, and highly optimized, memory-leak-free animations.
 
 ## 🚀 Installation & Loading
 
