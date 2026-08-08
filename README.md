@@ -287,15 +287,15 @@ local myFloat = Window:CreateFloatingButton({
 
 ## 🎭 7. Theme System
 
-Ranarth GUI ships with **6 built-in themes** and a live theme-switching engine — every themed element updates instantly with a smooth color tween, no reload required.
+Ranarth GUI ships with **7 built-in themes** and a live theme-switching engine — every themed element updates instantly with a smooth color tween, no reload required.
 
-**Available Themes:** `"Space"` (default), `"Sakura"`, `"Bloody Mary"`, `"Cyberpunk"`, `"Mystic Grimoire"`, `"Retro Y2K"`
+**Available Themes:** `"Space"` (default), `"Sakura"`, `"Bloody Mary"`, `"Cyberpunk"`, `"Mystic Grimoire"`, `"Retro Y2K"`, `"Cake"`
 
 **Set a default theme on load:**
 ```lua
 local Window = RanarthLib:CreateWindow({
     Title = "Ranarth GUI | Developer Build",
-    Theme = "Cyberpunk", -- Optional, defaults to "Space"
+    Theme = "Retro Y2K", -- Optional, defaults to "Space"
     -- ...other options
 })
 ```
@@ -304,7 +304,7 @@ local Window = RanarthLib:CreateWindow({
 ```lua
 MainTab:CreateDropdown({
     Name = "UI Theme",
-    Options = {"Space", "Sakura", "Bloody Mary", "Cyberpunk", "Mystic Grimoire", "Retro Y2K"},
+    Options = {"Space", "Sakura", "Bloody Mary", "Cyberpunk", "Mystic Grimoire", "Retro Y2K", "Cake"},
     CurrentValue = "Space",
     Callback = function(Value)
         RanarthLib:SetTheme(Value)
