@@ -43,37 +43,37 @@ local RanarthLib = {
             Stroke3 = Color3.fromRGB(255, 20, 147)
         },
         ["Bloody Mary"] = {
-            MainBG = Color3.fromRGB(28, 5, 6),
-            ElementBG = Color3.fromRGB(45, 8, 10),
-            SecondaryBG = Color3.fromRGB(65, 12, 14),
-            Hover = Color3.fromRGB(90, 18, 20),
-            Accent = Color3.fromRGB(220, 20, 20),
-            Text = Color3.fromRGB(255, 220, 220),
-            TextDark = Color3.fromRGB(180, 110, 110),
-            Stroke1 = Color3.fromRGB(50, 8, 10),
-            Stroke2 = Color3.fromRGB(139, 0, 0),
-            Stroke3 = Color3.fromRGB(200, 20, 20)
+            MainBG = Color3.fromRGB(46, 4, 6),
+            ElementBG = Color3.fromRGB(68, 8, 10),
+            SecondaryBG = Color3.fromRGB(92, 12, 14),
+            Hover = Color3.fromRGB(120, 18, 20),
+            Accent = Color3.fromRGB(230, 20, 20),
+            Text = Color3.fromRGB(255, 225, 225),
+            TextDark = Color3.fromRGB(200, 120, 120),
+            Stroke1 = Color3.fromRGB(70, 8, 10),
+            Stroke2 = Color3.fromRGB(150, 0, 0),
+            Stroke3 = Color3.fromRGB(220, 20, 20)
         },
         ["Cyberpunk"] = {
-            MainBG = Color3.fromRGB(8, 9, 15),
-            ElementBG = Color3.fromRGB(16, 17, 26),
-            SecondaryBG = Color3.fromRGB(24, 22, 38),
-            Hover = Color3.fromRGB(38, 30, 55),
+            MainBG = Color3.fromRGB(18, 10, 30),
+            ElementBG = Color3.fromRGB(28, 16, 46),
+            SecondaryBG = Color3.fromRGB(38, 22, 60),
+            Hover = Color3.fromRGB(55, 30, 85),
             Accent = Color3.fromRGB(0, 255, 255),
             Text = Color3.fromRGB(229, 255, 255),
-            TextDark = Color3.fromRGB(110, 130, 165),
+            TextDark = Color3.fromRGB(140, 130, 200),
             Stroke1 = Color3.fromRGB(255, 0, 170),
             Stroke2 = Color3.fromRGB(0, 255, 255),
             Stroke3 = Color3.fromRGB(255, 230, 0)
         },
         ["Mystic Grimoire"] = {
-            MainBG = Color3.fromRGB(43, 29, 20),
-            ElementBG = Color3.fromRGB(58, 40, 28),
-            SecondaryBG = Color3.fromRGB(74, 52, 36),
-            Hover = Color3.fromRGB(92, 66, 46),
+            MainBG = Color3.fromRGB(24, 16, 34),
+            ElementBG = Color3.fromRGB(36, 24, 50),
+            SecondaryBG = Color3.fromRGB(48, 32, 66),
+            Hover = Color3.fromRGB(64, 44, 88),
             Accent = Color3.fromRGB(80, 200, 120),
-            Text = Color3.fromRGB(230, 215, 190),
-            TextDark = Color3.fromRGB(175, 148, 118),
+            Text = Color3.fromRGB(230, 220, 245),
+            TextDark = Color3.fromRGB(160, 140, 190),
             Stroke1 = Color3.fromRGB(28, 85, 48),
             Stroke2 = Color3.fromRGB(60, 200, 100),
             Stroke3 = Color3.fromRGB(180, 255, 140)
@@ -83,12 +83,24 @@ local RanarthLib = {
             ElementBG = Color3.fromRGB(255, 255, 255),
             SecondaryBG = Color3.fromRGB(210, 220, 255),
             Hover = Color3.fromRGB(190, 205, 255),
-            Accent = Color3.fromRGB(255, 0, 170),
+            Accent = Color3.fromRGB(120, 140, 255),
             Text = Color3.fromRGB(40, 20, 70),
             TextDark = Color3.fromRGB(110, 100, 160),
             Stroke1 = Color3.fromRGB(150, 180, 255),
             Stroke2 = Color3.fromRGB(255, 0, 170),
             Stroke3 = Color3.fromRGB(180, 255, 240)
+        },
+        ["Cake"] = {
+            MainBG = Color3.fromRGB(255, 250, 244),
+            ElementBG = Color3.fromRGB(250, 240, 228),
+            SecondaryBG = Color3.fromRGB(240, 222, 200),
+            Hover = Color3.fromRGB(228, 205, 175),
+            Accent = Color3.fromRGB(196, 130, 74),
+            Text = Color3.fromRGB(74, 44, 30),
+            TextDark = Color3.fromRGB(150, 115, 90),
+            Stroke1 = Color3.fromRGB(101, 67, 33),
+            Stroke2 = Color3.fromRGB(54, 32, 18),
+            Stroke3 = Color3.fromRGB(150, 105, 65)
         }
     }
     RanarthLib.CurrentTheme = RanarthLib.Themes["Space"]
@@ -474,7 +486,6 @@ local LucideIcons = {
     ["angry"] = "rbxassetid://79345553086407",
     ["laugh"] = "rbxassetid://115974660887808",
     ["ban"] = "rbxassetid://109685306480139",
-    ["gift"] = "rbxassetid://87706885156127",
 }
 
 -- HYBRID MODE: Load future icon extensions from GitHub
@@ -890,7 +901,6 @@ function RanarthLib:CreateWindow(HubConfig)
     local tab_container = Instance.new("ScrollingFrame")
     tab_container.BackgroundTransparency = 1
     tab_container.ScrollBarThickness = 0
-    tab_container.AutomaticCanvasSize = Enum.AutomaticSize.Y
     tab_container.CanvasSize = UDim2.new(0, 0, 0, 0)
     tab_container.ClipsDescendants = true
     tab_container.Parent = frame
@@ -905,21 +915,23 @@ function RanarthLib:CreateWindow(HubConfig)
     content_container.Parent = frame
 
     if TabPosition == "Left" then
-        tab_container.Size = UDim2.new(0, 120, 1, -55)
+        tab_container.Size = UDim2.new(0, 148, 1, -55)
         tab_container.Position = UDim2.new(0, 10, 0, 45)
+        tab_container.AutomaticCanvasSize = Enum.AutomaticSize.Y
         tab_layout.FillDirection = Enum.FillDirection.Vertical
         
         local tab_divider = Instance.new("Frame", frame)
         tab_divider.Size = UDim2.new(0, 1, 1, -55)
-        tab_divider.Position = UDim2.new(0, 135, 0, 45)
+        tab_divider.Position = UDim2.new(0, 163, 0, 45)
         RanarthLib:ApplyTheme(tab_divider, "BackgroundColor3", "Stroke1")
         tab_divider.BorderSizePixel = 0
 
-        content_container.Size = UDim2.new(1, -155, 1, -55)
-        content_container.Position = UDim2.new(0, 145, 0, 45)
+        content_container.Size = UDim2.new(1, -183, 1, -55)
+        content_container.Position = UDim2.new(0, 173, 0, 45)
     else
         tab_container.Size = UDim2.new(1, -20, 0, 35)
         tab_container.Position = UDim2.new(0, 10, 0, 45)
+        tab_container.AutomaticCanvasSize = Enum.AutomaticSize.X
         tab_layout.FillDirection = Enum.FillDirection.Horizontal
 
         local tab_divider = Instance.new("Frame", frame)
@@ -1557,6 +1569,11 @@ function RanarthLib:CreateWindow(HubConfig)
                 end
 
                 RanarthLib:TrackConnection(btn.MouseButton1Click:Connect(function() updateState(not state) end))
+
+                RanarthLib:TrackConnection(RanarthLib.OnThemeChanged.Event:Connect(function()
+                    btn.BackgroundColor3 = state and RanarthLib.CurrentTheme.Accent or RanarthLib.CurrentTheme.SecondaryBG
+                    circle.BackgroundColor3 = state and Color3.fromRGB(255, 255, 255) or RanarthLib.CurrentTheme.TextDark
+                end))
 
                 return setmetatable({
                     Set = function(self, newState) updateState(newState) end,
