@@ -1511,27 +1511,32 @@ function RanarthLib:CreateWindow(HubConfig)
                 btn.Text = ""
                 btn.AutoButtonColor = false
 
-                local currentColor = RanarthLib.CurrentTheme.ElementBG
-                local currentHoverColor = RanarthLib.CurrentTheme.Hover
+                local customColor = nil
+                local customHoverColor = nil
 
                 RanarthLib:TrackConnection(btn.MouseEnter:Connect(function() 
-                    tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = currentHoverColor}):Play() 
+                    local targetColor = customHoverColor or RanarthLib.CurrentTheme.Hover
+                    tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = targetColor}):Play() 
                 end))
+                
                 RanarthLib:TrackConnection(btn.MouseLeave:Connect(function() 
-                    tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = currentColor}):Play() 
+                    local targetColor = customColor or RanarthLib.CurrentTheme.ElementBG
+                    tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = targetColor}):Play() 
                 end))
+                
                 RanarthLib:TrackConnection(btn.MouseButton1Click:Connect(callback))
 
                 local extendedCtrl = setmetatable({
                     SetColor = function(self, newColor, newHoverColor)
-                        currentColor = newColor or RanarthLib.CurrentTheme.ElementBG
-                        currentHoverColor = newHoverColor or RanarthLib.CurrentTheme.Hover
-                        tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = currentColor}):Play()
+                        customColor = newColor
+                        customHoverColor = newHoverColor
+                        local applyColor = customColor or RanarthLib.CurrentTheme.ElementBG
+                        tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = applyColor}):Play()
                     end,
                     ResetColor = function(self)
-                        currentColor = RanarthLib.CurrentTheme.ElementBG
-                        currentHoverColor = RanarthLib.CurrentTheme.Hover
-                        tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = currentColor}):Play()
+                        customColor = nil
+                        customHoverColor = nil
+                        tweens:Create(frame, TweenInfo.new(0.15), {BackgroundColor3 = RanarthLib.CurrentTheme.ElementBG}):Play()
                     end
                 }, {__index = ctrl})
 
@@ -2634,7 +2639,7 @@ function RanarthLib.ListConfigs()
     if not isfolder(RanarthLib.ConfigFolder) then return {"default"} end
     local result = {}
     for _, path in ipairs(listfiles(RanarthLib.ConfigFolder)) do
-        local fname = path:match("([^/\\]+)%.json$")
+        local fname = path:match("([^/\]+)%.json$")
         if fname then table.insert(result, fname) end
     end
     if #result == 0 then table.insert(result, "default") end
