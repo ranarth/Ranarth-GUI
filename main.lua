@@ -60,7 +60,7 @@ local RanarthLib = {
         ["Cyberpunk"] = {
             MainBG = Color3.fromRGB(8, 12, 14),
             ElementBG = Color3.fromRGB(14, 20, 24),
-            Header = Color3.fromRGB(20, 26, 30),
+            Header = Color3.fromRGB(10, 62, 71),
             SecondaryBG = Color3.fromRGB(22, 30, 36),
             Hover = Color3.fromRGB(0, 65, 75),
             Accent = Color3.fromRGB(0, 255, 230),
@@ -71,7 +71,7 @@ local RanarthLib = {
             Stroke3 = Color3.fromRGB(255, 20, 60)
         },
         ["Mystic Grimoire"] = {
-            MainBG = Color3.fromRGB(110, 10, 80),
+            MainBG = Color3.fromRGB(65, 49, 83),
             ElementBG = Color3.fromRGB(36, 24, 50),
             Header = Color3.fromRGB(28, 85, 48),
             SecondaryBG = Color3.fromRGB(48, 32, 66),
