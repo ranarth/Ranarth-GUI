@@ -71,7 +71,7 @@ local RanarthLib = {
             Stroke3 = Color3.fromRGB(255, 20, 60)
         },
         ["Mystic Grimoire"] = {
-            MainBG = Color3.fromRGB(65, 49, 83),
+            MainBG = Color3.fromRGB(24, 16, 34),
             ElementBG = Color3.fromRGB(36, 24, 50),
             Header = Color3.fromRGB(28, 85, 48),
             SecondaryBG = Color3.fromRGB(48, 32, 66),
