@@ -34,7 +34,7 @@ local RanarthLib = {
         ["Sakura"] = {
             MainBG = Color3.fromRGB(255, 235, 240),
             ElementBG = Color3.fromRGB(255, 222, 232),
-            Header = Color3.fromRGB(255, 222, 232),
+            Header = Color3.fromRGB(255, 105, 150),
             SecondaryBG = Color3.fromRGB(255, 205, 220),
             Hover = Color3.fromRGB(255, 190, 210),
             Accent = Color3.fromRGB(255, 105, 150),
@@ -58,20 +58,20 @@ local RanarthLib = {
             Stroke3 = Color3.fromRGB(220, 20, 20)
         },
         ["Cyberpunk"] = {
-            MainBG = Color3.fromRGB(18, 10, 30),
-            ElementBG = Color3.fromRGB(28, 16, 46),
-            Header = Color3.fromRGB(45, 40, 15),
-            SecondaryBG = Color3.fromRGB(45, 40, 15),
-            Hover = Color3.fromRGB(80, 70, 20),
-            Accent = Color3.fromRGB(0, 255, 255),
-            Text = Color3.fromRGB(229, 255, 255),
-            TextDark = Color3.fromRGB(140, 130, 200),
-            Stroke1 = Color3.fromRGB(255, 0, 170),
-            Stroke2 = Color3.fromRGB(0, 255, 255),
-            Stroke3 = Color3.fromRGB(255, 230, 0)
+            MainBG = Color3.fromRGB(8, 12, 14),
+            ElementBG = Color3.fromRGB(14, 20, 24),
+            Header = Color3.fromRGB(20, 26, 30),
+            SecondaryBG = Color3.fromRGB(22, 30, 36),
+            Hover = Color3.fromRGB(0, 65, 75),
+            Accent = Color3.fromRGB(0, 255, 230),
+            Text = Color3.fromRGB(230, 255, 255),
+            TextDark = Color3.fromRGB(100, 150, 150),
+            Stroke1 = Color3.fromRGB(255, 20, 60),
+            Stroke2 = Color3.fromRGB(0, 255, 230),
+            Stroke3 = Color3.fromRGB(255, 20, 60)
         },
         ["Mystic Grimoire"] = {
-            MainBG = Color3.fromRGB(24, 16, 34),
+            MainBG = Color3.fromRGB(110, 10, 80),
             ElementBG = Color3.fromRGB(36, 24, 50),
             Header = Color3.fromRGB(28, 85, 48),
             SecondaryBG = Color3.fromRGB(48, 32, 66),
@@ -86,7 +86,7 @@ local RanarthLib = {
         ["Retro Y2K"] = {
             MainBG = Color3.fromRGB(235, 240, 255),
             ElementBG = Color3.fromRGB(255, 255, 255),
-            Header = Color3.fromRGB(255, 255, 255),
+            Header = Color3.fromRGB(120, 140, 255),
             SecondaryBG = Color3.fromRGB(210, 220, 255),
             Hover = Color3.fromRGB(190, 205, 255),
             Accent = Color3.fromRGB(120, 140, 255),
@@ -2589,7 +2589,7 @@ function RanarthLib.ListConfigs()
     if not isfolder(RanarthLib.ConfigFolder) then return {"default"} end
     local result = {}
     for _, path in ipairs(listfiles(RanarthLib.ConfigFolder)) do
-        local fname = path:match("([^/\\]+)%.json$")
+        local fname = path:match("([^/\\\\]+)%.json$")
         if fname then table.insert(result, fname) end
     end
     if #result == 0 then table.insert(result, "default") end
