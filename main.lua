@@ -14,7 +14,11 @@ local RanarthLib = {
     ConfigFileName = "default",
     AutoSaveEnabled = false,
     AntiSpam = true,
-    ScreenGuis = {}
+    ScreenGuis = {},
+    EffectSettings = {
+        Enabled = true,
+        Intensity = 0.75
+    }
 }
 
     RanarthLib.Themes = {
@@ -43,32 +47,6 @@ local RanarthLib = {
             Stroke1 = Color3.fromRGB(219, 112, 147),
             Stroke2 = Color3.fromRGB(199, 21, 133),
             Stroke3 = Color3.fromRGB(255, 20, 147)
-        },
-        ["Bloody Mary"] = {
-            MainBG = Color3.fromRGB(60, 5, 10),
-            ElementBG = Color3.fromRGB(80, 10, 15),
-            Header = Color3.fromRGB(80, 10, 15),
-            SecondaryBG = Color3.fromRGB(100, 15, 20),
-            Hover = Color3.fromRGB(130, 20, 20),
-            Accent = Color3.fromRGB(230, 0, 0),
-            Text = Color3.fromRGB(255, 225, 225),
-            TextDark = Color3.fromRGB(200, 120, 120),
-            Stroke1 = Color3.fromRGB(70, 8, 10),
-            Stroke2 = Color3.fromRGB(150, 0, 0),
-            Stroke3 = Color3.fromRGB(220, 20, 20)
-        },
-        ["Cyberpunk"] = {
-            MainBG = Color3.fromRGB(8, 12, 14),
-            ElementBG = Color3.fromRGB(14, 20, 24),
-            Header = Color3.fromRGB(10, 62, 71),
-            SecondaryBG = Color3.fromRGB(22, 30, 36),
-            Hover = Color3.fromRGB(0, 65, 75),
-            Accent = Color3.fromRGB(0, 255, 230),
-            Text = Color3.fromRGB(230, 255, 255),
-            TextDark = Color3.fromRGB(100, 150, 150),
-            Stroke1 = Color3.fromRGB(255, 20, 60),
-            Stroke2 = Color3.fromRGB(0, 255, 230),
-            Stroke3 = Color3.fromRGB(255, 20, 60)
         },
         ["Mystic Grimoire"] = {
             MainBG = Color3.fromRGB(24, 16, 34),
@@ -109,19 +87,6 @@ local RanarthLib = {
             Stroke2 = Color3.fromRGB(54, 32, 18),
             Stroke3 = Color3.fromRGB(150, 105, 65)
         },
-        ["Cyberpunk Neon"] = {
-            MainBG = Color3.fromRGB(12, 14, 20),
-            ElementBG = Color3.fromRGB(18, 22, 32),
-            Header = Color3.fromRGB(0, 255, 255),
-            SecondaryBG = Color3.fromRGB(25, 30, 45),
-            Hover = Color3.fromRGB(0, 150, 180),
-            Accent = Color3.fromRGB(0, 255, 255),
-            Text = Color3.fromRGB(240, 250, 255),
-            TextDark = Color3.fromRGB(130, 150, 170),
-            Stroke1 = Color3.fromRGB(255, 0, 255),
-            Stroke2 = Color3.fromRGB(0, 255, 255),
-            Stroke3 = Color3.fromRGB(150, 0, 255)
-        },
         ["Aurora Dreams"] = {
             MainBG = Color3.fromRGB(242, 235, 250),
             ElementBG = Color3.fromRGB(250, 245, 255),
@@ -138,7 +103,7 @@ local RanarthLib = {
         ["Matrix Code"] = {
             MainBG = Color3.fromRGB(5, 10, 5),
             ElementBG = Color3.fromRGB(10, 18, 10),
-            Header = Color3.fromRGB(0, 255, 0),
+            Header = Color3.fromRGB(6, 20, 8),
             SecondaryBG = Color3.fromRGB(15, 30, 15),
             Hover = Color3.fromRGB(0, 80, 0),
             Accent = Color3.fromRGB(0, 255, 0),
@@ -151,7 +116,7 @@ local RanarthLib = {
         ["Ocean Breeze"] = {
             MainBG = Color3.fromRGB(10, 35, 65),
             ElementBG = Color3.fromRGB(15, 55, 95),
-            Header = Color3.fromRGB(0, 180, 255),
+            Header = Color3.fromRGB(8, 35, 55),
             SecondaryBG = Color3.fromRGB(20, 75, 130),
             Hover = Color3.fromRGB(30, 100, 170),
             Accent = Color3.fromRGB(0, 200, 255),
@@ -162,22 +127,22 @@ local RanarthLib = {
             Stroke3 = Color3.fromRGB(0, 150, 255)
         },
         ["Sunset Horizon"] = {
-            MainBG = Color3.fromRGB(30, 15, 25),
-            ElementBG = Color3.fromRGB(45, 20, 35),
-            Header = Color3.fromRGB(255, 120, 50),
-            SecondaryBG = Color3.fromRGB(65, 25, 40),
-            Hover = Color3.fromRGB(90, 35, 50),
-            Accent = Color3.fromRGB(255, 150, 50),
-            Text = Color3.fromRGB(255, 235, 220),
-            TextDark = Color3.fromRGB(200, 140, 150),
-            Stroke1 = Color3.fromRGB(255, 50, 50),
-            Stroke2 = Color3.fromRGB(255, 150, 0),
-            Stroke3 = Color3.fromRGB(255, 0, 100)
+            MainBG = Color3.fromRGB(30, 15, 25), 
+            ElementBG = Color3.fromRGB(60, 20, 40), 
+            Header = Color3.fromRGB(255, 120, 50), 
+            SecondaryBG = Color3.fromRGB(80, 25, 45),
+            Hover = Color3.fromRGB(110, 35, 55),
+            Accent = Color3.fromRGB(255, 140, 60), 
+            Text = Color3.fromRGB(255, 240, 230),
+            TextDark = Color3.fromRGB(255, 180, 150),
+            Stroke1 = Color3.fromRGB(150, 50, 80),
+            Stroke2 = Color3.fromRGB(255, 140, 60),
+            Stroke3 = Color3.fromRGB(255, 100, 100)
         },
         ["Midnight Purple"] = {
             MainBG = Color3.fromRGB(15, 8, 25),
             ElementBG = Color3.fromRGB(25, 12, 40),
-            Header = Color3.fromRGB(160, 60, 255),
+            Header = Color3.fromRGB(20, 10, 32),
             SecondaryBG = Color3.fromRGB(40, 15, 60),
             Hover = Color3.fromRGB(60, 25, 85),
             Accent = Color3.fromRGB(190, 90, 255),
@@ -205,6 +170,15 @@ local RanarthLib = {
                 end
             end
         end
+    end
+
+    function RanarthLib:SetEffectEnabled(state)
+        self.EffectSettings.Enabled = state
+        if self.RefreshCurrentEffect then self.RefreshCurrentEffect() end
+    end
+
+    function RanarthLib:SetEffectIntensity(value)
+        self.EffectSettings.Intensity = math.clamp(value, 0, 1)
     end
 
     function RanarthLib:ApplyTheme(obj, prop, themeKey)
@@ -592,7 +566,6 @@ local function applyIcon(parent, iconData, preserveColor)
     if isLucide then
         assetUrl = LucideIcons[lowerData]
     elseif lowerData:find("rbxassetid://") or lowerData:find("rbxthumb://") or lowerData:find("http://") or lowerData:find("https://") then
-        -- Return the original strData to preserve case (Crucial for rbxthumb://type=Asset)
         assetUrl = strData
     else
         assetUrl = "rbxassetid://" .. lowerData
@@ -658,10 +631,9 @@ Instance.new("UIStroke", tooltipLabel).Color = RanarthLib.CurrentTheme.Stroke1
 
 local lastNotifTick = 0
 function RanarthLib:CreateNotification(title, text, duration, iconData)
-    -- RANARTH ANTI-SPAM SECURITY SYSTEM (Toggleable by Developer)
     if RanarthLib.AntiSpam then
         local currentTick = tick()
-        if currentTick - lastNotifTick < 0.15 then return end -- Ignore if fired faster than 0.15 seconds
+        if currentTick - lastNotifTick < 0.15 then return end 
         lastNotifTick = currentTick
 
         local maxNotifs = 5
@@ -670,7 +642,7 @@ function RanarthLib:CreateNotification(title, text, duration, iconData)
             if child:IsA("Frame") then table.insert(activeNotifs, child) end
         end
         if #activeNotifs >= maxNotifs then
-            activeNotifs[1]:Destroy() -- Destroy the oldest notification
+            activeNotifs[1]:Destroy() 
         end
     end
 
@@ -800,32 +772,29 @@ function RanarthLib:CreateWindow(HubConfig)
     RanarthLib:ApplyTheme(frame, "BackgroundColor3", "MainBG")
     frame.BorderSizePixel = 0
     frame.Active = true
-    frame.ClipsDescendants = false 
+    frame.ClipsDescendants = true 
     frame.Parent = gui
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
     animStroke(frame, 1.5)
 
-    local windowGlow = Instance.new("ImageLabel")
-    windowGlow.Name = "NeonGlow"
-    windowGlow.Size = UDim2.new(1, 60, 1, 60)
-    windowGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
-    windowGlow.AnchorPoint = Vector2.new(0.5, 0.5)
-    windowGlow.BackgroundTransparency = 1
-    windowGlow.Image = "rbxassetid://5028857084"
-    windowGlow.ScaleType = Enum.ScaleType.Slice
-    windowGlow.SliceCenter = Rect.new(24, 24, 276, 276)
-    windowGlow.ZIndex = -1
-    windowGlow.ImageTransparency = 1 
-    windowGlow.Parent = frame
+    local bgGradient = Instance.new("UIGradient")
+    bgGradient.Rotation = 45
+    bgGradient.Parent = frame
+
+    local effectContainer = Instance.new("CanvasGroup")
+    effectContainer.Name = "EffectContainer"
+    effectContainer.Size = UDim2.new(1, 0, 1, 0)
+    effectContainer.BackgroundTransparency = 1
+    effectContainer.ZIndex = 0
+    Instance.new("UICorner", effectContainer).CornerRadius = UDim.new(0, 10)
+    effectContainer.Parent = frame
 
     local effectCanvas = Instance.new("Frame")
     effectCanvas.Name = "EffectCanvas"
     effectCanvas.Size = UDim2.new(1, 0, 1, 0)
     effectCanvas.BackgroundTransparency = 1
-    effectCanvas.ClipsDescendants = true 
     effectCanvas.ZIndex = 0
-    Instance.new("UICorner", effectCanvas).CornerRadius = UDim.new(0, 10)
-    effectCanvas.Parent = frame
+    effectCanvas.Parent = effectContainer
 
     if ToggleKey then
         RanarthLib:TrackConnection(uis.InputBegan:Connect(function(input, gpe)
@@ -1055,9 +1024,6 @@ function RanarthLib:CreateWindow(HubConfig)
         content_container.Position = UDim2.new(0, 10, 0, 85)
     end
 
-    -- ==========================================
-    -- DIALOG / MODAL SYSTEM
-    -- ==========================================
     function Window:CreateDialog(title, text, options)
         options = options or {}
         if #options == 0 then
@@ -1273,9 +1239,6 @@ function RanarthLib:CreateWindow(HubConfig)
         return subScroll
     end
 
-    -- ==========================================
-    -- FLOATING BUTTON FEATURE
-    -- ==========================================
     function Window:CreateFloatingButton(args)
         args = args or {}
         local text = args.Name or args.Title or args.Text or "Floating Button"
@@ -2721,44 +2684,114 @@ function RanarthLib:CreateWindow(HubConfig)
     local function ClearEffects()
         for _, conn in ipairs(activeEffectConns) do conn:Disconnect() end
         activeEffectConns = {}
-        effectCanvas:ClearAllChildren()
-        tweens:Create(windowGlow, TweenInfo.new(0.5), {ImageTransparency = 1}):Play()
+        
+        local mainFrame = nil
+        for _, obj in ipairs(Window.Gui:GetChildren()) do
+            if obj.Name == "Main" then
+                mainFrame = obj
+                break
+            end
+        end
+        if mainFrame then
+            local container = mainFrame:FindFirstChild("EffectContainer")
+            if container then
+                local canvas = container:FindFirstChild("EffectCanvas")
+                if canvas then canvas:ClearAllChildren() end
+            end
+        end
+    end
+
+    local function GetEffectCanvas()
+        for _, obj in ipairs(Window.Gui:GetChildren()) do
+            if obj.Name == "Main" then
+                local container = obj:FindFirstChild("EffectContainer")
+                if container then
+                    return container:FindFirstChild("EffectCanvas")
+                end
+            end
+        end
+        return nil
+    end
+
+    local function StartAuroraParticles()
+        local canvas = GetEffectCanvas()
+        if not canvas then return end
+        
+        local particleConn = runs.RenderStepped:Connect(function()
+            local intensity = RanarthLib.EffectSettings.Intensity
+            if math.random() > (0.97 - intensity * 0.1) then
+                local size = math.random(15, 45)
+                local orb = Instance.new("Frame")
+                orb.Size = UDim2.new(0, size, 0, size)
+                orb.Position = UDim2.new(math.random(), 0, 1, 20)
+                RanarthLib:ApplyTheme(orb, "BackgroundColor3", "Accent")
+                orb.BackgroundTransparency = 1
+                orb.ZIndex = 0
+                Instance.new("UICorner", orb).CornerRadius = UDim.new(1, 0)
+                orb.Parent = canvas
+
+                local peakTransparency = 1 - (0.15 + intensity * 0.35)
+                tweens:Create(orb, TweenInfo.new(1.5), {BackgroundTransparency = peakTransparency}):Play()
+
+                local duration = math.random(60, 120) / 10
+                local floatTween = tweens:Create(orb, TweenInfo.new(duration, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+                    Position = UDim2.new(orb.Position.X.Scale + (math.random(-10, 10)/100), 0, -0.3, 0),
+                    BackgroundTransparency = 1
+                })
+                
+                floatTween:Play()
+                floatTween.Completed:Connect(function() orb:Destroy() end)
+            end
+        end)
+        table.insert(activeEffectConns, RanarthLib:TrackConnection(particleConn))
     end
 
     local function StartMatrixRain()
-        local rainConn = runs.RenderStepped:Connect(function()
-            if math.random() > 0.85 then
-                local char = string.char(math.random(33, 126))
-                local drop = Instance.new("TextLabel")
-                drop.Text = char
-                drop.Size = UDim2.new(0, 14, 0, 14)
-                drop.Position = UDim2.new(math.random(), 0, 0, -20)
-                drop.BackgroundTransparency = 1
-                RanarthLib:ApplyTheme(drop, "TextColor3", "Stroke2")
-                drop.Font = Enum.Font.Code
-                drop.TextSize = math.random(10, 16)
-                drop.ZIndex = 0
-                drop.Parent = effectCanvas
+        local canvas = GetEffectCanvas()
+        if not canvas then return end
 
-                local duration = math.random(20, 40) / 10
-                local fallTween = tweens:Create(drop, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
-                    Position = UDim2.new(drop.Position.X.Scale, 0, 1, 20),
-                    TextTransparency = 0.8
-                })
-                fallTween:Play()
-                fallTween.Completed:Connect(function() drop:Destroy() end)
+        local function spawnDrop()
+            local char = string.char(math.random(33, 126))
+            local drop = Instance.new("TextLabel")
+            drop.Text = char
+            drop.Size = UDim2.new(0, 14, 0, 14)
+            drop.Position = UDim2.new(math.random(), 0, 0, -20)
+            drop.BackgroundTransparency = 1
+            RanarthLib:ApplyTheme(drop, "TextColor3", "Stroke2")
+            drop.Font = Enum.Font.Code
+            drop.TextSize = math.random(10, 16)
+            drop.ZIndex = 0
+            drop.Parent = canvas
+
+            local duration = math.random(15, 30) / 10
+            local fallTween = tweens:Create(drop, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
+                Position = UDim2.new(drop.Position.X.Scale, 0, 1, 20),
+                TextTransparency = 0.8
+            })
+            fallTween:Play()
+            fallTween.Completed:Connect(function() drop:Destroy() end)
+        end
+
+        local rainConn = runs.RenderStepped:Connect(function()
+            local intensity = RanarthLib.EffectSettings.Intensity
+            if math.random() > (0.9 - intensity * 0.55) then
+                spawnDrop()
+                if math.random() > (1 - intensity * 0.5) then spawnDrop() end
             end
         end)
-        table.insert(activeEffectConns, rainConn)
+        table.insert(activeEffectConns, RanarthLib:TrackConnection(rainConn))
     end
 
     local function StartOceanWaves()
+        local canvas = GetEffectCanvas()
+        if not canvas then return end
+
         local waveContainer = Instance.new("Frame")
         waveContainer.Size = UDim2.new(1, 0, 0, 100)
         waveContainer.Position = UDim2.new(0, 0, 1, -40)
         waveContainer.BackgroundTransparency = 1
         waveContainer.ZIndex = 0
-        waveContainer.Parent = effectCanvas
+        waveContainer.Parent = canvas
 
         local wave1 = Instance.new("Frame", waveContainer)
         wave1.Size = UDim2.new(2.5, 0, 8, 0)
@@ -2775,61 +2808,151 @@ function RanarthLib:CreateWindow(HubConfig)
         Instance.new("UICorner", wave2).CornerRadius = UDim.new(0.4, 0)
 
         local waveConn = runs.RenderStepped:Connect(function()
-            wave1.Rotation = wave1.Rotation + 0.08
-            wave2.Rotation = wave2.Rotation - 0.12
+            local speed = 0.2 + (RanarthLib.EffectSettings.Intensity * 1.6)
+            wave1.Rotation = wave1.Rotation + (0.08 * speed)
+            wave2.Rotation = wave2.Rotation - (0.12 * speed)
         end)
-        table.insert(activeEffectConns, waveConn)
+        table.insert(activeEffectConns, RanarthLib:TrackConnection(waveConn))
     end
 
-    local function StartAuroraParticles()
-        local particleConn = runs.RenderStepped:Connect(function()
-            if math.random() > 0.92 then
-                local size = math.random(15, 45)
-                local orb = Instance.new("Frame")
-                orb.Size = UDim2.new(0, size, 0, size)
-                orb.Position = UDim2.new(math.random(), 0, 1, 20)
-                RanarthLib:ApplyTheme(orb, "BackgroundColor3", "Accent")
-                orb.BackgroundTransparency = 1
-                orb.ZIndex = 0
-                Instance.new("UICorner", orb).CornerRadius = UDim.new(1, 0)
-                orb.Parent = effectCanvas
+    local function StartAmbientLight()
+        local canvas = GetEffectCanvas()
+        if not canvas then return end
 
-                tweens:Create(orb, TweenInfo.new(1.5), {BackgroundTransparency = 0.75}):Play()
+        local glowFrame = Instance.new("Frame")
+        glowFrame.Size = UDim2.new(2, 0, 2, 0)
+        glowFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+        glowFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+        glowFrame.BackgroundTransparency = 0
+        glowFrame.BorderSizePixel = 0
+        glowFrame.ZIndex = 0
+        glowFrame.Parent = canvas
 
-                local duration = math.random(60, 120) / 10
-                local floatTween = tweens:Create(orb, TweenInfo.new(duration, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
-                    Position = UDim2.new(orb.Position.X.Scale + (math.random(-10, 10)/100), 0, -0.3, 0),
-                    BackgroundTransparency = 1
-                })
-                
-                floatTween:Play()
-                floatTween.Completed:Connect(function() orb:Destroy() end)
-            end
+        local grad = Instance.new("UIGradient", glowFrame)
+        grad.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 140, 50)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 60, 80)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 15, 60))
+        })
+        grad.Transparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 0.3),
+            NumberSequenceKeypoint.new(0.5, 0.6),
+            NumberSequenceKeypoint.new(1, 0.9)
+        })
+
+        local t = 0
+        local lightConn = runs.RenderStepped:Connect(function(dt)
+            t = t + dt
+            local intensity = RanarthLib.EffectSettings.Intensity
+            
+            grad.Rotation = math.sin(t * 0.15) * 30 + 45
+            glowFrame.Position = UDim2.new(0.5 + math.sin(t * 0.2) * 0.1, 0, 0.5 + math.cos(t * 0.15) * 0.1, 0)
+            
+            local breathe = (math.sin(t * 0.5) + 1) / 2
+            glowFrame.BackgroundTransparency = 1 - (0.4 + breathe * intensity * 0.4)
         end)
-        table.insert(activeEffectConns, particleConn)
+        table.insert(activeEffectConns, RanarthLib:TrackConnection(lightConn))
     end
 
-    RanarthLib:TrackConnection(RanarthLib.OnThemeChanged.Event:Connect(function()
-        ClearEffects()
+    local function StartPurpleShadow()
+        local canvas = GetEffectCanvas()
+        if not canvas then return end
+
+        local shadow = Instance.new("Frame")
+        shadow.Size = UDim2.new(0.7, 0, 1.4, 0)
+        shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+        shadow.Position = UDim2.new(0.25, 0, 0.5, 0)
+        shadow.Rotation = 20
+        RanarthLib:ApplyTheme(shadow, "BackgroundColor3", "Stroke1")
+        shadow.BackgroundTransparency = 1
+        shadow.ZIndex = 0
+        shadow.Parent = canvas
+
+        local t = 0
+        local shadowConn = runs.RenderStepped:Connect(function(dt)
+            t = t + dt
+            local intensity = RanarthLib.EffectSettings.Intensity
+            local drift = (math.sin(t * 0.25) + 1) / 2
+            shadow.Position = UDim2.new(0.1 + (drift * 0.35), 0, 0.5, 0)
+            shadow.BackgroundTransparency = 1 - (0.15 + intensity * 0.35)
+        end)
+        table.insert(activeEffectConns, RanarthLib:TrackConnection(shadowConn))
+    end
+
+    local function ApplyThemeEffect()
+        if not RanarthLib.EffectSettings.Enabled then return end
 
         local currentThemeName = ""
         for name, data in pairs(RanarthLib.Themes) do
             if data == RanarthLib.CurrentTheme then currentThemeName = name break end
         end
 
-        if currentThemeName == "Cyberpunk Neon" or currentThemeName == "Sunset Horizon" or currentThemeName == "Midnight Purple" then
-            windowGlow.ImageColor3 = RanarthLib.CurrentTheme.Accent
-            local transparency = currentThemeName == "Sunset Horizon" and 0.4 or 0.15
-            tweens:Create(windowGlow, TweenInfo.new(0.5), {ImageTransparency = transparency}):Play()
-            
+        if currentThemeName == "Aurora Dreams" then
+            StartAuroraParticles()
         elseif currentThemeName == "Matrix Code" then
             StartMatrixRain()
-            
-        elseif currentThemeName == "Aurora Dreams" then
-            StartAuroraParticles()
-            
         elseif currentThemeName == "Ocean Breeze" then
             StartOceanWaves()
+        elseif currentThemeName == "Sunset Horizon" then
+            StartAmbientLight()
+        elseif currentThemeName == "Midnight Purple" then
+            StartPurpleShadow()
+        end
+    end
+
+    RanarthLib.RefreshCurrentEffect = function()
+        ClearEffects()
+        ApplyThemeEffect()
+    end
+
+    RanarthLib:TrackConnection(RanarthLib.OnThemeChanged.Event:Connect(function()
+        ClearEffects()
+        ApplyThemeEffect()
+        
+        local currentThemeName = ""
+        for name, data in pairs(RanarthLib.Themes) do
+            if data == RanarthLib.CurrentTheme then currentThemeName = name break end
+        end
+        
+        local mainFrame = nil
+        local topBar = nil
+        for _, obj in ipairs(Window.Gui:GetChildren()) do
+            if obj.Name == "Main" then
+                mainFrame = obj
+                for _, child in ipairs(obj:GetChildren()) do
+                    if child:IsA("Frame") and child.Size.Y.Offset == 35 and child.Position.Y.Offset == 0 then
+                        topBar = child
+                        break
+                    end
+                end
+                break
+            end
+        end
+        
+        if mainFrame then
+             local bgGrad = mainFrame:FindFirstChildOfClass("UIGradient")
+             if bgGrad then
+                 if currentThemeName == "Aurora Dreams" then
+                    bgGrad.Color = ColorSequence.new({
+                        ColorSequenceKeypoint.new(0, Color3.fromRGB(180, 150, 255)),
+                        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(242, 235, 250)),
+                        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 180, 200))
+                    })
+                    bgGrad.Enabled = true
+                    if topBar then topBar.BackgroundTransparency = 1 end
+                elseif currentThemeName == "Sunset Horizon" then
+                    bgGrad.Color = ColorSequence.new({
+                        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 140, 60)), 
+                        ColorSequenceKeypoint.new(0.4, Color3.fromRGB(180, 40, 90)), 
+                        ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 10, 40))    
+                    })
+                    bgGrad.Enabled = true
+                    if topBar then topBar.BackgroundTransparency = 1 end
+                else
+                    bgGrad.Enabled = false
+                    if topBar then topBar.BackgroundTransparency = 0 end
+                end
+             end
         end
     end))
 
