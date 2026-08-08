@@ -1550,18 +1550,33 @@ function RanarthLib:CreateWindow(HubConfig)
 
                 local frame, titleLbl, descLbl, ctrl = CreateElementBase(args, 35)
 
-                local btn = Instance.new("TextButton", frame)
-                btn.Size = UDim2.new(0, 40, 0, 20)
-                btn.Position = UDim2.new(1, -50, 0.5, -10)
-                btn.BackgroundColor3 = state and RanarthLib.CurrentTheme.Accent or RanarthLib.CurrentTheme.SecondaryBG
-                btn.Text = ""
-                Instance.new("UICorner", btn).CornerRadius = UDim.new(1, 0)
-                staticStroke(btn, 1.2)
+                -- Create a separate frame strictly for hover/activation background
+                -- to not mess with titleLbl which sits on "frame" directly.
+                local bgFrame = Instance.new("Frame", frame)
+                bgFrame.Size = UDim2.new(1, 0, 1, 0)
+                bgFrame.BackgroundTransparency = 1
+                bgFrame.ZIndex = 0
+                Instance.new("UICorner", bgFrame).CornerRadius = UDim.new(0, 6)
 
-                local circle = Instance.new("Frame", btn)
+                local btn = Instance.new("TextButton", frame)
+                btn.Size = UDim2.new(1, 0, 1, 0)
+                btn.BackgroundTransparency = 1
+                btn.Text = ""
+                btn.ZIndex = 2
+                
+                local toggleBg = Instance.new("Frame", frame)
+                toggleBg.Size = UDim2.new(0, 40, 0, 20)
+                toggleBg.Position = UDim2.new(1, -50, 0.5, -10)
+                toggleBg.BackgroundColor3 = state and RanarthLib.CurrentTheme.Accent or RanarthLib.CurrentTheme.SecondaryBG
+                toggleBg.ZIndex = 3
+                Instance.new("UICorner", toggleBg).CornerRadius = UDim.new(1, 0)
+                staticStroke(toggleBg, 1.2)
+
+                local circle = Instance.new("Frame", toggleBg)
                 circle.Size = UDim2.new(0, 14, 0, 14)
                 circle.Position = state and UDim2.new(1, -17, 0.5, -7) or UDim2.new(0, 3, 0.5, -7)
                 circle.BackgroundColor3 = state and Color3.fromRGB(255, 255, 255) or RanarthLib.CurrentTheme.TextDark
+                circle.ZIndex = 4
                 Instance.new("UICorner", circle).CornerRadius = UDim.new(1, 0)
 
                 local function updateState(newState)
@@ -1570,20 +1585,46 @@ function RanarthLib:CreateWindow(HubConfig)
                         RanarthLib.Flags[flag] = state
                         if RanarthLib.AutoSaveEnabled then RanarthLib:SaveConfiguration() end
                     end
-                    tweens:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = state and RanarthLib.CurrentTheme.Accent or RanarthLib.CurrentTheme.SecondaryBG}):Play()
+                    tweens:Create(toggleBg, TweenInfo.new(0.2), {BackgroundColor3 = state and RanarthLib.CurrentTheme.Accent or RanarthLib.CurrentTheme.SecondaryBG}):Play()
                     tweens:Create(circle, TweenInfo.new(0.2), {
                         Position = state and UDim2.new(1, -17, 0.5, -7) or UDim2.new(0, 3, 0.5, -7),
                         BackgroundColor3 = state and Color3.fromRGB(255, 255, 255) or RanarthLib.CurrentTheme.TextDark
                     }):Play()
+                    
+                    if state then
+                        RanarthLib:ApplyTheme(titleLbl, "TextColor3", "Accent")
+                        if descLbl then RanarthLib:ApplyTheme(descLbl, "TextColor3", "TextDark") end
+                    else
+                        RanarthLib:ApplyTheme(titleLbl, "TextColor3", "Text")
+                        if descLbl then RanarthLib:ApplyTheme(descLbl, "TextColor3", "TextDark") end
+                    end
+                    
                     callback(state)
                 end
 
                 RanarthLib:TrackConnection(btn.MouseButton1Click:Connect(function() updateState(not state) end))
 
-                RanarthLib:TrackConnection(RanarthLib.OnThemeChanged.Event:Connect(function()
-                    btn.BackgroundColor3 = state and RanarthLib.CurrentTheme.Accent or RanarthLib.CurrentTheme.SecondaryBG
-                    circle.BackgroundColor3 = state and Color3.fromRGB(255, 255, 255) or RanarthLib.CurrentTheme.TextDark
+                RanarthLib:TrackConnection(btn.MouseEnter:Connect(function() 
+                    tweens:Create(bgFrame, TweenInfo.new(0.15), {BackgroundTransparency = 0, BackgroundColor3 = RanarthLib.CurrentTheme.Hover}):Play() 
                 end))
+                RanarthLib:TrackConnection(btn.MouseLeave:Connect(function() 
+                    tweens:Create(bgFrame, TweenInfo.new(0.15), {BackgroundTransparency = 1}):Play() 
+                end))
+
+                RanarthLib:TrackConnection(RanarthLib.OnThemeChanged.Event:Connect(function()
+                    toggleBg.BackgroundColor3 = state and RanarthLib.CurrentTheme.Accent or RanarthLib.CurrentTheme.SecondaryBG
+                    circle.BackgroundColor3 = state and Color3.fromRGB(255, 255, 255) or RanarthLib.CurrentTheme.TextDark
+                    if state then
+                        titleLbl.TextColor3 = RanarthLib.CurrentTheme.Accent
+                    else
+                        titleLbl.TextColor3 = RanarthLib.CurrentTheme.Text
+                    end
+                end))
+                
+                -- Initialize label colors correctly on startup based on default state
+                if state then
+                    RanarthLib:ApplyTheme(titleLbl, "TextColor3", "Accent")
+                end
 
                 return setmetatable({
                     Set = function(self, newState) updateState(newState) end,
@@ -2589,7 +2630,7 @@ function RanarthLib.ListConfigs()
     if not isfolder(RanarthLib.ConfigFolder) then return {"default"} end
     local result = {}
     for _, path in ipairs(listfiles(RanarthLib.ConfigFolder)) do
-        local fname = path:match("([^/\\\\]+)%.json$")
+        local fname = path:match("([^/\\]+)%.json$")
         if fname then table.insert(result, fname) end
     end
     if #result == 0 then table.insert(result, "default") end
