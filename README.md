@@ -7,7 +7,7 @@ Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox
 Load the library directly from your GitHub repository using `loadstring`.
 
 ```lua
-local RanarthLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/ranarth/Ranarth-GUI/main/main.lua"))()
+local RanarthLib = loadstring(game:HttpGet("https://github.com/ranarth/Ranarth-GUI/releases/latest/download/main.lua"))()
 ```
 
 ---
