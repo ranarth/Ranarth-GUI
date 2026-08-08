@@ -1,6 +1,6 @@
 # Ranarth GUI Library
 
-Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, dynamic Layouting (Group & HStack), an Image Panel for previews, Smart Anti-Spam Notifications, Interactive Color Buttons, a Built-in Log Terminal, and highly optimized, memory-leak-free animations.
+Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, a live 6-theme Theming Engine, dynamic Layouting (Group & HStack), an Image Panel for previews, Smart Anti-Spam Notifications, Interactive Color Buttons, a Built-in Log Terminal, and highly optimized, memory-leak-free animations.
 
 ## 🚀 Installation & Loading
 
@@ -285,7 +285,38 @@ local myFloat = Window:CreateFloatingButton({
 
 ---
 
-## 💾 7. Configuration System & Unload
+## 🎭 7. Theme System
+
+Ranarth GUI ships with **6 built-in themes** and a live theme-switching engine — every themed element updates instantly with a smooth color tween, no reload required.
+
+**Available Themes:** `"Space"` (default), `"Sakura"`, `"Bloody Mary"`, `"Cyberpunk"`, `"Mystic Grimoire"`, `"Retro Y2K"`
+
+**Set a default theme on load:**
+```lua
+local Window = RanarthLib:CreateWindow({
+    Title = "Ranarth GUI | Developer Build",
+    Theme = "Cyberpunk", -- Optional, defaults to "Space"
+    -- ...other options
+})
+```
+
+**Switch themes dynamically at runtime** (e.g., from a Dropdown callback):
+```lua
+MainTab:CreateDropdown({
+    Name = "UI Theme",
+    Options = {"Space", "Sakura", "Bloody Mary", "Cyberpunk", "Mystic Grimoire", "Retro Y2K"},
+    CurrentValue = "Space",
+    Callback = function(Value)
+        RanarthLib:SetTheme(Value)
+    end
+})
+```
+
+*💡 **Note:** Every element created with `RanarthLib:ApplyTheme()` internally auto-registers itself to the live theme engine, so custom elements will also re-color correctly on `SetTheme()`.*
+
+---
+
+## 💾 8. Configuration System & Unload
 
 Automatically generates a UI section to save and load the `Flag` you set for elements. Fixed syntax compilation errors for smoother JSON loading.
 ```lua
