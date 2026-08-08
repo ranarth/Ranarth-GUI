@@ -48,31 +48,44 @@ local RanarthLib = {
             Stroke2 = Color3.fromRGB(199, 21, 133),
             Stroke3 = Color3.fromRGB(255, 20, 147)
         },
-        ["Bloody Mary"] = {
-            MainBG = Color3.fromRGB(60, 5, 10),
-            ElementBG = Color3.fromRGB(80, 10, 15),
-            Header = Color3.fromRGB(80, 10, 15),
-            SecondaryBG = Color3.fromRGB(100, 15, 20),
-            Hover = Color3.fromRGB(130, 20, 20),
-            Accent = Color3.fromRGB(230, 0, 0),
-            Text = Color3.fromRGB(255, 225, 225),
-            TextDark = Color3.fromRGB(200, 120, 120),
-            Stroke1 = Color3.fromRGB(70, 8, 10),
-            Stroke2 = Color3.fromRGB(150, 0, 0),
-            Stroke3 = Color3.fromRGB(220, 20, 20)
+        ["Mystic Grimoire"] = {
+            MainBG = Color3.fromRGB(24, 16, 34),
+            ElementBG = Color3.fromRGB(36, 24, 50),
+            Header = Color3.fromRGB(28, 85, 48),
+            SecondaryBG = Color3.fromRGB(48, 32, 66),
+            Hover = Color3.fromRGB(64, 44, 88),
+            Accent = Color3.fromRGB(80, 200, 120),
+            Text = Color3.fromRGB(230, 220, 245),
+            TextDark = Color3.fromRGB(160, 140, 190),
+            Stroke1 = Color3.fromRGB(28, 85, 48),
+            Stroke2 = Color3.fromRGB(60, 200, 100),
+            Stroke3 = Color3.fromRGB(180, 255, 140)
         },
-        ["Cyberpunk Neon"] = {
-            MainBG = Color3.fromRGB(12, 14, 20),
-            ElementBG = Color3.fromRGB(18, 22, 32),
-            Header = Color3.fromRGB(10, 20, 30),
-            SecondaryBG = Color3.fromRGB(25, 30, 45),
-            Hover = Color3.fromRGB(0, 150, 180),
-            Accent = Color3.fromRGB(0, 255, 255),
-            Text = Color3.fromRGB(240, 250, 255),
-            TextDark = Color3.fromRGB(130, 150, 170),
-            Stroke1 = Color3.fromRGB(255, 0, 255),
-            Stroke2 = Color3.fromRGB(0, 255, 255),
-            Stroke3 = Color3.fromRGB(150, 0, 255)
+        ["Retro Y2K"] = {
+            MainBG = Color3.fromRGB(235, 240, 255),
+            ElementBG = Color3.fromRGB(255, 255, 255),
+            Header = Color3.fromRGB(120, 140, 255),
+            SecondaryBG = Color3.fromRGB(210, 220, 255),
+            Hover = Color3.fromRGB(190, 205, 255),
+            Accent = Color3.fromRGB(120, 140, 255),
+            Text = Color3.fromRGB(40, 20, 70),
+            TextDark = Color3.fromRGB(110, 100, 160),
+            Stroke1 = Color3.fromRGB(150, 180, 255),
+            Stroke2 = Color3.fromRGB(255, 0, 170),
+            Stroke3 = Color3.fromRGB(180, 255, 240)
+        },
+        ["Cake"] = {
+            MainBG = Color3.fromRGB(255, 250, 244),
+            ElementBG = Color3.fromRGB(250, 240, 228),
+            Header = Color3.fromRGB(196, 130, 74),
+            SecondaryBG = Color3.fromRGB(240, 222, 200),
+            Hover = Color3.fromRGB(228, 205, 175),
+            Accent = Color3.fromRGB(196, 130, 74),
+            Text = Color3.fromRGB(74, 44, 30),
+            TextDark = Color3.fromRGB(150, 115, 90),
+            Stroke1 = Color3.fromRGB(101, 67, 33),
+            Stroke2 = Color3.fromRGB(54, 32, 18),
+            Stroke3 = Color3.fromRGB(150, 105, 65)
         },
         ["Aurora Dreams"] = {
             MainBG = Color3.fromRGB(242, 235, 250),
@@ -114,12 +127,12 @@ local RanarthLib = {
             Stroke3 = Color3.fromRGB(0, 150, 255)
         },
         ["Sunset Horizon"] = {
-            MainBG = Color3.fromRGB(40, 15, 60), -- Deep purple bottom base
-            ElementBG = Color3.fromRGB(100, 30, 60), -- Dark magenta
-            Header = Color3.fromRGB(255, 140, 60), -- Transparent header will show gradient
-            SecondaryBG = Color3.fromRGB(60, 20, 50),
-            Hover = Color3.fromRGB(130, 40, 70),
-            Accent = Color3.fromRGB(255, 140, 60), -- Bright Orange
+            MainBG = Color3.fromRGB(30, 15, 25), 
+            ElementBG = Color3.fromRGB(60, 20, 40), 
+            Header = Color3.fromRGB(255, 120, 50), 
+            SecondaryBG = Color3.fromRGB(80, 25, 45),
+            Hover = Color3.fromRGB(110, 35, 55),
+            Accent = Color3.fromRGB(255, 140, 60), 
             Text = Color3.fromRGB(255, 240, 230),
             TextDark = Color3.fromRGB(255, 180, 150),
             Stroke1 = Color3.fromRGB(150, 50, 80),
@@ -759,7 +772,7 @@ function RanarthLib:CreateWindow(HubConfig)
     RanarthLib:ApplyTheme(frame, "BackgroundColor3", "MainBG")
     frame.BorderSizePixel = 0
     frame.Active = true
-    frame.ClipsDescendants = false 
+    frame.ClipsDescendants = true 
     frame.Parent = gui
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
     animStroke(frame, 1.5)
@@ -768,29 +781,10 @@ function RanarthLib:CreateWindow(HubConfig)
     bgGradient.Rotation = 45
     bgGradient.Parent = frame
 
-    local windowGlow = Instance.new("ImageLabel")
-    windowGlow.Name = "NeonGlow"
-    windowGlow.BackgroundTransparency = 1
-    windowGlow.Image = "rbxassetid://5028857084"
-    windowGlow.ScaleType = Enum.ScaleType.Slice
-    windowGlow.SliceCenter = Rect.new(24, 24, 276, 276)
-    windowGlow.ZIndex = -1
-    windowGlow.ImageTransparency = 1 
-    windowGlow.Parent = gui
-
-    local function syncGlowTransform()
-        windowGlow.Position = UDim2.new(0, frame.AbsolutePosition.X - 30, 0, frame.AbsolutePosition.Y - 30)
-        windowGlow.Size = UDim2.new(0, frame.AbsoluteSize.X + 60, 0, frame.AbsoluteSize.Y + 60)
-    end
-    syncGlowTransform()
-    RanarthLib:TrackConnection(frame:GetPropertyChangedSignal("AbsolutePosition"):Connect(syncGlowTransform))
-    RanarthLib:TrackConnection(frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(syncGlowTransform))
-
-    local effectContainer = Instance.new("Frame")
+    local effectContainer = Instance.new("CanvasGroup")
     effectContainer.Name = "EffectContainer"
     effectContainer.Size = UDim2.new(1, 0, 1, 0)
     effectContainer.BackgroundTransparency = 1
-    effectContainer.ClipsDescendants = true 
     effectContainer.ZIndex = 0
     Instance.new("UICorner", effectContainer).CornerRadius = UDim.new(0, 10)
     effectContainer.Parent = frame
@@ -2704,9 +2698,6 @@ function RanarthLib:CreateWindow(HubConfig)
                 local canvas = container:FindFirstChild("EffectCanvas")
                 if canvas then canvas:ClearAllChildren() end
             end
-            
-            local glow = Window.Gui:FindFirstChild("NeonGlow")
-            if glow then tweens:Create(glow, TweenInfo.new(0.5), {ImageTransparency = 1}):Play() end
         end
     end
 
@@ -2720,18 +2711,6 @@ function RanarthLib:CreateWindow(HubConfig)
             end
         end
         return nil
-    end
-
-    local function StartNeonGlow()
-        local windowGlow = Window.Gui:FindFirstChild("NeonGlow")
-        if not windowGlow then return end
-        
-        windowGlow.ImageColor3 = RanarthLib.CurrentTheme.Accent
-        local glowConn = runs.RenderStepped:Connect(function()
-            local targetT = 1 - (RanarthLib.EffectSettings.Intensity * 0.85)
-            windowGlow.ImageTransparency = windowGlow.ImageTransparency + (targetT - windowGlow.ImageTransparency) * 0.06
-        end)
-        table.insert(activeEffectConns, RanarthLib:TrackConnection(glowConn))
     end
 
     local function StartAuroraParticles()
@@ -2840,19 +2819,37 @@ function RanarthLib:CreateWindow(HubConfig)
         local canvas = GetEffectCanvas()
         if not canvas then return end
 
-        local glowOverlay = Instance.new("Frame")
-        glowOverlay.Size = UDim2.new(1, 0, 1, 0)
-        RanarthLib:ApplyTheme(glowOverlay, "BackgroundColor3", "Accent")
-        glowOverlay.BackgroundTransparency = 1
-        glowOverlay.ZIndex = 0
-        glowOverlay.Parent = canvas
+        local glowFrame = Instance.new("Frame")
+        glowFrame.Size = UDim2.new(2, 0, 2, 0)
+        glowFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+        glowFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+        glowFrame.BackgroundTransparency = 0
+        glowFrame.BorderSizePixel = 0
+        glowFrame.ZIndex = 0
+        glowFrame.Parent = canvas
+
+        local grad = Instance.new("UIGradient", glowFrame)
+        grad.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 140, 50)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(200, 60, 80)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 15, 60))
+        })
+        grad.Transparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 0.3),
+            NumberSequenceKeypoint.new(0.5, 0.6),
+            NumberSequenceKeypoint.new(1, 0.9)
+        })
 
         local t = 0
         local lightConn = runs.RenderStepped:Connect(function(dt)
             t = t + dt
             local intensity = RanarthLib.EffectSettings.Intensity
-            local breathe = (math.sin(t * 0.6) + 1) / 2
-            glowOverlay.BackgroundTransparency = 1 - (breathe * intensity * 0.2)
+            
+            grad.Rotation = math.sin(t * 0.15) * 30 + 45
+            glowFrame.Position = UDim2.new(0.5 + math.sin(t * 0.2) * 0.1, 0, 0.5 + math.cos(t * 0.15) * 0.1, 0)
+            
+            local breathe = (math.sin(t * 0.5) + 1) / 2
+            glowFrame.BackgroundTransparency = 1 - (0.4 + breathe * intensity * 0.4)
         end)
         table.insert(activeEffectConns, RanarthLib:TrackConnection(lightConn))
     end
@@ -2890,9 +2887,7 @@ function RanarthLib:CreateWindow(HubConfig)
             if data == RanarthLib.CurrentTheme then currentThemeName = name break end
         end
 
-        if currentThemeName == "Cyberpunk Neon" then
-            StartNeonGlow()
-        elseif currentThemeName == "Aurora Dreams" then
+        if currentThemeName == "Aurora Dreams" then
             StartAuroraParticles()
         elseif currentThemeName == "Matrix Code" then
             StartMatrixRain()
@@ -2924,7 +2919,6 @@ function RanarthLib:CreateWindow(HubConfig)
         for _, obj in ipairs(Window.Gui:GetChildren()) do
             if obj.Name == "Main" then
                 mainFrame = obj
-                -- Asumsi top_bar adalah frame dengan BackgroundColor3 yang diambil dari Header (berada di posisi y=0)
                 for _, child in ipairs(obj:GetChildren()) do
                     if child:IsA("Frame") and child.Size.Y.Offset == 35 and child.Position.Y.Offset == 0 then
                         topBar = child
@@ -2948,9 +2942,9 @@ function RanarthLib:CreateWindow(HubConfig)
                     if topBar then topBar.BackgroundTransparency = 1 end
                 elseif currentThemeName == "Sunset Horizon" then
                     bgGrad.Color = ColorSequence.new({
-                        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 140, 60)), -- Orange terang di kiri atas
-                        ColorSequenceKeypoint.new(0.4, Color3.fromRGB(180, 40, 90)), -- Merah/Magenta di tengah
-                        ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 10, 40))    -- Ungu gelap di kanan bawah
+                        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 140, 60)), 
+                        ColorSequenceKeypoint.new(0.4, Color3.fromRGB(180, 40, 90)), 
+                        ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 10, 40))    
                     })
                     bgGrad.Enabled = true
                     if topBar then topBar.BackgroundTransparency = 1 end
