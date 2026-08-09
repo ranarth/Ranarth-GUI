@@ -1,6 +1,8 @@
 # Ranarth GUI Library
 
-Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, a live 7-theme Theming Engine, dynamic Layouting (Group & HStack), an Image Panel for previews, Smart Anti-Spam Notifications, Interactive Color Buttons, a Built-in Log Terminal, and highly optimized, memory-leak-free animations.
+Ranarth GUI is a clean, modern, and highly flexible Custom UI Library for Roblox. It is perfectly suited for building game plugins or executing scripts, equipped with an automatic Config system, a live 10-theme Visual Effect Engine, dynamic Layouting (Group & HStack), an Image Panel for previews, Smart Anti-Spam Notifications, Interactive Color Buttons, a Built-in Log Terminal, and highly optimized, memory-leak-free animations.
+
+---
 
 ## 🚀 Installation & Loading
 
@@ -14,11 +16,12 @@ local RanarthLib = loadstring(game:HttpGet("https://github.com/ranarth/Ranarth-G
 
 ## 🪟 1. Creating the Main Window
 
-Initialize the main window interface. You can adjust the size, tab position, toggle keybind, configure the saving system, and toggle the anti-spam protection.
+Initialize the main window interface. You can set the initial theme, size, tab position, toggle keybind, configure the saving system, and toggle the anti-spam protection.
 
 ```lua
 local Window = RanarthLib:CreateWindow({
     Title = "Ranarth GUI | Developer Build",
+    Theme = "Space", -- Initial theme on load
     DefaultWidth = 580,
     DefaultHeight = 380,
     MinWidth = 450,
@@ -37,14 +40,90 @@ local Window = RanarthLib:CreateWindow({
 
 ---
 
-## 📑 2. Tabs, Namespace & Hybrid Icon System
+## 🎭 2. Live Theme System & Visual Effects Engine
+
+Ranarth GUI ships with **10 built-in themes** and a live Theme Visual Effects Engine that renders real-time animated backgrounds and glowing strokes using `RunService.RenderStepped`.
+
+### Available Built-in Themes:
+1. `"Space"` (Default dark neon blue space)
+2. `"Sakura"` (Soft pink cherry blossom palette)
+3. `"Cake"` (Warm pastel brown / dessert theme)
+4. `"Retro Y2K"` (Y2K aesthetic blue-white softy)
+5. `"Mystic Grimoire"` (Ancient magic circle with rotating spell rings, Greek runes, and floating sparkles)
+6. `"Aurora Dreams"` (Soft ambient gradient with rising glowing orb particles)
+7. `"Matrix Code"` (Falling vertical matrix rain of Lua code tokens)
+8. `"Ocean Breeze"` (Deep blue ocean palette with rotating wave layer effects)
+9. `"Sunset Horizon"` (Breathing sunset ambient gradient light effect)
+10. `"Midnight Purple"` (Deep midnight purple with drifting shadow layer)
+
+### Theme & Effect Control APIs:
+```lua
+-- Change theme dynamically
+RanarthLib:SetTheme("Matrix Code")
+
+-- Toggle animated background effects (true / false)
+RanarthLib:SetEffectEnabled(true)
+
+-- Set effect intensity (Value between 0.0 and 1.0)
+RanarthLib:SetEffectIntensity(0.75)
+```
+
+### Example: Creating a Theme & UI Settings Tab
+```lua
+local MiscTab = Window:CreateTab({ Name = "MISCELLANEOUS", Icon = "settings" })
+
+MiscTab:CreateSection("UI Settings")
+MiscTab:CreateDivider()
+
+-- Theme Selector Dropdown
+MiscTab:CreateDropdown({
+    Name = "UI Theme",
+    Options = {
+        "Space", "Sakura", "Cake", "Retro Y2K", "Mystic Grimoire",
+        "Aurora Dreams", "Matrix Code", "Ocean Breeze", "Sunset Horizon", "Midnight Purple"
+    },
+    CurrentValue = "Mystic Grimoire",
+    Flag = "d_theme",
+    Callback = function(Value)
+        RanarthLib:SetTheme(Value)
+    end
+})
+
+-- Enable/Disable Animated Background Effects
+MiscTab:CreateToggle({
+    Name = "Enable Theme Effect",
+    Desc = "Turn on/off real-time animated theme background effects",
+    Default = true,
+    Flag = "t_effect_enabled",
+    Callback = function(state)
+        RanarthLib:SetEffectEnabled(state)
+    end
+})
+
+-- Effect Intensity Slider
+MiscTab:CreateSlider({
+    Name = "Effect Intensity",
+    Min = 0,
+    Max = 100,
+    Increment = 5,
+    CurrentValue = 75,
+    Flag = "s_effect_intensity",
+    Callback = function(Value)
+        RanarthLib:SetEffectIntensity(Value / 100)
+    end
+})
+```
+
+---
+
+## 📑 3. Tabs, Namespace & Hybrid Icon System
 
 Tabs organize your features. Our unique **Tab Namespace System** ensures that `Flag` names won't conflict even if you use the same name in different tabs.
 
-Ranarth GUI features a **Hybrid Icon System**: it comes with 150+ built-in icons for instant loading, while seamlessly fetching future extensions directly from your external GitHub repository.
+Ranarth GUI features a **Hybrid Icon System**: it comes with 150+ built-in Lucide icons for instant loading, while seamlessly fetching future extensions directly from your external GitHub repository.
 
 **How to Use Icons (Supports any element with an `Icon` or `Image` property):**
-1. **Built-in Names:** Type names like `"home"`, `"settings"`, `"scan-face"`, `"gamepad"`, `"sword"`, etc.
+1. **Built-in Icon Names:** Type names like `"home"`, `"settings"`, `"scan-face"`, `"gamepad"`, `"sword"`, `"sparkles"`, `"zap"`, etc.
 2. **Roblox Asset IDs & Thumbnails:** Paste a Roblox image ID directly (e.g., `"rbxassetid://123456789"`). The GUI fully supports case-sensitive thumbnail APIs like `"rbxthumb://type=Asset&id=12345678&w=150&h=150"` and external web URLs.
 
 ```lua
@@ -56,9 +135,9 @@ local MainTab = Window:CreateTab({
 
 ---
 
-## 🛠️ 3. Standard Elements
+## 🛠️ 4. Standard Elements
 
-Build your UI using the Tab variable (e.g., `MainTab`).
+Build your UI using any Tab variable (e.g., `MainTab`).
 
 ### Section & Divider
 ```lua
@@ -77,7 +156,7 @@ local InfoLabel = MainTab:CreateLabel({
 -- Attaching a Tooltip to the label
 RanarthLib:CreateTooltip(InfoLabel.Frame, "Connected to the server with low latency.")
 
--- Update label dynamically
+-- Update label dynamically:
 -- InfoLabel:Set("New Status Here")
 ```
 
@@ -97,12 +176,10 @@ local btn = MainTab:CreateButton({
 btn:Lock("Requires admin access")
 -- btn:Unlock()
 
--- Dynamically Change Colors (e.g., inside the Callback function)
--- arg 1: Idle Color, arg 2: Hover Color
+-- Dynamically Change Colors (arg 1: Idle Color, arg 2: Hover Color)
 btn:SetColor(Color3.fromRGB(40, 200, 40), Color3.fromRGB(60, 220, 60))
--- Or use Hex: btn:SetColor(Color3.fromHex("#28C828"), Color3.fromHex("#3CDC3C"))
 
--- Revert to the default Space theme
+-- Revert to the default theme color
 -- btn:ResetColor()
 ```
 
@@ -111,7 +188,7 @@ btn:SetColor(Color3.fromRGB(40, 200, 40), Color3.fromRGB(60, 220, 60))
 MainTab:CreateToggle({
     Name = "Performance Mode",
     Desc = "Disables heavy background animations",
-    Default = true,
+    Default = false,
     Flag = "t_perf_mode",
     Callback = function(state) end
 })
@@ -168,7 +245,7 @@ MainTab:CreateColorPicker({
 
 ---
 
-## 🎨 4. Visual & Extra Elements
+## 🎨 5. Visual & Interactive Widgets
 
 ### Log Terminal (Console)
 A scrollable terminal interface directly inside your UI for displaying script logs, debugging info, or visual feedback. Supports auto-scrolling, timestamps, and memory-leak protection via line limiting.
@@ -187,11 +264,11 @@ Terminal:Warn("High latency detected.")
 Terminal:Error("Failed to fetch asset ID: 12345678")
 Terminal:Success("Payload injected successfully!")
 
--- Terminal:Clear() -- Clears the console history programmatically
+-- Terminal:Clear() -- Clears console history
 ```
 
 ### Image Panel (Item Preview)
-A dedicated panel designed to display a thumbnail image alongside a title and description. Perfect for item previews or player info. If no image is provided, the image box disappears and the text stretches automatically!
+A dedicated panel designed to display a thumbnail image alongside a title and description. If no image is provided, the image box disappears and the text stretches automatically!
 
 ```lua
 local PreviewPanel = MainTab:CreateImagePanel({
@@ -204,7 +281,7 @@ local PreviewPanel = MainTab:CreateImagePanel({
 -- PreviewPanel:SetTitle("Dominus")
 -- PreviewPanel:SetDesc("Price: 10,000 Robux")
 -- PreviewPanel:SetImage("rbxthumb://type=Asset&id=12345678&w=150&h=150") 
--- PreviewPanel:SetImage("") -- Will automatically hide the image box!
+-- PreviewPanel:SetImage("") -- Automatically hides the image box!
 ```
 
 ### Progress Bar & Paragraph
@@ -230,7 +307,7 @@ MainTab:CreateSearchBar({Placeholder = "Search features..."})
 
 ---
 
-## 📦 5. Layouting (HStack & Group)
+## 📦 6. Layouting (HStack & Group)
 
 Group your elements cleanly or align them horizontally.
 
@@ -244,10 +321,10 @@ ButtonRow:CreateButton({Name = "Button 2", Callback = function() end})
 
 ---
 
-## 🔔 6. Global Utilities
+## 🔔 7. Global Utilities
 
 ### Smart Notification (With Anti-Spam & Image Support)
-Pop up a notification. Protected by Ranarth's Anti-Spam system (max 5 on screen, 0.15s cooldown). You can optionally pass an image/icon as the 4th argument!
+Pop up a notification. Protected by Ranarth's Anti-Spam system (max 5 on screen, 0.15s cooldown).
 
 ```lua
 -- Standard Text Notification
@@ -273,7 +350,7 @@ local sub = Window:CreateSubPanel("Additional Notes", 240, 200)
 ```
 
 ### Custom Floating Button
-Create an independent, freely draggable floating button (retains Ranarth's glowing stroke theme) with memory-leak-safe dragging logic.
+Create an independent, freely draggable floating button with memory-leak-safe dragging logic.
 ```lua
 local myFloat = Window:CreateFloatingButton({
     Name = "Refresh: 0",
@@ -285,42 +362,11 @@ local myFloat = Window:CreateFloatingButton({
 
 ---
 
-## 🎭 7. Theme System
-
-Ranarth GUI ships with **7 built-in themes** and a live theme-switching engine — every themed element updates instantly with a smooth color tween, no reload required.
-
-**Available Themes:** `"Space"` (default), `"Sakura"`, `"Bloody Mary"`, `"Cyberpunk"`, `"Mystic Grimoire"`, `"Retro Y2K"`, `"Cake"`
-
-**Set a default theme on load:**
-```lua
-local Window = RanarthLib:CreateWindow({
-    Title = "Ranarth GUI | Developer Build",
-    Theme = "Retro Y2K", -- Optional, defaults to "Space"
-    -- ...other options
-})
-```
-
-**Switch themes dynamically at runtime** (e.g., from a Dropdown callback):
-```lua
-MainTab:CreateDropdown({
-    Name = "UI Theme",
-    Options = {"Space", "Sakura", "Bloody Mary", "Cyberpunk", "Mystic Grimoire", "Retro Y2K", "Cake"},
-    CurrentValue = "Space",
-    Callback = function(Value)
-        RanarthLib:SetTheme(Value)
-    end
-})
-```
-
-*💡 **Note:** Every element created with `RanarthLib:ApplyTheme()` internally auto-registers itself to the live theme engine, so custom elements will also re-color correctly on `SetTheme()`.*
-
----
-
 ## 💾 8. Configuration System & Unload
 
-Automatically generates a UI section to save and load the `Flag` you set for elements. Fixed syntax compilation errors for smoother JSON loading.
+Automatically generates a UI section to save and load the `Flag` settings.
 ```lua
-SettingsTab:CreateConfigSystem()
+MiscTab:CreateConfigSystem()
 ```
 
 Completely remove the UI and clean up all connections safely.
