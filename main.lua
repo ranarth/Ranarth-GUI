@@ -3301,6 +3301,13 @@ function RanarthLib:CreateWindow(HubConfig)
         end
     end))
 
+    -- Initial theme effect trigger
+    if HubConfig.Theme and RanarthLib.Themes[HubConfig.Theme] then
+        RanarthLib:SetTheme(HubConfig.Theme)
+    else
+        RanarthLib:RefreshCurrentEffect()
+    end
+
     return Window
 end
 
@@ -3312,7 +3319,7 @@ function RanarthLib.ListConfigs()
     if not isfolder(RanarthLib.ConfigFolder) then return {"default"} end
     local result = {}
     for _, path in ipairs(listfiles(RanarthLib.ConfigFolder)) do
-        local fname = path:match("([^/\]+)%.json$")
+        local fname = path:match("([^/\\]+)%.json$")
         if fname then table.insert(result, fname) end
     end
     if #result == 0 then table.insert(result, "default") end
